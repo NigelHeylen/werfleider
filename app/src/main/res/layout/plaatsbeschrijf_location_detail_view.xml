@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.plaatsbeschrijf.PlaatsBeschrijfLocationDetailView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_light_background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:background="@color/cardview_light_background"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/plaatsbeschrijf.title"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@color/ripple_material_light"
+                        android:gravity="center"
+                        android:paddingLeft="14dp"
+                        android:textColor="@color/primary"
+                        android:textSize="16sp"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/plaatsbeschrijf.image.list"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@color/accent"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/plaatsbeschrijf.camera"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/ic_action_camera"/>
+
+                        <ImageView
+                            android:id="@+id/plaatsbeschrijf.edit"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/ic_action_edit"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:background="@color/cardview_light_background"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:text="Vul hier de foto omschrijving in: "/>
+
+                    <EditText
+                        android:id="@+id/plaatsbeschrijf.description"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:background="#99FFFFFF"
+                        android:inputType="textMultiLine"
+                        android:gravity="top"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:scrollHorizontally="true"
+                        tools:text="This is a very long text, because long texts are very annoying. And I have to test this crap because testing you know test test."/>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</nigel.com.werfleider.ui.plaatsbeschrijf.PlaatsBeschrijfLocationDetailView>

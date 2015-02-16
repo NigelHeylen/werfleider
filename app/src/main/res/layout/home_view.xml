@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.home.HomeView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/Werfoverzicht.Item.Row">
+
+        <View style="@style/Werfoverzicht.Vertical.Separator"/>
+
+        <android.support.v7.widget.CardView
+            style="@style/Werfoverzicht.Item.Container">
+
+            <RelativeLayout
+                android:id="@+id/Home.Button.Contacts"
+                style="@style/Werfoverzicht.Item.Button">
+
+                <ImageView
+                    style="@style/Werfoverzicht.Item.Icon"
+                    android:src="@drawable/ic_action_group"
+                    />
+
+                <TextView
+                    style="@style/Werfoverzicht.Item.Title"
+                    android:text="Contacten"/>
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <View style="@style/Werfoverzicht.Vertical.Separator"/>
+
+        <android.support.v7.widget.CardView
+            style="@style/Werfoverzicht.Item.Container">
+
+            <RelativeLayout
+                android:id="@+id/Home.Button.Werf"
+                style="@style/Werfoverzicht.Item.Button">
+
+                <ImageView
+                    style="@style/Werfoverzicht.Item.Icon"
+                    android:src="@drawable/ic_globe"
+                    />
+
+                <TextView
+                    style="@style/Werfoverzicht.Item.Title"
+                    android:text="Werven"/>
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <View style="@style/Werfoverzicht.Vertical.Separator"/>
+    </LinearLayout>
+
+
+</nigel.com.werfleider.ui.home.HomeView>

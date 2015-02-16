@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.plaatsbeschrijf.PictureGridView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/picture.grid.location"
+            android:textSize="16sp"
+            android:background="@color/ripple_material_light"
+            android:textColor="@color/button_material_dark"
+            android:gravity="center"
+            android:inputType="textShortMessage"
+            android:hint="Location Name"/>
+
+
+        <android.support.v7.widget.RecyclerView
+        android:id="@+id/picture.grid"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+
+
+        </LinearLayout>
+
+
+
+</nigel.com.werfleider.ui.plaatsbeschrijf.PictureGridView>

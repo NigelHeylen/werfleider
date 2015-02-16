@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.contacts.ContactView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/contact.architect.container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="14dp"
+            android:paddingTop="8dp"
+            android:text="Architect"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/contact.architect.people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingLeft="14dp"
+            android:textColor="@color/white"
+            tools:text="8 people"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/contact.bouwmeester.container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yellow"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="14dp"
+            android:paddingTop="8dp"
+            android:text="Bouwmeester"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/contact.bouwmeester.people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingLeft="14dp"
+            android:textColor="@color/white"
+            tools:text="8 people"/>
+
+    </LinearLayout>
+</nigel.com.werfleider.ui.contacts.ContactView>

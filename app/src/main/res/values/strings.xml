@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Werfleider</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="tPlaatsbeschrijf">Plaatsbeschrijf</string>
+    <string name="tPlannen">Plannen</string>
+    <string name="tOpmetingen">Opmetingen</string>
+    <string name="tAfspraken">Afspraken</string>
+    <string name="tToDo">To do</string>
+    <string name="tTechnischeFiches">Technische Fiches</string>
+    <string name="tMails">Emails</string>
+
+</resources>

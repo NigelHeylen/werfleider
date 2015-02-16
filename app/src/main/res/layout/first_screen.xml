@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.first.FirstView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/hello.world"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</nigel.com.werfleider.ui.first.FirstView>
