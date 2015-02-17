@@ -1,4 +1,4 @@
-package nigel.com.werfleider.ui.plaatsbeschrijf;
+package nigel.com.werfleider.ui.document;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -18,8 +18,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import flow.Flow;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.PlaatsBeschrijf;
-import nigel.com.werfleider.model.PlaatsBeschrijfLocatie;
+import nigel.com.werfleider.model.Document;
+import nigel.com.werfleider.model.DocumentLocatie;
 import nigel.com.werfleider.model.Werf;
 import nigel.com.werfleider.ui.widget.CustomTextWatcher;
 
@@ -28,18 +28,18 @@ import static java.lang.String.format;
 /**
  * Created by nigel on 24/01/15.
  */
-public class PlaatsBeschrijfLocationAdapter extends RecyclerView.Adapter<PlaatsBeschrijfLocationAdapter.ViewHolder> {
+public class DocumentLocationAdapter extends RecyclerView.Adapter<DocumentLocationAdapter.ViewHolder> {
 
-    final PlaatsBeschrijf plaatsBeschrijf;
+    final Document document;
     @Inject Picasso pablo;
     @Inject Flow flow;
     @Inject Werf werf;
 
-    public PlaatsBeschrijfLocationAdapter(
-            final PlaatsBeschrijf plaatsBeschrijf,
+    public DocumentLocationAdapter(
+            final Document document,
             final Picasso pablo,
             final Flow flow) {
-        this.plaatsBeschrijf = plaatsBeschrijf;
+        this.document = document;
         this.pablo = pablo;
         this.flow = flow;
     }
@@ -53,7 +53,7 @@ public class PlaatsBeschrijfLocationAdapter extends RecyclerView.Adapter<PlaatsB
 
     @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        final PlaatsBeschrijfLocatie collection = plaatsBeschrijf.getFotoReeksList().get(position);
+        final DocumentLocatie collection = document.getFotoReeksList().get(position);
 
         holder.mName.setText(collection.getLocation());
         holder.mName.addTextChangedListener(
@@ -77,7 +77,7 @@ public class PlaatsBeschrijfLocationAdapter extends RecyclerView.Adapter<PlaatsB
         holder.mContainer.setOnClickListener(
                 new View.OnClickListener() {
                     @Override public void onClick(final View v) {
-                        flow.goTo(new PlaatsBeschrijfLocationDetailScreen(plaatsBeschrijf, position, werf));
+                        flow.goTo(new DocumentLocationDetailScreen(document, position, werf));
                     }
                 });
 
@@ -85,7 +85,7 @@ public class PlaatsBeschrijfLocationAdapter extends RecyclerView.Adapter<PlaatsB
     }
 
     @Override public int getItemCount() {
-        return plaatsBeschrijf.getFotoReeksList().size();
+        return document.getFotoReeksList().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

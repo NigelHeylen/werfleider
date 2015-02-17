@@ -49,37 +49,55 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingLeft="20dp">
+
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/werf.create.opdracht.stad"
+                android:hint="Werf postcode + stad"
+                style="@style/Werf.Create.EditText"/>
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/werf.create.opdracht.adres"
+                android:hint="Werf adres"
+                style="@style/Werf.Create.EditText"/>
+
+            <include layout="@layout/divider_werf_create"/>
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/werf.create.ontwerper"
+                style="@style/Werf.Create.EditText"
+                android:hint="Ontwerper naam"/>
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/werf.create.ontwerper.stad"
+                style="@style/Werf.Create.EditText"
+                android:hint="Ontwerper postcode + stad"/>
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/werf.create.ontwerper.adres"
+                style="@style/Werf.Create.EditText"
+                android:hint="Ontwerper adres"
+                />
+
+            <include layout="@layout/divider_werf_create"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/werf.create.opdrachtgever"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Opdrachtgever naam"
-                android:textCursorDrawable="@drawable/text_cursor_cyan"
-                app:baseColor="@android:color/black"
-                app:floatingLabel="highlight"
-                app:primaryColor="@color/primary"/>
+                style="@style/Werf.Create.EditText"
+                android:hint="Opdrachtgever naam"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/werf.create.opdrachtgever.stad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="Opdrachtgever postcode + stad"
-                android:textCursorDrawable="@drawable/text_cursor_cyan"
-                app:baseColor="@android:color/black"
-                app:floatingLabel="highlight"
-                app:primaryColor="@color/primary"/>
+                style="@style/Werf.Create.EditText"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/werf.create.opdrachtgever.adres"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="Opdrachtgever adres"
-                android:textCursorDrawable="@drawable/text_cursor_cyan"
-                app:baseColor="@android:color/black"
-                app:floatingLabel="highlight"
-                app:primaryColor="@color/primary"/>
+                style="@style/Werf.Create.EditText"/>
+
+            <include layout="@layout/divider_werf_create"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -97,15 +115,12 @@
                 android:calendarViewShown="false"
                 android:datePickerMode="spinner"/>
 
+
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/werf.create.omschrijving"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="Omschrijving van de werken"
-                android:textCursorDrawable="@drawable/text_cursor_cyan"
-                app:baseColor="@android:color/black"
-                app:floatingLabel="highlight"
-                app:primaryColor="@color/primary"/>
+                style="@style/Werf.Create.EditText"/>
+
 
             <com.gc.materialdesign.views.ButtonRectangle
                 android:id="@+id/werf.create.save"

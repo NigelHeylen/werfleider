@@ -6,12 +6,12 @@ import dagger.Module;
 import dagger.Provides;
 import nigel.com.werfleider.dao.contact.ContactDbHelper;
 import nigel.com.werfleider.dao.contact.ContactDbHelperBean;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfDbHelper;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfDbHelperBean;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfLocatieDbHelper;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfLocatieDbHelperBean;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfLocatieImageDbHelper;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfLocatieImageDbHelperBean;
+import nigel.com.werfleider.dao.document.DocumentDbHelper;
+import nigel.com.werfleider.dao.document.DocumentDbHelperBean;
+import nigel.com.werfleider.dao.document.DocumentLocatieDbHelper;
+import nigel.com.werfleider.dao.document.DocumentLocatieDbHelperBean;
+import nigel.com.werfleider.dao.document.DocumentLocatieImageDbHelper;
+import nigel.com.werfleider.dao.document.DocumentLocatieImageDbHelperBean;
 
 /**
  * Created by nigel on 07/02/15.
@@ -27,16 +27,16 @@ public class DatabaseModule {
     }
 
 
-    @Provides PlaatsBeschrijfDbHelper providePlaatbeschrijfHelper(final PlaatsBeschrijfDbHelperBean plaatsBeschrijfDbHelperBean) {
+    @Provides DocumentDbHelper providePlaatbeschrijfHelper(final DocumentDbHelperBean plaatsBeschrijfDbHelperBean) {
         return plaatsBeschrijfDbHelperBean;
     }
 
 
-    @Provides PlaatsBeschrijfLocatieImageDbHelper provideLocatieImageHelper(final PlaatsBeschrijfLocatieImageDbHelperBean plaatsBeschrijfLocatieImageDbHelperBean){
-        return plaatsBeschrijfLocatieImageDbHelperBean;
+    @Provides DocumentLocatieImageDbHelper provideLocatieImageHelper(final DocumentLocatieImageDbHelperBean documentLocatieImageDbHelperBean){
+        return documentLocatieImageDbHelperBean;
     }
 
-    @Provides PlaatsBeschrijfLocatieDbHelper provideLocatieHelper(final PlaatsBeschrijfLocatieDbHelperBean plaatsBeschrijfLocatieDbHelperBean){
+    @Provides DocumentLocatieDbHelper provideLocatieHelper(final DocumentLocatieDbHelperBean plaatsBeschrijfLocatieDbHelperBean){
         return plaatsBeschrijfLocatieDbHelperBean;
     }
 

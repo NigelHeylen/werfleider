@@ -53,14 +53,30 @@ public class WerfCreateScreen implements Blueprint, HasParent<WerfScreen> {
 
         public void create(
                 final String naam,
-                final String number,
+                final String nummer,
+                final String opdrachtAdres,
+                final String opdrachtStad,
+                final String ontwerper,
+                final String ontwerperAdres,
+                final String ontwerperStad,
                 final String opdrachtgever,
                 final String opdrachtgeverAdres,
                 final String opdrachtgeverStad,
-                final String omschrijving,
-                final DateTime datumAanvang) {
+                final String omschrijving, final DateTime datumAanvang) {
             Observable
-                    .just(new Werf(naam, number, opdrachtgever, opdrachtgeverAdres, opdrachtgeverStad, omschrijving, datumAanvang))
+                    .just(new Werf(
+                                  naam,
+                                  nummer,
+                                  opdrachtAdres,
+                                  opdrachtStad,
+                                  ontwerper,
+                                  ontwerperStad,
+                                  ontwerperAdres,
+                                  opdrachtgever,
+                                  opdrachtgeverAdres,
+                                  opdrachtgeverStad,
+                                  omschrijving,
+                                  datumAanvang))
                     .doOnTerminate(
                             new Action0() {
                                 @Override public void call() {

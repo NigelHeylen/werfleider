@@ -15,16 +15,16 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
     public static final String LOG = "DatabaseHelper";
 
     // Database Version
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 10;
 
     // Database Name
     public static final String DATABASE_NAME = "werfManager";
 
     // Table Names
     public static final String TABLE_WERF = "werf";
-    public static final String TABLE_PLAATSBESCHRIJF = "plaatsbeschrijf";
-    public static final String TABLE_PLAATSBESCHRIJF_LOCATIE = "plaatsbeschrijf_locatie";
-    public static final String TABLE_PLAATSBESCHRIJF_LOCATIE_IMAGE = "plaatsbeschrijf_locatie_image";
+    public static final String TABLE_DOCUMENT = "document";
+    public static final String TABLE_DOCUMENT_LOCATIE = "document_locatie";
+    public static final String TABLE_DOCUMENT_LOCATIE_IMAGE = "document_locatie_image";
     public static final String TABLE_CONTACT = "contact";
 
     // Common column names
@@ -38,22 +38,24 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
     public static final String KEY_OPDRACHTGEVER_ADRES = "opdrachtgever_adres";
     public static final String KEY_OPDRACHTGEVER_STAD = "opdrachtgever_stad";
     public static final String KEY_DATUM_AANVANG = "datum_aanvang";
-
-    // PLAATSBESCHRIJF Table - column names
-    public static final String KEY_OPDRACHTLOCATIE = "opdracht_locatie";
-    public static final String KEY_TITLE = "title";
+    public static final String KEY_OPDRACHT_ADRES = "opdracht_adres";
+    public static final String KEY_OPDRACHT_STAD = "opdracht_stad";
     public static final String KEY_ONTWERPER = "ontwerper";
     public static final String KEY_ONTWERPER_STAD = "ontwerper_stad";
     public static final String KEY_ONTWERPER_ADRES = "ontwerper_adres";
-    public static final String KEY_WERF_ID = "werf_id";
 
-    // PLAATSBESCHRIJF_LOCATIE Table - column names
-    public static final String KEY_PLAATSBESCHRIJF_ID = "plaatsbeschrijf_id";
+
+    // DOCUMENT Table - column names
+    public static final String KEY_WERF_ID = "werf_id";
+    public static final String KEY_DOCUMENT_TYPE = "document_type";
+
+    // DOCUMENT_LOCATIE Table - column names
+    public static final String KEY_DOCUMENT_ID = "document_id";
     public static final String KEY_LOCATIE = "locatie";
 
 
-    // PLAATSBESCHRIJF_LOCATIE_IMAGE Table - column names
-    public static final String KEY_PLAATSBESCHRIJF_LOCATIE_ID = "plaatsbeschrijf_locatie_id";
+    // DOCUMENT_LOCATIE_IMAGE Table - column names
+    public static final String KEY_DOCUMENT_LOCATIE_ID = "document_locatie_id";
     public static final String KEY_IMAGE_URL = "image_url";
     public static final String KEY_OMSCHRIJVING = "omschrijving";
 
@@ -68,37 +70,37 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
             KEY_ID + " INTEGER PRIMARY KEY," +
             KEY_NUMMER + " TEXT," +
             KEY_NAAM + " TEXT," +
+            KEY_OPDRACHT_ADRES + " TEXT," +
+            KEY_OPDRACHT_STAD + " TEXT," +
             KEY_OPDRACHTGEVER + " TEXT," +
             KEY_OPDRACHTGEVER_ADRES + " TEXT," +
             KEY_OPDRACHTGEVER_STAD + " TEXT," +
+            KEY_ONTWERPER + " TEXT," +
+            KEY_ONTWERPER_STAD + " TEXT," +
+            KEY_ONTWERPER_ADRES + " TEXT," +
             KEY_OMSCHRIJVING + " TEXT," +
             KEY_DATUM_AANVANG + " DATETIME," +
             KEY_CREATED_AT + " DATETIME" + ")";
 
     // Plaatsbeschrijf table create statement
-    public static final String CREATE_TABLE_PLAATSBESCHRIJF
-            = "CREATE TABLE " + TABLE_PLAATSBESCHRIJF
+    public static final String CREATE_TABLE_DOCUMENT
+            = "CREATE TABLE " + TABLE_DOCUMENT
             + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_OPDRACHTGEVER + " TEXT,"
-            + KEY_OPDRACHTLOCATIE + " TEXT,"
-            + KEY_TITLE + " TEXT,"
-            + KEY_ONTWERPER + " TEXT,"
-            + KEY_ONTWERPER_STAD + " TEXT,"
-            + KEY_ONTWERPER_ADRES + " TEXT,"
+            + KEY_DOCUMENT_TYPE + " TEXT,"
             + KEY_CREATED_AT + " DATETIME,"
             + KEY_WERF_ID + " INTEGER" + ")";
 
     // Plaatsbeschrijf locatie table create statement
-    public static final String CREATE_TABLE_PLAATSBESCHRIJF_LOCATIE = "CREATE TABLE "
-            + TABLE_PLAATSBESCHRIJF_LOCATIE + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_PLAATSBESCHRIJF_ID + " INTEGER,"
+    public static final String CREATE_TABLE_DOCUMENT_LOCATIE = "CREATE TABLE "
+            + TABLE_DOCUMENT_LOCATIE + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
+            + KEY_DOCUMENT_ID + " INTEGER,"
             + KEY_LOCATIE + " TEXT,"
             + KEY_CREATED_AT + " DATETIME" + ")";
 
     // Plaatsbeschrijf locatie image table create statement
-    public static final String CREATE_TABLE_PLAATSBESCHRIJF_LOCATIE_IMAGE = "CREATE TABLE "
-            + TABLE_PLAATSBESCHRIJF_LOCATIE_IMAGE + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_PLAATSBESCHRIJF_LOCATIE_ID + " INTEGER,"
+    public static final String CREATE_TABLE_DOCUMENT_LOCATIE_IMAGE = "CREATE TABLE "
+            + TABLE_DOCUMENT_LOCATIE_IMAGE + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
+            + KEY_DOCUMENT_LOCATIE_ID + " INTEGER,"
             + KEY_IMAGE_URL + " TEXT,"
             + KEY_OMSCHRIJVING + " TEXT" + ")";
 
@@ -119,9 +121,9 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
     @Override public void onCreate(final SQLiteDatabase db) {
         // creating required tables
         db.execSQL(CREATE_TABLE_WERF);
-        db.execSQL(CREATE_TABLE_PLAATSBESCHRIJF);
-        db.execSQL(CREATE_TABLE_PLAATSBESCHRIJF_LOCATIE);
-        db.execSQL(CREATE_TABLE_PLAATSBESCHRIJF_LOCATIE_IMAGE);
+        db.execSQL(CREATE_TABLE_DOCUMENT);
+        db.execSQL(CREATE_TABLE_DOCUMENT_LOCATIE);
+        db.execSQL(CREATE_TABLE_DOCUMENT_LOCATIE_IMAGE);
         db.execSQL(CREATE_TABLE_CONTACT);
 
 
@@ -129,9 +131,9 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
 
     @Override public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WERF);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLAATSBESCHRIJF);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLAATSBESCHRIJF_LOCATIE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLAATSBESCHRIJF_LOCATIE_IMAGE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOCUMENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOCUMENT_LOCATIE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOCUMENT_LOCATIE_IMAGE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACT);
 
         onCreate(db);

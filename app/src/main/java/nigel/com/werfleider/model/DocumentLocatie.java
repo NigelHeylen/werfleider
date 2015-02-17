@@ -11,19 +11,19 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * Created by nigel on 04/12/14.
  */
-public class PlaatsBeschrijfLocatie {
+public class DocumentLocatie {
 
     private int id;
     private int plaatsbeschrijfId;
     private String location;
-    private List<PlaatsBeschrijfImage> imageList;
+    private List<DocumentImage> imageList;
 
-    public PlaatsBeschrijfLocatie(final String location) {
+    public DocumentLocatie(final String location) {
         this.location = location;
         imageList = newArrayList();
     }
 
-    public PlaatsBeschrijfLocatie(final String location, final List<PlaatsBeschrijfImage> imageList) {
+    public DocumentLocatie(final String location, final List<DocumentImage> imageList) {
         this.location = location;
         this.imageList = imageList;
     }
@@ -32,7 +32,7 @@ public class PlaatsBeschrijfLocatie {
         return id;
     }
 
-    public PlaatsBeschrijfLocatie setId(final int id) {
+    public DocumentLocatie setId(final int id) {
         this.id = id;
         return this;
     }
@@ -49,13 +49,13 @@ public class PlaatsBeschrijfLocatie {
         return location;
     }
 
-    public List<PlaatsBeschrijfImage> getImageList() {
+    public List<DocumentImage> getImageList() {
         return imageList;
     }
 
-    public void addToImageList(final PlaatsBeschrijfImage image){
-        if(!any(imageList, new Predicate<PlaatsBeschrijfImage>() {
-                    @Override public boolean apply(final PlaatsBeschrijfImage input) {
+    public void addToImageList(final DocumentImage image){
+        if(!any(imageList, new Predicate<DocumentImage>() {
+                    @Override public boolean apply(final DocumentImage input) {
                         return input.getImageURL().equals(image.getImageURL());
                     }
                 })) {
@@ -63,7 +63,7 @@ public class PlaatsBeschrijfLocatie {
         }
     }
 
-    public void setImageList(final List<PlaatsBeschrijfImage> imageList) {
+    public void setImageList(final List<DocumentImage> imageList) {
         this.imageList = imageList;
     }
 

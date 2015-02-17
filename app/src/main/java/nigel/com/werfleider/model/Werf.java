@@ -9,50 +9,58 @@ public class Werf {
 
     private String naam;
     private String nummer;
+
+    private String opdrachtAdres;
+    private String opdrachtStad;
+
+    private String ontwerper;
+    private String ontwerperStad;
+    private String ontwerperAdres;
+
     private String opdrachtgever;
     private String opdrachtgeverAdres;
     private String opdrachtgeverStad;
+
     private String omschrijving;
 
     private DateTime datumAanvang;
 
-    private PlaatsBeschrijf plaatsBeschrijf;
+    private Document document;
 
     private DateTime createdAt;
     private int id;
 
-    public Werf(final String naam, final String nummer) {
+    public Werf(
+            final String naam,
+            final String nummer,
+            final String opdrachtAdres,
+            final String opdrachtStad,
+            final String ontwerper,
+            final String ontwerperStad,
+            final String ontwerperAdres,
+            final String opdrachtgever,
+            final String opdrachtgeverAdres,
+            final String opdrachtgeverStad,
+            final String omschrijving,
+            final DateTime datumAanvang) {
+
         this.naam = naam;
         this.nummer = nummer;
-        initLists();
-    }
-
-    public Werf(final String naam, final String nummer, final String opdrachtgever, final String opdrachtgeverAdres, final String opdrachtgeverStad, final String omschrijving, final DateTime datumAanvang) {
-
-        this.naam = naam;
-        this.nummer = nummer;
+        this.opdrachtAdres = opdrachtAdres;
+        this.opdrachtStad = opdrachtStad;
+        this.ontwerperStad = ontwerperStad;
+        this.ontwerperAdres = ontwerperAdres;
         this.opdrachtgever = opdrachtgever;
+        this.ontwerper = ontwerper;
         this.opdrachtgeverAdres = opdrachtgeverAdres;
         this.opdrachtgeverStad = opdrachtgeverStad;
         this.omschrijving = omschrijving;
         this.datumAanvang = datumAanvang;
     }
 
-    private void initLists() {
-        plaatsBeschrijf = new PlaatsBeschrijf();
-    }
 
     public Werf() {
 
-    }
-
-    public Werf(final int id, final String naam, final String nummer, final String date) {
-
-        this.id = id;
-        this.naam = naam;
-        this.nummer = nummer;
-        setCreatedAt(date);
-        initLists();
     }
 
     public Werf setNummer(final String nummer) {
@@ -132,12 +140,12 @@ public class Werf {
         return this;
     }
 
-    public PlaatsBeschrijf getPlaatsBeschrijf() {
-        return plaatsBeschrijf;
+    public Document getDocument() {
+        return document;
     }
 
-    public Werf setPlaatsBeschrijf(final PlaatsBeschrijf plaatsBeschrijf) {
-        this.plaatsBeschrijf = plaatsBeschrijf;
+    public Werf setDocument(final Document document) {
+        this.document = document;
         return this;
     }
 
@@ -148,5 +156,70 @@ public class Werf {
     public Werf setCreatedAt(final DateTime createdAt) {
         this.createdAt = createdAt;
         return this;
+    }
+
+    public String getOpdrachtAdres() {
+        return opdrachtAdres;
+    }
+
+    public String getOpdrachtStad() {
+        return opdrachtStad;
+    }
+
+    public String getOntwerper() {
+        return ontwerper;
+    }
+
+    public String getOntwerperStad() {
+        return ontwerperStad;
+    }
+
+    public String getOntwerperAdres() {
+        return ontwerperAdres;
+    }
+
+    public Werf setOpdrachtAdres(final String opdrachtAdres) {
+        this.opdrachtAdres = opdrachtAdres;
+        return this;
+    }
+
+    public Werf setOpdrachtStad(final String opdrachtStad) {
+        this.opdrachtStad = opdrachtStad;
+        return this;
+    }
+
+    public Werf setOntwerper(final String ontwerper) {
+        this.ontwerper = ontwerper;
+        return this;
+    }
+
+    public Werf setOntwerperStad(final String ontwerperStad) {
+        this.ontwerperStad = ontwerperStad;
+        return this;
+    }
+
+    public Werf setOntwerperAdres(final String ontwerperAdres) {
+        this.ontwerperAdres = ontwerperAdres;
+        return this;
+    }
+
+    @Override public String toString() {
+        return "Werf{" +
+                "naam='" + naam + '\'' +
+                ", nummer='" + nummer + '\'' +
+                ", opdrachtAdres='" + opdrachtAdres + '\'' +
+                ", opdrachtStad='" + opdrachtStad + '\'' +
+                ", ontwerper='" + ontwerper + '\'' +
+                ", ontwerperStad='" + ontwerperStad + '\'' +
+                ", ontwerperAdres='" + ontwerperAdres + '\'' +
+                ", opdrachtgever='" + opdrachtgever + '\'' +
+                ", opdrachtgeverAdres='" + opdrachtgeverAdres + '\'' +
+                ", opdrachtgeverStad='" + opdrachtgeverStad + '\'' +
+                ", omschrijving='" + omschrijving + '\'' +
+                ", datumAanvang=" + datumAanvang +
+                ", plaatsBeschrijf=" + document +
+                ", createdAt=" + createdAt +
+                ", id=" + id +
+                '}';
     }
 }

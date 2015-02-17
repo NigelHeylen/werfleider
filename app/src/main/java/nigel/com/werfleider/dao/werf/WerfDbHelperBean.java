@@ -9,9 +9,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import nigel.com.werfleider.dao.document.DocumentDbHelper;
 import nigel.com.werfleider.dao.helper.DatabaseHelper;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfDbHelper;
-import nigel.com.werfleider.model.PlaatsBeschrijf;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.Werf;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -21,11 +21,18 @@ import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_ID;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_NAAM;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_NUMMER;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OMSCHRIJVING;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_ONTWERPER;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_ONTWERPER_ADRES;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_ONTWERPER_STAD;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHTGEVER;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHTGEVER_ADRES;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHTGEVER_STAD;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHT_ADRES;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHT_STAD;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.LOG;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.TABLE_WERF;
+import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
+import static nigel.com.werfleider.model.DocumentType.PLAATSBESCHRIJF;
 import static org.joda.time.DateTime.now;
 
 /**
@@ -35,7 +42,7 @@ public class WerfDbHelperBean implements WerfDbHelper {
 
     @Inject DatabaseHelper databaseHelper;
 
-    @Inject PlaatsBeschrijfDbHelper plaatsBeschrijfDbHelper;
+    @Inject DocumentDbHelper documentDbHelper;
 
     /*
  * Creating a werf
@@ -49,7 +56,8 @@ public class WerfDbHelperBean implements WerfDbHelper {
         // insert row
         long werf_id = db.insert(TABLE_WERF, null, values);
 
-        plaatsBeschrijfDbHelper.createPlaatsBeschrijf(new PlaatsBeschrijf(), werf_id);
+        documentDbHelper.createDocument(new Document().setDocumentType(PLAATSBESCHRIJF), werf_id);
+        documentDbHelper.createDocument(new Document().setDocumentType(OPMETINGEN), werf_id);
 
         return werf_id;
     }
@@ -58,6 +66,11 @@ public class WerfDbHelperBean implements WerfDbHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_NAAM, werf.getNaam());
         values.put(KEY_NUMMER, werf.getNummer());
+        values.put(KEY_OPDRACHT_STAD, werf.getOpdrachtgeverStad());
+        values.put(KEY_OPDRACHT_ADRES, werf.getOpdrachtAdres());
+        values.put(KEY_ONTWERPER, werf.getOntwerper());
+        values.put(KEY_ONTWERPER_ADRES, werf.getOpdrachtAdres());
+        values.put(KEY_ONTWERPER_STAD, werf.getOntwerperStad());
         values.put(KEY_OPDRACHTGEVER, werf.getOpdrachtgever());
         values.put(KEY_OPDRACHTGEVER_ADRES, werf.getOpdrachtgeverAdres());
         values.put(KEY_OPDRACHTGEVER_STAD, werf.getOpdrachtgeverStad());
@@ -93,6 +106,11 @@ public class WerfDbHelperBean implements WerfDbHelper {
                 .setId(c.getInt(c.getColumnIndex(KEY_ID)))
                 .setNaam(c.getString(c.getColumnIndex(KEY_NAAM)))
                 .setNummer(c.getString(c.getColumnIndex(KEY_NUMMER)))
+                .setOpdrachtAdres(c.getString(c.getColumnIndex(KEY_OPDRACHT_ADRES)))
+                .setOpdrachtStad(c.getString(c.getColumnIndex(KEY_OPDRACHT_STAD)))
+                .setOntwerper(c.getString(c.getColumnIndex(KEY_ONTWERPER)))
+                .setOntwerperStad(c.getString(c.getColumnIndex(KEY_ONTWERPER_STAD)))
+                .setOntwerperAdres(c.getString(c.getColumnIndex(KEY_ONTWERPER_ADRES)))
                 .setOpdrachtgever(c.getString(c.getColumnIndex(KEY_OPDRACHTGEVER)))
                 .setOpdrachtgeverAdres(c.getString(c.getColumnIndex(KEY_OPDRACHTGEVER_ADRES)))
                 .setOpdrachtgeverStad(c.getString(c.getColumnIndex(KEY_OPDRACHTGEVER_STAD)))
@@ -118,8 +136,9 @@ public class WerfDbHelperBean implements WerfDbHelper {
         if (c.moveToFirst()) {
             do {
                 Werf werf = getWerf(c);
-                // adding to todo list
+                // adding to werf list
                 werfList.add(werf);
+                System.out.println("werf = " + werf);
             } while (c.moveToNext());
         }
 

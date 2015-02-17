@@ -1,4 +1,4 @@
-package nigel.com.werfleider.ui.plaatsbeschrijf;
+package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
@@ -6,12 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,7 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.PlaatsBeschrijfImage;
+import nigel.com.werfleider.model.DocumentImage;
 
 /**
  * Created by nigel on 03/12/14.
@@ -99,7 +97,7 @@ public class PictureGridView extends LinearLayout {
         ButterKnife.reset(this);
     }
 
-    public void initAdapter(final List<PlaatsBeschrijfImage> images, final List<Integer> indices, final List<PlaatsBeschrijfImage> imageList) {
+    public void initAdapter(final List<DocumentImage> images, final List<Integer> indices, final List<DocumentImage> imageList) {
         manager = new GridLayoutManager(getContext(), 3);
         adapter = new PictureGridAdapter(images, indices, pablo, imageList);
 

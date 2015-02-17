@@ -1,4 +1,4 @@
-package nigel.com.werfleider.ui.plaatsbeschrijf;
+package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
 
@@ -16,11 +16,11 @@ import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfLocatieDbHelper;
+import nigel.com.werfleider.dao.document.DocumentLocatieDbHelper;
 import nigel.com.werfleider.model.CreateImage;
-import nigel.com.werfleider.model.PlaatsBeschrijf;
-import nigel.com.werfleider.model.PlaatsBeschrijfImage;
-import nigel.com.werfleider.model.PlaatsBeschrijfLocatie;
+import nigel.com.werfleider.model.Document;
+import nigel.com.werfleider.model.DocumentImage;
+import nigel.com.werfleider.model.DocumentLocatie;
 import nigel.com.werfleider.model.Werf;
 import rx.functions.Action0;
 
@@ -30,43 +30,44 @@ import static java.lang.String.format;
  * Created by nigel on 17/12/14.
  */
 @Layout(R.layout.plaatsbeschrijf_location_detail_view)
-public class PlaatsBeschrijfLocationDetailScreen implements Blueprint, HasParent<PlaatsBeschrijfScreen> {
+public class DocumentLocationDetailScreen implements Blueprint, HasParent<DocumentScreen> {
 
-    private final PlaatsBeschrijf plaatsBeschrijf;
+    private final Document document;
     private final int locationIndex;
     private final Werf werf;
 
-    public PlaatsBeschrijfLocationDetailScreen(final PlaatsBeschrijf plaatsBeschrijf, final int locationIndex, final Werf werf) {
-        this.plaatsBeschrijf = plaatsBeschrijf;
+    public DocumentLocationDetailScreen(final Document document, final int locationIndex, final Werf werf) {
+        this.document = document;
         this.locationIndex = locationIndex;
         this.werf = werf;
     }
 
     @Override public String getMortarScopeName() {
-        return format("%s plaatsbeschrijf: %s, location: %s",
+        return format("%s document: werf id %s, %s, location: %s",
                       getClass().getName(),
-                      plaatsBeschrijf.getTitle(),
-                      plaatsBeschrijf.getFotoReeksList().get(locationIndex).getLocation());
+                      werf.getId(),
+                      document.getDocumentType().name().toLowerCase(),
+                      document.getFotoReeksList().get(locationIndex).getLocation());
     }
 
-    @Override public PlaatsBeschrijfScreen getParent() {
-        return new PlaatsBeschrijfScreen(werf);
+    @Override public DocumentScreen getParent() {
+        return new DocumentScreen(werf, document.getDocumentType());
     }
 
     @Override public Object getDaggerModule() {
-        return new Module(plaatsBeschrijf, locationIndex, werf);
+        return new Module(document, locationIndex, werf);
     }
 
-    @dagger.Module(injects = PlaatsBeschrijfLocationDetailView.class, addsTo = CorePresenter.Module.class)
+    @dagger.Module(injects = DocumentLocationDetailView.class, addsTo = CorePresenter.Module.class)
     static class Module {
 
-        final PlaatsBeschrijf plaatsBeschrijf;
+        final Document document;
 
         final int locationIndex;
         private final Werf werf;
 
-        Module(final PlaatsBeschrijf plaatsBeschrijf, final int locationIndex, final Werf werf) {
-            this.plaatsBeschrijf = plaatsBeschrijf;
+        Module(final Document document, final int locationIndex, final Werf werf) {
+            this.document = document;
             this.locationIndex = locationIndex;
             this.werf = werf;
         }
@@ -75,8 +76,8 @@ public class PlaatsBeschrijfLocationDetailScreen implements Blueprint, HasParent
             return werf;
         }
 
-        @Provides @Singleton PlaatsBeschrijf providePlaatsBeschrijf() {
-            return plaatsBeschrijf;
+        @Provides @Singleton Document providePlaatsBeschrijf() {
+            return document;
         }
 
         @Provides int provideLocation(){
@@ -86,15 +87,15 @@ public class PlaatsBeschrijfLocationDetailScreen implements Blueprint, HasParent
     }
 
 
-    public static class Presenter extends ViewPresenter<PlaatsBeschrijfLocationDetailView> {
+    public static class Presenter extends ViewPresenter<DocumentLocationDetailView> {
 
-        @Inject PlaatsBeschrijf plaatsBeschrijf;
+        @Inject Document document;
 
         @Inject int locationIndex;
 
         @Inject ActionBarOwner actionBarOwner;
 
-        @Inject PlaatsBeschrijfLocatieDbHelper plaatsBeschrijfLocatieDbHelper;
+        @Inject DocumentLocatieDbHelper documentLocatieDbHelper;
 
         @Inject
         public Presenter(final Bus bus) {
@@ -104,14 +105,14 @@ public class PlaatsBeschrijfLocationDetailScreen implements Blueprint, HasParent
         @Override protected void onLoad(final Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
 
-            PlaatsBeschrijfLocationDetailView view = getView();
+            DocumentLocationDetailView view = getView();
             if (view == null) {
                 return;
             }
 
             initActionBar();
 
-            view.initAdapter(plaatsBeschrijf, locationIndex);
+            view.initAdapter(document, locationIndex);
         }
 
 
@@ -119,27 +120,27 @@ public class PlaatsBeschrijfLocationDetailScreen implements Blueprint, HasParent
             ActionBarOwner.MenuAction menu = new ActionBarOwner.MenuAction(
                     "Save", new Action0() {
                 @Override public void call() {
-                    plaatsBeschrijfLocatieDbHelper
+                    documentLocatieDbHelper
                             .updatePlaatsBeschrijfLocatie(getPlaatsBeschrijfLocatie());
 
 
                 }
             });
 
-            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, plaatsBeschrijf.getFotoReeksList().get(locationIndex).getLocation(), menu));
+            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, document.getFotoReeksList().get(locationIndex).getLocation(), menu));
         }
 
-        private PlaatsBeschrijfLocatie getPlaatsBeschrijfLocatie() {
-            return plaatsBeschrijf.getFotoReeksList().get(locationIndex);
+        private DocumentLocatie getPlaatsBeschrijfLocatie() {
+            return document.getFotoReeksList().get(locationIndex);
         }
 
         @Subscribe
         public void reactToImageCreated(final CreateImage createImage) {
-            plaatsBeschrijf
+            document
                     .getFotoReeksList()
                     .get(createImage.getImageLocationIndex())
                     .addToImageList(
-                            new PlaatsBeschrijfImage()
+                            new DocumentImage()
                                     .setImageURL(createImage.getCurrentUri()));
 
         }

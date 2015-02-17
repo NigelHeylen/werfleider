@@ -1,7 +1,5 @@
 package nigel.com.werfleider.ui.werfoverzicht;
 
-import android.content.SharedPreferences;
-
 import javax.inject.Inject;
 
 import dagger.Provides;
@@ -12,15 +10,15 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
+import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.Werf;
-import nigel.com.werfleider.ui.auth.OAuthScreen;
-import nigel.com.werfleider.ui.plaatsbeschrijf.PlaatsBeschrijfScreen;
+import nigel.com.werfleider.ui.document.DocumentScreen;
 import nigel.com.werfleider.ui.werf.WerfScreen;
 
 /**
  * Created by nigel on 27/12/14.
  */
-@Layout(R.layout.werfoverzicht)
+@Layout(R.layout.werf_detail)
 public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
 
     final Werf werf;
@@ -67,29 +65,10 @@ public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
 
         @Inject Werf werf;
 
-        @Inject SharedPreferences preferences;
-
-
-        public void goToPlaatsbeschrijfView() {
-            flow.goTo(new PlaatsBeschrijfScreen(werf));
+        public void goToDocumentView(final DocumentType type) {
+            flow.goTo(new DocumentScreen(werf, type));
         }
 
-        public void goToGmailAuthorization() {
-            flow.goTo(new OAuthScreen(werf));
-        }
-
-        public void goToEmailoverzicht() {
-
-//            flow.goTo(new EmailOverzichtScreen(werf));
-        }
-
-        public void goToEmail() {
-            if(preferences.contains("GMAIL_CODE")){
-                goToEmailoverzicht();
-            } else {
-                goToGmailAuthorization();
-            }
-        }
     }
 
 

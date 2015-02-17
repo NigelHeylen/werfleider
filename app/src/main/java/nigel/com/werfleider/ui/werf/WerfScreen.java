@@ -20,8 +20,6 @@ import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.dao.werf.WerfDbHelper;
 import nigel.com.werfleider.dao.werf.WerfDbHelperBean;
 import nigel.com.werfleider.model.Werf;
-import nigel.com.werfleider.service.werf.GetWerf;
-import nigel.com.werfleider.service.werf.GetWerfMock;
 import nigel.com.werfleider.ui.home.HomeScreen;
 import rx.Observable;
 import rx.functions.Action0;
@@ -57,10 +55,6 @@ public class WerfScreen implements Blueprint, HasParent<HomeScreen> {
     )
     static class Module {
 
-        @Provides GetWerf provideGetWerf(final GetWerfMock getWerfMock) {
-            return getWerfMock;
-        }
-
         @Provides WerfDbHelper provideWerfHelper(final WerfDbHelperBean werfHelper){
             return werfHelper;
         }
@@ -69,8 +63,6 @@ public class WerfScreen implements Blueprint, HasParent<HomeScreen> {
     static class Presenter extends ViewPresenter<WerfView> {
 
         @Inject WerfDbHelper db;
-
-        @Inject GetWerf getWerf;
 
         @Inject ActionBarOwner actionBarOwner;
 

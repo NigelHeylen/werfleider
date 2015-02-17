@@ -13,4 +13,21 @@
              which is used to tint widgets -->
         <item name="colorAccent">@color/accent</item>
     </style>
+
+    <!-- Werf Create -->
+
+    <style name="Werf"/>
+    <style name="Werf.Create"/>
+
+    <style name="Werf.Create.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="baseColor">@android:color/black</item>
+        <item name="floatingLabel">highlight</item>
+        <item name="primaryColor">@color/primary</item>
+        <item name="android:textCursorDrawable">@drawable/text_cursor_cyan</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+
+
 </resources>

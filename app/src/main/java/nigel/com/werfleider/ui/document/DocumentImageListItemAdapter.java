@@ -1,4 +1,4 @@
-package nigel.com.werfleider.ui.plaatsbeschrijf;
+package nigel.com.werfleider.ui.document;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,23 +14,23 @@ import com.squareup.picasso.Picasso;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.PlaatsBeschrijfImage;
-import nigel.com.werfleider.model.PlaatsBeschrijfLocatie;
+import nigel.com.werfleider.model.DocumentImage;
+import nigel.com.werfleider.model.DocumentLocatie;
 import nigel.com.werfleider.ui.widget.CustomTextWatcher;
 
 /**
  * Created by nigel on 24/01/15.
  */
-public class PlaatsBechrijfImageListItemAdapter extends RecyclerView.Adapter {
+public class DocumentImageListItemAdapter extends RecyclerView.Adapter {
 
     final Picasso pablo;
     final EditText description;
     private int activePosition;
 
-    final PlaatsBeschrijfLocatie collection;
+    final DocumentLocatie collection;
 
-    public PlaatsBechrijfImageListItemAdapter(
-            final PlaatsBeschrijfLocatie collection,
+    public DocumentImageListItemAdapter(
+            final DocumentLocatie collection,
             final Picasso pablo,
             final EditText description) {
         this.collection = collection;
@@ -63,7 +63,7 @@ public class PlaatsBechrijfImageListItemAdapter extends RecyclerView.Adapter {
     @Override public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
 
-        final PlaatsBeschrijfImage image = collection.getImageList().get(position);
+        final DocumentImage image = collection.getImageList().get(position);
 
         holder.active.setVisibility(activePosition == position ? View.VISIBLE : View.INVISIBLE);
 

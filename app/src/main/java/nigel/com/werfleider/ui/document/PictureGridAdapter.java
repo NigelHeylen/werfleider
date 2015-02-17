@@ -1,4 +1,4 @@
-package nigel.com.werfleider.ui.plaatsbeschrijf;
+package nigel.com.werfleider.ui.document;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,38 +16,38 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.PlaatsBeschrijfImage;
+import nigel.com.werfleider.model.DocumentImage;
 
 /**
  * Created by nigel on 03/12/14.
  */
 public class PictureGridAdapter extends RecyclerView.Adapter<PictureGridAdapter.PictureGridViewHolder> {
 
-    final List<PlaatsBeschrijfImage> imageList;
+    final List<DocumentImage> imageList;
 
     final List<Integer> indices;
 
     final Picasso pablo;
 
     public PictureGridAdapter(
-            final List<PlaatsBeschrijfImage> imageList,
+            final List<DocumentImage> imageList,
             final List<Integer> indices,
             final Picasso pablo,
-            final List<PlaatsBeschrijfImage> list) {
+            final List<DocumentImage> list) {
         this.imageList = imageList;
         this.indices = indices;
         this.pablo = pablo;
 
-        for (final PlaatsBeschrijfImage plaatsBeschrijfImage : list) {
-            indices.add(getIndex(imageList, plaatsBeschrijfImage));
+        for (final DocumentImage documentImage : list) {
+            indices.add(getIndex(imageList, documentImage));
         }
     }
 
-    private int getIndex(final List<PlaatsBeschrijfImage> imageList, final PlaatsBeschrijfImage plaatsBeschrijfImage) {
+    private int getIndex(final List<DocumentImage> imageList, final DocumentImage documentImage) {
         return Iterables.indexOf(
-                imageList, new Predicate<PlaatsBeschrijfImage>() {
-                    @Override public boolean apply(final PlaatsBeschrijfImage input) {
-                        return input.getImageURL().equals(plaatsBeschrijfImage.getImageURL());
+                imageList, new Predicate<DocumentImage>() {
+                    @Override public boolean apply(final DocumentImage input) {
+                        return input.getImageURL().equals(documentImage.getImageURL());
                     }
                 });
     }

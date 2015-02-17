@@ -5,7 +5,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * Created by nigel on 03/12/14.
  */
-public class PlaatsBeschrijfImage {
+public class DocumentImage {
 
     private int id;
 
@@ -42,22 +42,22 @@ public class PlaatsBeschrijfImage {
         return locatieId;
     }
 
-    public PlaatsBeschrijfImage setId(final int id) {
+    public DocumentImage setId(final int id) {
         this.id = id;
         return this;
     }
 
-    public PlaatsBeschrijfImage setDescription(final String description) {
+    public DocumentImage setDescription(final String description) {
         this.description = description;
         return this;
     }
 
-    public PlaatsBeschrijfImage setLocatieId(final int locatieId) {
+    public DocumentImage setLocatieId(final int locatieId) {
         this.locatieId = locatieId;
         return this;
     }
 
-    public PlaatsBeschrijfImage setImageURL(final String imageURL) {
+    public DocumentImage setImageURL(final String imageURL) {
         this.imageURL = imageURL;
         return this;
     }

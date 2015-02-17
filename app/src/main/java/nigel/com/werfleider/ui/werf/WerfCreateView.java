@@ -24,9 +24,18 @@ public class WerfCreateView extends ScrollView{
 
     @InjectView(R.id.werf_create_naam) MaterialEditText naam;
     @InjectView(R.id.werf_create_nummer) MaterialEditText nummer;
+
+    @InjectView(R.id.werf_create_opdracht_adres) MaterialEditText opdrachtAdres;
+    @InjectView(R.id.werf_create_opdracht_stad) MaterialEditText opdrachtStad;
+
+    @InjectView(R.id.werf_create_ontwerper) MaterialEditText ontwerper;
+    @InjectView(R.id.werf_create_ontwerper_adres) MaterialEditText ontwerperAdres;
+    @InjectView(R.id.werf_create_ontwerper_stad) MaterialEditText ontwerperStad;
+
     @InjectView(R.id.werf_create_opdrachtgever) MaterialEditText opdrachtgever;
     @InjectView(R.id.werf_create_opdrachtgever_adres) MaterialEditText opdrachtgeverAdres;
     @InjectView(R.id.werf_create_opdrachtgever_stad) MaterialEditText opdrachtgeverStad;
+
     @InjectView(R.id.werf_create_omschrijving) MaterialEditText omschrijving;
     @InjectView(R.id.werf_create_datum_aanvang) DatePicker datumAanvang;
 
@@ -36,6 +45,11 @@ public class WerfCreateView extends ScrollView{
         presenter.create(
                 naam.getText().toString(),
                 nummer.getText().toString(),
+                opdrachtAdres.getText().toString(),
+                opdrachtStad.getText().toString(),
+                ontwerper.getText().toString(),
+                ontwerperAdres.getText().toString(),
+                ontwerperStad.getText().toString(),
                 opdrachtgever.getText().toString(),
                 opdrachtgeverAdres.getText().toString(),
                 opdrachtgeverStad.getText().toString(),

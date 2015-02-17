@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public interface DatabaseHelper {
 
-   
-
     // closing database
     void closeDB();
 

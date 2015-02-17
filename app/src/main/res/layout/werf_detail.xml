@@ -11,7 +11,7 @@
 
 
         <LinearLayout
-            android:id="@+id/Werfoverzicht.Button.Plaatsbeschrijf"
+            android:id="@+id/werfoverzicht.button.plaatsbeschrijf"
             style="@style/Werfoverzicht.Item.Row">
 
             <View style="@style/Werfoverzicht.Vertical.Separator"/>
@@ -38,7 +38,7 @@
                 style="@style/Werfoverzicht.Item.Container">
 
                 <RelativeLayout
-                    android:id="@+id/Werfoverzicht.Button.Plannen"
+                    android:id="@+id/werfoverzicht.button.opmetingen"
                     style="@style/Werfoverzicht.Item.Button">
 
                     <ImageView
@@ -48,7 +48,7 @@
 
                     <TextView
                         style="@style/Werfoverzicht.Item.Title"
-                        android:text="@string/tMails"/>
+                        android:text="@string/tOpmetingen"/>
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>

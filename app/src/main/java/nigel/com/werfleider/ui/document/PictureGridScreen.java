@@ -1,4 +1,4 @@
-package nigel.com.werfleider.ui.plaatsbeschrijf;
+package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,11 +19,11 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfLocatieDbHelper;
-import nigel.com.werfleider.dao.plaatsbeschrijf.PlaatsBeschrijfLocatieImageDbHelper;
-import nigel.com.werfleider.model.PlaatsBeschrijf;
-import nigel.com.werfleider.model.PlaatsBeschrijfImage;
-import nigel.com.werfleider.model.PlaatsBeschrijfLocatie;
+import nigel.com.werfleider.dao.document.DocumentLocatieDbHelper;
+import nigel.com.werfleider.dao.document.DocumentLocatieImageDbHelper;
+import nigel.com.werfleider.model.Document;
+import nigel.com.werfleider.model.DocumentImage;
+import nigel.com.werfleider.model.DocumentLocatie;
 import nigel.com.werfleider.model.Werf;
 import nigel.com.werfleider.ui.widget.ImageFileFilter;
 import rx.functions.Action0;
@@ -34,17 +34,17 @@ import static com.google.common.collect.Lists.newArrayList;
  * Created by nigel on 03/12/14.
  */
 @Layout(R.layout.picture_grid)
-public class PictureGridScreen implements Blueprint, HasParent<PlaatsBeschrijfLocationDetailScreen> {
+public class PictureGridScreen implements Blueprint, HasParent<DocumentLocationDetailScreen> {
 
-    private final PlaatsBeschrijf plaatsBeschrijf;
-    private final PlaatsBeschrijfLocatie collection;
+    private final Document document;
+    private final DocumentLocatie collection;
     private final Werf werf;
 
     public PictureGridScreen(
-            final PlaatsBeschrijf plaatsBeschrijf,
-            final PlaatsBeschrijfLocatie collection,
+            final Document document,
+            final DocumentLocatie collection,
             final Werf werf) {
-        this.plaatsBeschrijf = plaatsBeschrijf;
+        this.document = document;
 
         this.collection = collection;
         this.werf = werf;
@@ -55,46 +55,46 @@ public class PictureGridScreen implements Blueprint, HasParent<PlaatsBeschrijfLo
     }
 
     @Override public Object getDaggerModule() {
-        return new Module(plaatsBeschrijf, collection);
+        return new Module(document, collection);
     }
 
-    @Override public PlaatsBeschrijfLocationDetailScreen getParent() {
-        return new PlaatsBeschrijfLocationDetailScreen(plaatsBeschrijf, plaatsBeschrijf.getFotoReeksList().indexOf(collection), werf);
+    @Override public DocumentLocationDetailScreen getParent() {
+        return new DocumentLocationDetailScreen(document, document.getFotoReeksList().indexOf(collection), werf);
     }
 
     @dagger.Module(injects = PictureGridView.class, addsTo = CorePresenter.Module.class)
     static class Module {
 
-        private final PlaatsBeschrijf plaatsBeschrijf;
-        private final PlaatsBeschrijfLocatie collection;
+        private final Document document;
+        private final DocumentLocatie collection;
 
-        public Module(final PlaatsBeschrijf plaatsBeschrijf, final PlaatsBeschrijfLocatie collection) {
+        public Module(final Document document, final DocumentLocatie collection) {
 
-            this.plaatsBeschrijf = plaatsBeschrijf;
+            this.document = document;
             this.collection = collection;
         }
 
-        @Provides PlaatsBeschrijf providePlaatsBeschrijf(){ return plaatsBeschrijf; }
+        @Provides Document providePlaatsBeschrijf(){ return document; }
 
-        @Provides PlaatsBeschrijfLocatie provideCollection(){ return collection; }
+        @Provides DocumentLocatie provideCollection(){ return collection; }
 
 
     }
 
     public static class Presenter extends ViewPresenter<PictureGridView> {
-        @Inject PlaatsBeschrijfLocatie collection;
+        @Inject DocumentLocatie collection;
 
-        @Inject PlaatsBeschrijf plaatsBeschrijf;
+        @Inject Document document;
 
         @Inject ActionBarOwner actionBarOwner;
 
         @Inject @MainScope Flow flow;
 
-        @Inject PlaatsBeschrijfLocatieImageDbHelper plaatsBeschrijfLocatieImageDbHelper;
+        @Inject DocumentLocatieImageDbHelper documentLocatieImageDbHelper;
 
-        @Inject PlaatsBeschrijfLocatieDbHelper plaatsBeschrijfLocatieDbHelper;
+        @Inject DocumentLocatieDbHelper documentLocatieDbHelper;
 
-        private List<PlaatsBeschrijfImage> images;
+        private List<DocumentImage> images;
 
         private ArrayList<Integer> indices;
 
@@ -127,14 +127,14 @@ public class PictureGridScreen implements Blueprint, HasParent<PlaatsBeschrijfLo
         }
 
         private void saveCollection() {
-            if(!plaatsBeschrijf.getFotoReeksList().contains(collection)) {
-                plaatsBeschrijf.add(collection);
-                plaatsBeschrijfLocatieDbHelper.createPlaatsBeschrijfLocatie(collection, plaatsBeschrijf.getId());
+            if(!document.getFotoReeksList().contains(collection)) {
+                document.add(collection);
+                documentLocatieDbHelper.createDocumentLocatie(collection, document.getId());
             } else {
-                plaatsBeschrijfLocatieDbHelper.updatePlaatsBeschrijfLocatie(collection);
+                documentLocatieDbHelper.updatePlaatsBeschrijfLocatie(collection);
             }
 
-            plaatsBeschrijfLocatieDbHelper.closeDB();
+            documentLocatieDbHelper.closeDB();
 
         }
 
@@ -171,7 +171,7 @@ public class PictureGridScreen implements Blueprint, HasParent<PlaatsBeschrijfLo
 
             if (file.isDirectory()) {
                 for (File aFile : file.listFiles(new ImageFileFilter())) {
-                    images.add(0, new PlaatsBeschrijfImage().setImageURL(aFile.getAbsolutePath()));
+                    images.add(0, new DocumentImage().setImageURL(aFile.getAbsolutePath()));
 
 
                 }

@@ -1,4 +1,4 @@
-package nigel.com.werfleider.ui.plaatsbeschrijf;
+package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,16 +20,16 @@ import butterknife.InjectView;
 import flow.Flow;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.PlaatsBeschrijf;
-import nigel.com.werfleider.model.PlaatsBeschrijfLocatie;
+import nigel.com.werfleider.model.Document;
+import nigel.com.werfleider.model.DocumentLocatie;
 import nigel.com.werfleider.model.StartCameraEvent;
 import nigel.com.werfleider.model.Werf;
 
 /**
  * Created by nigel on 17/12/14.
  */
-public class PlaatsBeschrijfLocationDetailView extends LinearLayout {
-    @Inject PlaatsBeschrijfLocationDetailScreen.Presenter presenter;
+public class DocumentLocationDetailView extends LinearLayout {
+    @Inject DocumentLocationDetailScreen.Presenter presenter;
 
     @Inject Bus bus;
 
@@ -41,7 +41,7 @@ public class PlaatsBeschrijfLocationDetailView extends LinearLayout {
 
     private ViewHolder holder;
 
-    public PlaatsBeschrijfLocationDetailView(final Context context, final AttributeSet attrs) {
+    public DocumentLocationDetailView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         Mortar.inject(context, this);
     }
@@ -60,9 +60,9 @@ public class PlaatsBeschrijfLocationDetailView extends LinearLayout {
         presenter.dropView(this);
     }
 
-    public void initAdapter(final PlaatsBeschrijf plaatsBeschrijf, final int position){
+    public void initAdapter(final Document document, final int position){
 
-        final PlaatsBeschrijfLocatie collection = plaatsBeschrijf.getFotoReeksList().get(position);
+        final DocumentLocatie collection = document.getFotoReeksList().get(position);
 
         holder.mTitle.setText(collection.getLocation());
 
@@ -80,7 +80,7 @@ public class PlaatsBeschrijfLocationDetailView extends LinearLayout {
                 .setOnClickListener(
                         new View.OnClickListener() {
                             @Override public void onClick(final View v) {
-                                flow.goTo(new PictureGridScreen(plaatsBeschrijf, collection, werf));
+                                flow.goTo(new PictureGridScreen(document, collection, werf));
                             }
                         });
 
@@ -88,7 +88,7 @@ public class PlaatsBeschrijfLocationDetailView extends LinearLayout {
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         holder.imageList.setLayoutManager(linearLayoutManager);
-        holder.imageList.setAdapter(new PlaatsBechrijfImageListItemAdapter(collection, pablo, holder.description));
+        holder.imageList.setAdapter(new DocumentImageListItemAdapter(collection, pablo, holder.description));
 
     }
 
