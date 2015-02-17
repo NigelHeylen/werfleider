@@ -31,12 +31,15 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
     public static final String KEY_ID = "id";
     public static final String KEY_CREATED_AT = "created_at";
 
-    // WERF Table - column nmaes
-    public static final String KEY_NUMBER = "number";
+    // WERF Table - column names
+    public static final String KEY_NUMMER = "nummer";
     public static final String KEY_NAAM = "naam";
+    public static final String KEY_OPDRACHTGEVER = "opdrachtgever";
+    public static final String KEY_OPDRACHTGEVER_ADRES = "opdrachtgever_adres";
+    public static final String KEY_OPDRACHTGEVER_STAD = "opdrachtgever_stad";
+    public static final String KEY_DATUM_AANVANG = "datum_aanvang";
 
     // PLAATSBESCHRIJF Table - column names
-    public static final String KEY_OPDRACHTGEVER = "opdrachtgever";
     public static final String KEY_OPDRACHTLOCATIE = "opdracht_locatie";
     public static final String KEY_TITLE = "title";
     public static final String KEY_ONTWERPER = "ontwerper";
@@ -61,9 +64,16 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
     // Table Create Statements
     // Werf table create statement
     public static final String CREATE_TABLE_WERF = "CREATE TABLE "
-            + TABLE_WERF + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NUMBER
-            + " TEXT," + KEY_NAAM + " TEXT," + KEY_CREATED_AT
-            + " DATETIME" + ")";
+            + TABLE_WERF + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY," +
+            KEY_NUMMER + " TEXT," +
+            KEY_NAAM + " TEXT," +
+            KEY_OPDRACHTGEVER + " TEXT," +
+            KEY_OPDRACHTGEVER_ADRES + " TEXT," +
+            KEY_OPDRACHTGEVER_STAD + " TEXT," +
+            KEY_OMSCHRIJVING + " TEXT," +
+            KEY_DATUM_AANVANG + " DATETIME," +
+            KEY_CREATED_AT + " DATETIME" + ")";
 
     // Plaatsbeschrijf table create statement
     public static final String CREATE_TABLE_PLAATSBESCHRIJF

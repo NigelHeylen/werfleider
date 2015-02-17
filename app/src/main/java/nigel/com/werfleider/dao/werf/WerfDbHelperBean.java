@@ -16,9 +16,14 @@ import nigel.com.werfleider.model.Werf;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_CREATED_AT;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_DATUM_AANVANG;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_ID;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_NAAM;
-import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_NUMBER;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_NUMMER;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OMSCHRIJVING;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHTGEVER;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHTGEVER_ADRES;
+import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHTGEVER_STAD;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.LOG;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.TABLE_WERF;
 import static org.joda.time.DateTime.now;
@@ -39,10 +44,7 @@ public class WerfDbHelperBean implements WerfDbHelper {
     public long createWerf(Werf werf) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAAM, werf.getName());
-        values.put(KEY_NUMBER, werf.getNummer());
-        values.put(KEY_CREATED_AT, now().toString());
+        ContentValues values = getContentValues(werf);
 
         // insert row
         long werf_id = db.insert(TABLE_WERF, null, values);
@@ -50,6 +52,19 @@ public class WerfDbHelperBean implements WerfDbHelper {
         plaatsBeschrijfDbHelper.createPlaatsBeschrijf(new PlaatsBeschrijf(), werf_id);
 
         return werf_id;
+    }
+
+    private ContentValues getContentValues(final Werf werf) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAAM, werf.getNaam());
+        values.put(KEY_NUMMER, werf.getNummer());
+        values.put(KEY_OPDRACHTGEVER, werf.getOpdrachtgever());
+        values.put(KEY_OPDRACHTGEVER_ADRES, werf.getOpdrachtgeverAdres());
+        values.put(KEY_OPDRACHTGEVER_STAD, werf.getOpdrachtgeverStad());
+        values.put(KEY_OMSCHRIJVING, werf.getOmschrijving());
+        values.put(KEY_DATUM_AANVANG, werf.getDatumAanvang().toString());
+        values.put(KEY_CREATED_AT, now().toString());
+        return values;
     }
 
     /*
@@ -70,11 +85,20 @@ public class WerfDbHelperBean implements WerfDbHelper {
             c.moveToFirst();
         }
 
-        return new Werf(
-                c.getInt(c.getColumnIndex(KEY_ID)),
-                c.getString(c.getColumnIndex(KEY_NAAM)),
-                c.getString(c.getColumnIndex(KEY_NUMBER)),
-                c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+        return getWerf(c);
+    }
+
+    private Werf getWerf(final Cursor c) {
+        return new Werf()
+                .setId(c.getInt(c.getColumnIndex(KEY_ID)))
+                .setNaam(c.getString(c.getColumnIndex(KEY_NAAM)))
+                .setNummer(c.getString(c.getColumnIndex(KEY_NUMMER)))
+                .setOpdrachtgever(c.getString(c.getColumnIndex(KEY_OPDRACHTGEVER)))
+                .setOpdrachtgeverAdres(c.getString(c.getColumnIndex(KEY_OPDRACHTGEVER_ADRES)))
+                .setOpdrachtgeverStad(c.getString(c.getColumnIndex(KEY_OPDRACHTGEVER_STAD)))
+                .setOmschrijving(c.getString(c.getColumnIndex(KEY_OMSCHRIJVING)))
+                .setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)))
+                .setDatumAanvang(c.getString(c.getColumnIndex(KEY_DATUM_AANVANG)));
     }
 
     /*
@@ -93,13 +117,7 @@ public class WerfDbHelperBean implements WerfDbHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                Werf werf =
-                        new Werf(
-                                c.getInt(c.getColumnIndex(KEY_ID)),
-                                c.getString(c.getColumnIndex(KEY_NUMBER)),
-                                c.getString(c.getColumnIndex(KEY_NAAM)),
-                                c.getString(c.getColumnIndex(KEY_CREATED_AT)));
-
+                Werf werf = getWerf(c);
                 // adding to todo list
                 werfList.add(werf);
             } while (c.moveToNext());
@@ -115,9 +133,7 @@ public class WerfDbHelperBean implements WerfDbHelper {
     public int updateWerf(Werf werf) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAAM, werf.getName());
-        values.put(KEY_NUMBER, werf.getNummer());
+        ContentValues values = getContentValues(werf);
 
         // updating row
         return db.update(
@@ -131,8 +147,9 @@ public class WerfDbHelperBean implements WerfDbHelper {
 
     @Override public void deleteWerf(final Werf werf) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        db.delete(TABLE_WERF, KEY_ID + " = ?",
-                  new String[] { String.valueOf(werf.getId()) });
+        db.delete(
+                TABLE_WERF, KEY_ID + " = ?",
+                new String[]{String.valueOf(werf.getId())});
 
     }
 

@@ -55,20 +55,23 @@ public class Werf {
         initLists();
     }
 
-    public void setNummer(final String nummer) {
+    public Werf setNummer(final String nummer) {
         this.nummer = nummer;
+        return this;
     }
 
     public String getNummer() {
         return nummer;
     }
 
-    public void setCreatedAt(final String string) {
+    public Werf setCreatedAt(final String string) {
         this.createdAt = new DateTime(string);
+        return this;
     }
 
-    public void setId(final int id) {
+    public Werf setId(final int id) {
         this.id = id;
+        return this;
     }
 
     public int getId() {
@@ -79,63 +82,71 @@ public class Werf {
         return naam;
     }
 
-    public void setNaam(final String naam) {
+    public Werf setNaam(final String naam) {
         this.naam = naam;
+        return this;
     }
 
     public String getOpdrachtgever() {
         return opdrachtgever;
     }
 
-    public void setOpdrachtgever(final String opdrachtgever) {
+    public Werf setOpdrachtgever(final String opdrachtgever) {
         this.opdrachtgever = opdrachtgever;
+        return this;
     }
 
     public String getOpdrachtgeverAdres() {
         return opdrachtgeverAdres;
     }
 
-    public void setOpdrachtgeverAdres(final String opdrachtgeverAdres) {
+    public Werf setOpdrachtgeverAdres(final String opdrachtgeverAdres) {
         this.opdrachtgeverAdres = opdrachtgeverAdres;
+        return this;
     }
 
     public String getOpdrachtgeverStad() {
         return opdrachtgeverStad;
     }
 
-    public void setOpdrachtgeverStad(final String opdrachtgeverStad) {
+    public Werf setOpdrachtgeverStad(final String opdrachtgeverStad) {
         this.opdrachtgeverStad = opdrachtgeverStad;
+        return this;
     }
 
     public String getOmschrijving() {
         return omschrijving;
     }
 
-    public void setOmschrijving(final String omschrijving) {
+    public Werf setOmschrijving(final String omschrijving) {
         this.omschrijving = omschrijving;
+        return this;
     }
 
     public DateTime getDatumAanvang() {
         return datumAanvang;
     }
 
-    public void setDatumAanvang(final DateTime datumAanvang) {
-        this.datumAanvang = datumAanvang;
+    public Werf setDatumAanvang(final String datumAanvang) {
+        this.datumAanvang = new DateTime(datumAanvang);
+        return this;
     }
 
     public PlaatsBeschrijf getPlaatsBeschrijf() {
         return plaatsBeschrijf;
     }
 
-    public void setPlaatsBeschrijf(final PlaatsBeschrijf plaatsBeschrijf) {
+    public Werf setPlaatsBeschrijf(final PlaatsBeschrijf plaatsBeschrijf) {
         this.plaatsBeschrijf = plaatsBeschrijf;
+        return this;
     }
 
     public DateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(final DateTime createdAt) {
+    public Werf setCreatedAt(final DateTime createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 }
