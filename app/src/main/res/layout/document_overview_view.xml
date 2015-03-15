@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<nigel.com.werfleider.ui.werf.WerfView
+<nigel.com.werfleider.ui.document.DocumentOverviewView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/werf.list"
+        android:id="@+id/document.overview.list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <com.getbase.floatingactionbutton.AddFloatingActionButton
-        android:id="@+id/werf.create"
+        android:id="@+id/document.overview.create.button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -25,4 +25,4 @@
         fab:fab_colorNormal="@color/accent"
         fab:fab_plusIconColor="@color/primary"/>
 
-</nigel.com.werfleider.ui.werf.WerfView>
+</nigel.com.werfleider.ui.document.DocumentOverviewView>

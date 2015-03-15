@@ -11,5 +11,6 @@
     <string name="tToDo">To do</string>
     <string name="tTechnischeFiches">Technische Fiches</string>
     <string name="tMails">Emails</string>
+    <string name="tBemerkingen">Bemerkingen</string>
 
 </resources>

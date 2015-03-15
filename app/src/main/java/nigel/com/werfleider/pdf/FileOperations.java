@@ -26,6 +26,7 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfReader;
@@ -34,24 +35,27 @@ import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 
+import org.joda.time.DateTime;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URL;
 
 import javax.inject.Inject;
 
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentImage;
-import nigel.com.werfleider.model.DocumentLocatie;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Werf;
 
 import static java.lang.String.format;
+import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
 import static nigel.com.werfleider.model.DocumentType.PLAATSBESCHRIJF;
 import static org.joda.time.DateTime.now;
 
@@ -108,7 +112,7 @@ public class FileOperations {
         paragraph.setSpacingAfter(30);
         document.add(paragraph);
 
-        paragraph = new Paragraph(now().toString(), paragraphFont);
+        paragraph = new Paragraph(now().toString("dd-MM-yyyy"), paragraphFont);
         paragraph.setAlignment(Element.ALIGN_LEFT);
         paragraph.setSpacingAfter(20);
         document.add(paragraph);
@@ -150,7 +154,7 @@ public class FileOperations {
         document.add(paragraph);
     }
 
-    private static void createFirstPage(PdfContentByte cb, final Werf werf) throws IOException, DocumentException {
+    private static void createFirstPagePlaatsbeschrijf(PdfContentByte cb, final Werf werf) throws IOException, DocumentException {
 
         BaseFont bf_helv_bold = BaseFont.createFont(BaseFont.HELVETICA_BOLD, "Cp1252", false);
         BaseFont bf_helv = BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false);
@@ -163,7 +167,7 @@ public class FileOperations {
 
         cb.setFontAndSize(bf_helv_bold, 17);
         cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "PLAATSBESCHRIJVING VOOR AANVANG DER WERKEN", 300, returnLinePosition(0.55), 0);
-        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, format("UITGEVOERD OP %s", now().toString()), 300, returnLinePosition(0.52), 0);
+        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, format("UITGEVOERD OP %s", werf.getDatumAanvang().toString("dd/MM/yyyy")), 300, returnLinePosition(0.52), 0);
 
         cb.setFontAndSize(bf_helv, 12);
         cb.showTextAligned(PdfContentByte.ALIGN_LEFT, "Opdrachtgever:", margin, returnLinePosition(0.3), 0);
@@ -201,7 +205,6 @@ public class FileOperations {
                             document,
                             new FileOutputStream(file.getAbsoluteFile()));
 
-
             // step 3
             writer.setBoxSize("art", new Rectangle(36, 54, 559, 788));
 
@@ -215,7 +218,7 @@ public class FileOperations {
 
             PdfContentByte cb = writer.getDirectContent();
             if (writeDocument.getDocumentType() == PLAATSBESCHRIJF) {
-                createFirstPage(cb, werf);
+                createFirstPagePlaatsbeschrijf(cb, werf);
 
                 document.newPage();
 
@@ -229,12 +232,14 @@ public class FileOperations {
             }
 
             int chapterIndex = 1;
-            double totalPageHeight = 0;
+            double totalPageHeight;
+
             // step 4
-            for (DocumentLocatie collection : writeDocument.getFotoReeksList()) {
+            for (DocumentLocation collection : writeDocument.getFotoReeksList()) {
                 Chapter chapter = new Chapter(new Paragraph(collection.getLocation(), titleFont), chapterIndex);
                 chapterIndex++;
                 document.add(chapter);
+                totalPageHeight = 0;
                 int imagesInChapter = 1;
                 for (DocumentImage documentImage : collection.getImageList()) {
 
@@ -246,18 +251,30 @@ public class FileOperations {
                     table.getDefaultCell().setPadding(5);
                     table.setWidthPercentage(100);
 
-                    Image image = Image.getInstance(new URL(documentImage.getOnDiskUrl()));
+                    final File imageFile = new File(documentImage.getImageURL());
+
+                    final DateTime lastModDate = new DateTime(imageFile.lastModified());
+
+                    final Bitmap bitmap =  decodeFile(imageFile);
+
+                    final Image image = Image.getInstance(getBytesFromBitmap(bitmap));
 
                     table.addCell(image);
-                    table.addCell(format("Foto %s %d \n\n%s", collection.getLocation(), imagesInChapter, documentImage.hasDescription() ? documentImage.getDescription() : ""));
+
+                    final PdfPCell descriptionCell = new PdfPCell();
+                    descriptionCell.addElement(new Phrase(documentImage.getTitle()));
+                    descriptionCell.addElement(new Phrase(buildMeasuringString(writeDocument, collection, documentImage)));
+                    descriptionCell.addElement(new Phrase(documentImage.hasDescription() ? documentImage.getDescription() : ""));
+                    descriptionCell.addElement(new Phrase(format("\n\nGenomen op %s", lastModDate.toString("dd-MM-yyyy HH:mm"))));
+
+                    table.addCell(descriptionCell);
+
                     document.add(table);
                     totalPageHeight += table.getTotalHeight();
 
-
-                    System.out.println("table.getTotalHeight() = " + table.getTotalHeight());
                     imagesInChapter++;
 
-                    if (table.getTotalHeight() > 500) {
+                    if (totalPageHeight > 500) {
                         document.newPage();
                         document.add(Chunk.NEWLINE);
                         totalPageHeight = 0;
@@ -267,7 +284,7 @@ public class FileOperations {
             // step 5
             document.close();
 
-            Log.d("Suceess", "Sucess");
+            Log.d("Success", "Success");
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -276,6 +293,56 @@ public class FileOperations {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
+        }
+    }
+
+    // convert from bitmap to byte array
+    public byte[] getBytesFromBitmap(final Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+        return stream.toByteArray();
+    }
+
+    //decodes image and scales it to reduce memory consumption
+    private Bitmap decodeFile(File f){
+        try {
+            //Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f),null,o);
+
+            //The new size we want to scale to
+            final int REQUIRED_SIZE=110;
+
+            //Find the correct scale value. It should be the power of 2.
+            int scale=1;
+            while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
+                scale*=2;
+
+            //Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize=scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {}
+        return null;
+    }
+
+    private String buildMeasuringString(final Document document, final DocumentLocation collection, final DocumentImage documentImage) {
+        if(document.getDocumentType() != OPMETINGEN) return "";
+
+        switch (collection.getMeasuringUnit().getWeight()){
+            case 0: return format("L %.2f %s", documentImage.getLength(), collection.getMeasuringUnit().name().toLowerCase());
+            case 1: return format("L %.2f %s x \nB %.2f %s \n = %.2f %s",
+                                  documentImage.getLength(), collection.getMeasuringUnit().name().toLowerCase(),
+                                  documentImage.getWidth(), collection.getMeasuringUnit().name().toLowerCase(),
+                                  (documentImage.getLength() * documentImage.getWidth()), collection.getMeasuringUnit().name().toLowerCase());
+            case 2: return format("L %.2f %s x \nB %.2f %s x \nH %.2f %s \n = %.2f %s",
+                                  documentImage.getLength(), collection.getMeasuringUnit().name().toLowerCase(),
+                                  documentImage.getWidth(), collection.getMeasuringUnit().name().toLowerCase(),
+                                  documentImage.getHeight(), collection.getMeasuringUnit().name().toLowerCase(),
+                                  (documentImage.getLength() * documentImage.getWidth() * documentImage.getHeight()), collection.getMeasuringUnit().name().toLowerCase());
+            default: return "";
         }
     }
 

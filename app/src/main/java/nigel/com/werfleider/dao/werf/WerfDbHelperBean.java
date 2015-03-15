@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nigel.com.werfleider.dao.document.DocumentDbHelper;
 import nigel.com.werfleider.dao.helper.DatabaseHelper;
-import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.Werf;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -31,8 +30,6 @@ import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHT_AD
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_OPDRACHT_STAD;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.LOG;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.TABLE_WERF;
-import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
-import static nigel.com.werfleider.model.DocumentType.PLAATSBESCHRIJF;
 import static org.joda.time.DateTime.now;
 
 /**
@@ -53,23 +50,17 @@ public class WerfDbHelperBean implements WerfDbHelper {
 
         ContentValues values = getContentValues(werf);
 
-        // insert row
-        long werf_id = db.insert(TABLE_WERF, null, values);
-
-        documentDbHelper.createDocument(new Document().setDocumentType(PLAATSBESCHRIJF), werf_id);
-        documentDbHelper.createDocument(new Document().setDocumentType(OPMETINGEN), werf_id);
-
-        return werf_id;
+        return db.insert(TABLE_WERF, null, values);
     }
 
     private ContentValues getContentValues(final Werf werf) {
         ContentValues values = new ContentValues();
         values.put(KEY_NAAM, werf.getNaam());
         values.put(KEY_NUMMER, werf.getNummer());
-        values.put(KEY_OPDRACHT_STAD, werf.getOpdrachtgeverStad());
+        values.put(KEY_OPDRACHT_STAD, werf.getOpdrachtStad());
         values.put(KEY_OPDRACHT_ADRES, werf.getOpdrachtAdres());
         values.put(KEY_ONTWERPER, werf.getOntwerper());
-        values.put(KEY_ONTWERPER_ADRES, werf.getOpdrachtAdres());
+        values.put(KEY_ONTWERPER_ADRES, werf.getOntwerperAdres());
         values.put(KEY_ONTWERPER_STAD, werf.getOntwerperStad());
         values.put(KEY_OPDRACHTGEVER, werf.getOpdrachtgever());
         values.put(KEY_OPDRACHTGEVER_ADRES, werf.getOpdrachtgeverAdres());

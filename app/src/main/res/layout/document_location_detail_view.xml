@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.document.DocumentLocationDetailView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/document.image.list"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
+
+        <android.support.v7.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/cardview_light_background"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:paddingTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/document.length"
+                    style="@style/Werf.Create.EditText"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="60dp"
+                    android:layout_alignParentTop="true"
+                    android:hint="L: "
+                    android:visibility="gone"
+                    android:inputType="numberDecimal"/>
+
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/document.width"
+                    style="@style/Werf.Create.EditText"
+                    android:layout_width="60dp"
+                    android:layout_toRightOf="@id/document.length"
+                    android:hint="B: "
+                    android:visibility="gone"
+                    android:inputType="numberDecimal"/>
+
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/document.height"
+                    style="@style/Werf.Create.EditText"
+                    android:layout_width="80dp"
+                    android:layout_toRightOf="@id/document.width"
+                    android:hint="H: "
+                    android:visibility="gone"
+                    android:layout_marginRight="0dp"
+                    android:inputType="numberDecimal"/>
+                
+                <Spinner
+                    android:id="@+id/document.measuring.units"
+                    android:layout_toRightOf="@+id/document.height"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"/>
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/document.item.title"
+                    style="@style/Werf.Create.EditText"
+                    android:layout_marginLeft="20dp"
+                    android:layout_below="@+id/document.length"
+                    android:layout_height="wrap_content"
+                    android:hint="Titel foto "
+                    android:inputType="textShortMessage"/>
+
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/document.description"
+                    style="@style/Werf.Create.EditText"
+                    android:layout_marginLeft="20dp"
+                    android:layout_below="@+id/document.item.title"
+                    android:layout_height="200dp"
+                    android:hint="Omschrijving foto "
+                    android:inputType="textMultiLine"/>
+                
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/document.menu.button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        fab:fab_colorNormal="@color/accent"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/document.camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_icon="@drawable/ic_action_camera"
+            fab:fab_title="Take pictures"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/document.edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_icon="@drawable/ic_bird"
+            fab:fab_title="Edit location"/>
+
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/document.save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_icon="@drawable/ic_skull"
+            fab:fab_title="Save location"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</nigel.com.werfleider.ui.document.DocumentLocationDetailView>

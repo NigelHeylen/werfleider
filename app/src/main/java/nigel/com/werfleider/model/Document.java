@@ -12,26 +12,28 @@ import static com.google.common.collect.Lists.newArrayList;
 public class Document {
 
     private int id;
+
     private int werfId;
+
     private DocumentType documentType;
-    private List<DocumentLocatie> fotoReeksList = newArrayList();
+
+    private List<DocumentLocation> fotoReeksList = newArrayList();
+
     private DateTime createdAt;
 
     public Document() {
     }
 
-
-
-    public List<DocumentLocatie> getFotoReeksList() {
+    public List<DocumentLocation> getFotoReeksList() {
         return fotoReeksList;
     }
 
-    public Document setFotoReeksList(final List<DocumentLocatie> fotoReeksList) {
+    public Document setFotoReeksList(final List<DocumentLocation> fotoReeksList) {
         this.fotoReeksList = fotoReeksList;
         return this;
     }
 
-    public void add(final DocumentLocatie collection) {
+    public void add(final DocumentLocation collection) {
         fotoReeksList.add(collection);
     }
 

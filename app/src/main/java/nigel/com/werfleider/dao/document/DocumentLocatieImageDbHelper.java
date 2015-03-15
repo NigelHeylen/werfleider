@@ -18,5 +18,5 @@ public interface DocumentLocatieImageDbHelper {
     * */
     List<DocumentImage> getAllDocumentLocatieImages(final long plaatbeschrijfLocatieId);
 
-    void deleteAllImages(int id);
+    void deleteAllImages(int locatieId);
 }

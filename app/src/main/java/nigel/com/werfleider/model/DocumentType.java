@@ -5,5 +5,5 @@ package nigel.com.werfleider.model;
  */
 public enum  DocumentType {
 
-    PLAATSBESCHRIJF, OPMETINGEN
+    PLAATSBESCHRIJF, OPMETINGEN, BEMERKINGEN
 }

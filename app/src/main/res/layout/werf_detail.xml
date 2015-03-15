@@ -56,31 +56,31 @@
             <View style="@style/Werfoverzicht.Vertical.Separator"/>
         </LinearLayout>
 
-        <!--<LinearLayout-->
-            <!--style="@style/Werfoverzicht.Item.Row">-->
+        <LinearLayout
+            style="@style/Werfoverzicht.Item.Row">
 
-            <!--<View style="@style/Werfoverzicht.Vertical.Separator"/>-->
+            <View style="@style/Werfoverzicht.Vertical.Separator"/>
 
-            <!--<android.support.v7.widget.CardView-->
-                <!--style="@style/Werfoverzicht.Item.Container">-->
+            <android.support.v7.widget.CardView
+                style="@style/Werfoverzicht.Item.Container">
 
-                <!--<RelativeLayout-->
-                    <!--android:id="@+id/Werfoverzicht.Button.Opmetingen"-->
-                    <!--style="@style/Werfoverzicht.Item.Button">-->
+                <RelativeLayout
+                    android:id="@+id/werfoverzicht.button.bemerkingen"
+                    style="@style/Werfoverzicht.Item.Button">
 
-                    <!--<ImageView-->
-                        <!--style="@style/Werfoverzicht.Item.Icon"-->
-                        <!--android:src="@drawable/ic_bird"-->
-                        <!--/>-->
+                    <ImageView
+                        style="@style/Werfoverzicht.Item.Icon"
+                        android:src="@drawable/ic_bird"
+                        />
 
-                    <!--<TextView-->
-                        <!--style="@style/Werfoverzicht.Item.Title"-->
-                        <!--android:text="@string/tOpmetingen"/>-->
-                <!--</RelativeLayout>-->
+                    <TextView
+                        style="@style/Werfoverzicht.Item.Title"
+                        android:text="@string/tBemerkingen"/>
+                </RelativeLayout>
 
-            <!--</android.support.v7.widget.CardView>-->
+            </android.support.v7.widget.CardView>
 
-            <!--<View style="@style/Werfoverzicht.Vertical.Separator"/>-->
+            <View style="@style/Werfoverzicht.Vertical.Separator"/>
 
             <!--<android.support.v7.widget.CardView-->
                 <!--style="@style/Werfoverzicht.Item.Container">-->
@@ -101,8 +101,8 @@
 
             <!--</android.support.v7.widget.CardView>-->
 
-            <!--<View style="@style/Werfoverzicht.Vertical.Separator"/>-->
-        <!--</LinearLayout>-->
+            <View style="@style/Werfoverzicht.Vertical.Separator"/>
+        </LinearLayout>
 
         <!--<LinearLayout-->
             <!--style="@style/Werfoverzicht.Item.Row">-->

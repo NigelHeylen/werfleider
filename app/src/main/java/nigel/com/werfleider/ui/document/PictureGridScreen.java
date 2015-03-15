@@ -2,6 +2,7 @@ package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,29 +21,28 @@ import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
 import nigel.com.werfleider.dao.document.DocumentLocatieDbHelper;
-import nigel.com.werfleider.dao.document.DocumentLocatieImageDbHelper;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentImage;
-import nigel.com.werfleider.model.DocumentLocatie;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Werf;
 import nigel.com.werfleider.ui.widget.ImageFileFilter;
-import rx.functions.Action0;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.String.format;
 
 /**
  * Created by nigel on 03/12/14.
  */
 @Layout(R.layout.picture_grid)
-public class PictureGridScreen implements Blueprint, HasParent<DocumentLocationDetailScreen> {
+public class PictureGridScreen implements Blueprint, HasParent<Blueprint> {
 
     private final Document document;
-    private final DocumentLocatie collection;
+    private final DocumentLocation collection;
     private final Werf werf;
 
     public PictureGridScreen(
             final Document document,
-            final DocumentLocatie collection,
+            final DocumentLocation collection,
             final Werf werf) {
         this.document = document;
 
@@ -58,7 +58,11 @@ public class PictureGridScreen implements Blueprint, HasParent<DocumentLocationD
         return new Module(document, collection);
     }
 
-    @Override public DocumentLocationDetailScreen getParent() {
+    @Override public Blueprint getParent() {
+        final int index = document.getFotoReeksList().indexOf(collection);
+        if(index < 0){
+            return new DocumentScreen(werf, document);
+        }
         return new DocumentLocationDetailScreen(document, document.getFotoReeksList().indexOf(collection), werf);
     }
 
@@ -66,9 +70,9 @@ public class PictureGridScreen implements Blueprint, HasParent<DocumentLocationD
     static class Module {
 
         private final Document document;
-        private final DocumentLocatie collection;
+        private final DocumentLocation collection;
 
-        public Module(final Document document, final DocumentLocatie collection) {
+        public Module(final Document document, final DocumentLocation collection) {
 
             this.document = document;
             this.collection = collection;
@@ -76,21 +80,19 @@ public class PictureGridScreen implements Blueprint, HasParent<DocumentLocationD
 
         @Provides Document providePlaatsBeschrijf(){ return document; }
 
-        @Provides DocumentLocatie provideCollection(){ return collection; }
+        @Provides DocumentLocation provideCollection(){ return collection; }
 
 
     }
 
     public static class Presenter extends ViewPresenter<PictureGridView> {
-        @Inject DocumentLocatie collection;
+        @Inject DocumentLocation collection;
 
         @Inject Document document;
 
         @Inject ActionBarOwner actionBarOwner;
 
         @Inject @MainScope Flow flow;
-
-        @Inject DocumentLocatieImageDbHelper documentLocatieImageDbHelper;
 
         @Inject DocumentLocatieDbHelper documentLocatieDbHelper;
 
@@ -107,16 +109,8 @@ public class PictureGridScreen implements Blueprint, HasParent<DocumentLocationD
         }
 
         private void initActionBar() {
-            ActionBarOwner.MenuAction menu = new ActionBarOwner.MenuAction(
-                    "Save", new Action0() {
-                @Override public void call() {
-                    saveImages();
-                    saveCollection();
-                    flow.goBack();
-                }
-            });
 
-            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, "Picture Grid", menu));
+            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, "Picture Grid", null));
         }
 
         private void saveImages() {
@@ -131,7 +125,7 @@ public class PictureGridScreen implements Blueprint, HasParent<DocumentLocationD
                 document.add(collection);
                 documentLocatieDbHelper.createDocumentLocatie(collection, document.getId());
             } else {
-                documentLocatieDbHelper.updatePlaatsBeschrijfLocatie(collection);
+                documentLocatieDbHelper.updateDocumentLocatie(collection);
             }
 
             documentLocatieDbHelper.closeDB();
@@ -180,6 +174,15 @@ public class PictureGridScreen implements Blueprint, HasParent<DocumentLocationD
 
         public void editLocation(final String s) {
             collection.setLocation(s);
+        }
+
+        public void handleSave() {
+            saveImages();
+            saveCollection();
+
+            Toast.makeText(getView().getContext(), format("%s saved", collection.getLocation()), Toast.LENGTH_LONG).show();
+            flow.goBack();
+
         }
     }
 

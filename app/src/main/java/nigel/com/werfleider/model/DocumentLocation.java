@@ -4,6 +4,8 @@ import com.google.common.base.Predicate;
 
 import java.util.List;
 
+import nigel.com.werfleider.util.MeasuringUnit;
+
 import static com.google.common.collect.Iterables.any;
 import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Lists.newArrayList;
@@ -11,19 +13,20 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * Created by nigel on 04/12/14.
  */
-public class DocumentLocatie {
+public class DocumentLocation {
 
     private int id;
-    private int plaatsbeschrijfId;
+    private int documentId;
     private String location;
     private List<DocumentImage> imageList;
+    private MeasuringUnit measuringUnit;
 
-    public DocumentLocatie(final String location) {
+    public DocumentLocation(final String location) {
         this.location = location;
         imageList = newArrayList();
     }
 
-    public DocumentLocatie(final String location, final List<DocumentImage> imageList) {
+    public DocumentLocation(final String location, final List<DocumentImage> imageList) {
         this.location = location;
         this.imageList = imageList;
     }
@@ -32,17 +35,17 @@ public class DocumentLocatie {
         return id;
     }
 
-    public DocumentLocatie setId(final int id) {
+    public DocumentLocation setId(final int id) {
         this.id = id;
         return this;
     }
 
-    public int getPlaatsbeschrijfId() {
-        return plaatsbeschrijfId;
+    public int getDocumentId() {
+        return documentId;
     }
 
-    public void setPlaatsbeschrijfId(final int plaatsbeschrijfId) {
-        this.plaatsbeschrijfId = plaatsbeschrijfId;
+    public void setDocumentId(final int documentId) {
+        this.documentId = documentId;
     }
 
     public String getLocation() {
@@ -63,15 +66,28 @@ public class DocumentLocatie {
         }
     }
 
-    public void setImageList(final List<DocumentImage> imageList) {
+    public DocumentLocation setImageList(final List<DocumentImage> imageList) {
         this.imageList = imageList;
+        return this;
+
     }
 
     public boolean hasImages(){
         return !isEmpty(imageList);
     }
 
-    public void setLocation(final String location) {
+    public DocumentLocation setLocation(final String location) {
         this.location = location;
+        return this;
+
+    }
+
+    public MeasuringUnit getMeasuringUnit() {
+        return measuringUnit;
+    }
+
+    public DocumentLocation setMeasuringUnit(final MeasuringUnit measuringUnit) {
+        this.measuringUnit = measuringUnit;
+        return this;
     }
 }

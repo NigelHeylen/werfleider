@@ -12,7 +12,7 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.Werf;
-import nigel.com.werfleider.ui.document.DocumentScreen;
+import nigel.com.werfleider.ui.document.DocumentOverviewScreen;
 import nigel.com.werfleider.ui.werf.WerfScreen;
 
 /**
@@ -66,7 +66,7 @@ public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
         @Inject Werf werf;
 
         public void goToDocumentView(final DocumentType type) {
-            flow.goTo(new DocumentScreen(werf, type));
+            flow.goTo(new DocumentOverviewScreen(werf, type));
         }
 
     }

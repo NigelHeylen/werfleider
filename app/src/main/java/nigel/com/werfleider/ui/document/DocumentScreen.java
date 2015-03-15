@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -19,30 +21,31 @@ import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
 import nigel.com.werfleider.dao.document.DocumentDbHelper;
 import nigel.com.werfleider.model.Document;
-import nigel.com.werfleider.model.DocumentLocatie;
-import nigel.com.werfleider.model.DocumentType;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Werf;
 import nigel.com.werfleider.pdf.FileOperations;
-import nigel.com.werfleider.ui.werfoverzicht.WerfDetailScreen;
 import rx.Observable;
 import rx.Observer;
-import rx.functions.Action0;
+import rx.Subscriber;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static rx.android.schedulers.AndroidSchedulers.mainThread;
+import static rx.schedulers.Schedulers.io;
 
 /**
  * Created by nigel on 25/11/14.
  */
 @Layout(R.layout.document_view)
-public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
+public class DocumentScreen implements Blueprint, HasParent<DocumentOverviewScreen> {
 
     private final Werf werf;
-    private final DocumentType documentType;
+    private final Document document;
 
-    public DocumentScreen(final Werf werf, final DocumentType documentType) {
+    public DocumentScreen(final Werf werf, final Document document) {
 
         this.werf = werf;
-        this.documentType = documentType;
+        this.document = document;
     }
 
     @Override public String getMortarScopeName() {
@@ -50,11 +53,11 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
     }
 
     @Override public Object getDaggerModule() {
-        return new Module(werf, documentType);
+        return new Module(werf, document);
     }
 
-    @Override public WerfDetailScreen getParent() {
-        return new WerfDetailScreen(werf);
+    @Override public DocumentOverviewScreen getParent() {
+        return new DocumentOverviewScreen(werf, document.getDocumentType());
     }
 
     @dagger.Module(injects = {
@@ -64,12 +67,12 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
     static class Module {
 
         private final Werf werf;
-        private final DocumentType documentType;
+        private final Document document;
 
-        public Module(final Werf werf, final DocumentType documentType) {
+        public Module(final Werf werf, final Document document) {
 
             this.werf = werf;
-            this.documentType = documentType;
+            this.document = document;
         }
 
         @Provides Werf provideWerf() {
@@ -77,7 +80,7 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
         }
 
         @Provides @Singleton Document providePlaatsBeschrijf(final DocumentDbHelper documentDbHelper) {
-            return documentDbHelper.getDocument(werf.getId(), documentType);
+            return documentDbHelper.getDocument(document.getId());
         }
 
         @Provides FileOperations provideFileOperations(final Context context) {
@@ -86,7 +89,7 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
     }
 
     @Singleton
-    public static class Presenter extends ViewPresenter<DocumentView> {
+    static class Presenter extends ViewPresenter<DocumentView> {
 
         @Inject FileOperations fop;
 
@@ -100,6 +103,8 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
 
         @Inject DocumentDbHelper documentDbHelper;
 
+        @Inject Context context;
+
         @Override public void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
             final DocumentView view = getView();
@@ -107,15 +112,7 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
                 return;
             }
 
-
-            ActionBarOwner.MenuAction menu =
-                    new ActionBarOwner.MenuAction(
-                            "Save", new Action0() {
-                        @Override public void call() {
-                            view.saveDocument();
-                        }
-                    });
-            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, document.getDocumentType().name().toLowerCase(), menu));
+            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, capitalize(document.getDocumentType().name().toLowerCase()), null));
 
             initTextFields();
 
@@ -126,16 +123,50 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
         }
 
         public void newImageCollection() {
-            flow.goTo(new PictureGridScreen(document, new DocumentLocatie(""), werf));
+            flow.goTo(new PictureGridScreen(document, new DocumentLocation(""), werf));
         }
 
         public void write() {
-            fop.write(document, werf);
-            if (fop.write(document, werf)) {
-                getView().showToast(document.getDocumentType().name().toLowerCase() + ".pdf created");
-            } else {
-                getView().showToast("I/O error");
-            }
+            getView().showLoader(true);
+
+            Observable.create(
+                    new Observable.OnSubscribe<Boolean>() {
+
+                        @Override public void call(final Subscriber<? super Boolean> subscriber) {
+                            final boolean finished = fop.write(document, werf);
+                            if (finished) {
+                                subscriber.onNext(true);
+                            } else {
+                                subscriber.onError(new IOException("Writing to pdf failed"));
+                            }
+                            subscriber.onCompleted();
+
+                        }
+                    })
+                      .subscribeOn(io())
+                      .observeOn(mainThread())
+                      .subscribe(
+                              new Observer<Boolean>() {
+                                  @Override public void onCompleted() {
+                                      showToast(document.getDocumentType().name().toLowerCase() + ".pdf created");
+                                      if (getView() != null) {
+                                          getView().showLoader(false);
+                                      }
+                                  }
+
+                                  @Override public void onError(final Throwable e) {
+                                      e.printStackTrace();
+                                      showToast("Something went wrong");
+                                      if (getView() != null) {
+                                          getView().showLoader(false);
+                                      }
+
+                                  }
+
+                                  @Override public void onNext(final Boolean aBoolean) {
+
+                                  }
+                              });
 
         }
 
@@ -155,7 +186,8 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
                       .subscribe(
                               new Observer<Integer>() {
                                   @Override public void onCompleted() {
-                                      Toast.makeText(getView().getContext(),format("%s saved.", document.getDocumentType().name().toLowerCase()), Toast.LENGTH_LONG).show();
+                                      showToast(format("%s saved.", document.getDocumentType().name().toLowerCase()));
+
                                   }
 
                                   @Override public void onError(final Throwable e) {
@@ -166,6 +198,16 @@ public class DocumentScreen implements Blueprint, HasParent<WerfDetailScreen> {
 
                                   }
                               });
+        }
+
+
+
+        public void showToast(final String message) {
+
+            Toast.makeText(
+                    context,
+                    message, Toast.LENGTH_SHORT)
+                 .show();
         }
     }
 }

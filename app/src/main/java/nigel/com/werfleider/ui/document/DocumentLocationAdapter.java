@@ -6,7 +6,6 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,8 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import flow.Flow;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.dao.document.DocumentLocatieDbHelper;
 import nigel.com.werfleider.model.Document;
-import nigel.com.werfleider.model.DocumentLocatie;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Werf;
 import nigel.com.werfleider.ui.widget.CustomTextWatcher;
 
@@ -34,6 +34,7 @@ public class DocumentLocationAdapter extends RecyclerView.Adapter<DocumentLocati
     @Inject Picasso pablo;
     @Inject Flow flow;
     @Inject Werf werf;
+    @Inject DocumentLocatieDbHelper documentLocatieDbHelper;
 
     public DocumentLocationAdapter(
             final Document document,
@@ -46,14 +47,14 @@ public class DocumentLocationAdapter extends RecyclerView.Adapter<DocumentLocati
 
     @Override public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
 
-        final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.plaatsbeschrijf_location_item, parent, false);
+        final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.document_location_item, parent, false);
 
         return new ViewHolder(itemView);
     }
 
     @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        final DocumentLocatie collection = document.getFotoReeksList().get(position);
+        final DocumentLocation collection = document.getFotoReeksList().get(position);
 
         holder.mName.setText(collection.getLocation());
         holder.mName.addTextChangedListener(
@@ -66,7 +67,7 @@ public class DocumentLocationAdapter extends RecyclerView.Adapter<DocumentLocati
         holder.mImages.setText(format("%d images", collection.getImageList().size()));
 
 
-        if(collection.hasImages()) {
+        if (collection.hasImages()) {
             pablo
                     .load(collection.getImageList().get(0).getOnDiskUrl())
                     .fit()
@@ -81,6 +82,14 @@ public class DocumentLocationAdapter extends RecyclerView.Adapter<DocumentLocati
                     }
                 });
 
+        holder.delete.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override public void onClick(final View v) {
+                        documentLocatieDbHelper.deleteDocumentLocatie(collection);
+                        document.getFotoReeksList().remove(position);
+                        notifyItemRemoved(position);
+                    }
+                });
 
     }
 
@@ -90,10 +99,12 @@ public class DocumentLocationAdapter extends RecyclerView.Adapter<DocumentLocati
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @InjectView(R.id.plaatsbeschrijf_location_item_name) EditText mName;
-        @InjectView(R.id.plaatsbeschrijf_location_item_images) TextView mImages;
-        @InjectView(R.id.plaatsbeschrijf_location_item_image) ImageView mImage;
-        @InjectView(R.id.plaatsbeschrijf_location_item_container) CardView mContainer;
+        @InjectView(R.id.document_location_item_name) TextView mName;
+        @InjectView(R.id.document_location_item_images) TextView mImages;
+        @InjectView(R.id.document_location_item_image) ImageView mImage;
+        @InjectView(R.id.document_location_item_container) CardView mContainer;
+
+        @InjectView(R.id.document_location_item_delete) ImageView delete;
 
         public ViewHolder(final View itemView) {
             super(itemView);

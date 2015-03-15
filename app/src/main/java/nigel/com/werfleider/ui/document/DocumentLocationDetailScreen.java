@@ -1,6 +1,7 @@
 package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -20,16 +21,15 @@ import nigel.com.werfleider.dao.document.DocumentLocatieDbHelper;
 import nigel.com.werfleider.model.CreateImage;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentImage;
-import nigel.com.werfleider.model.DocumentLocatie;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Werf;
-import rx.functions.Action0;
 
 import static java.lang.String.format;
 
 /**
  * Created by nigel on 17/12/14.
  */
-@Layout(R.layout.plaatsbeschrijf_location_detail_view)
+@Layout(R.layout.document_location_detail_view)
 public class DocumentLocationDetailScreen implements Blueprint, HasParent<DocumentScreen> {
 
     private final Document document;
@@ -43,15 +43,15 @@ public class DocumentLocationDetailScreen implements Blueprint, HasParent<Docume
     }
 
     @Override public String getMortarScopeName() {
-        return format("%s document: werf id %s, %s, location: %s",
+        return format("%s document: werf id %s, %s, location: %d",
                       getClass().getName(),
                       werf.getId(),
                       document.getDocumentType().name().toLowerCase(),
-                      document.getFotoReeksList().get(locationIndex).getLocation());
+                      locationIndex);
     }
 
     @Override public DocumentScreen getParent() {
-        return new DocumentScreen(werf, document.getDocumentType());
+        return new DocumentScreen(werf, document);
     }
 
     @Override public Object getDaggerModule() {
@@ -117,20 +117,14 @@ public class DocumentLocationDetailScreen implements Blueprint, HasParent<Docume
 
 
         private void initActionBar() {
-            ActionBarOwner.MenuAction menu = new ActionBarOwner.MenuAction(
-                    "Save", new Action0() {
-                @Override public void call() {
-                    documentLocatieDbHelper
-                            .updatePlaatsBeschrijfLocatie(getPlaatsBeschrijfLocatie());
-
-
-                }
-            });
-
-            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, document.getFotoReeksList().get(locationIndex).getLocation(), menu));
+             if(locationIndex >= 0) {
+                actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, document.getFotoReeksList().get(locationIndex).getLocation(), null));
+            } else{
+                actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, "Location", null));
+            }
         }
 
-        private DocumentLocatie getPlaatsBeschrijfLocatie() {
+        private DocumentLocation getPlaatsBeschrijfLocatie() {
             return document.getFotoReeksList().get(locationIndex);
         }
 
@@ -142,6 +136,14 @@ public class DocumentLocationDetailScreen implements Blueprint, HasParent<Docume
                     .addToImageList(
                             new DocumentImage()
                                     .setImageURL(createImage.getCurrentUri()));
+
+        }
+
+        public void handleSave() {
+            documentLocatieDbHelper
+                    .updateDocumentLocatie(getPlaatsBeschrijfLocatie());
+
+            Toast.makeText(getView().getContext(), format("%s saved", getPlaatsBeschrijfLocatie().getLocation()), Toast.LENGTH_LONG).show();
 
         }
     }

@@ -15,7 +15,7 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
     public static final String LOG = "DatabaseHelper";
 
     // Database Version
-    public static final int DATABASE_VERSION = 10;
+    public static final int DATABASE_VERSION = 14;
 
     // Database Name
     public static final String DATABASE_NAME = "werfManager";
@@ -52,12 +52,17 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
     // DOCUMENT_LOCATIE Table - column names
     public static final String KEY_DOCUMENT_ID = "document_id";
     public static final String KEY_LOCATIE = "locatie";
+    public static final String KEY_MEASURING_UNIT = "measuring_unit";
 
 
     // DOCUMENT_LOCATIE_IMAGE Table - column names
     public static final String KEY_DOCUMENT_LOCATIE_ID = "document_locatie_id";
     public static final String KEY_IMAGE_URL = "image_url";
     public static final String KEY_OMSCHRIJVING = "omschrijving";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_HEIGHT = "height";
+    public static final String KEY_WIDTH = "width";
+    public static final String KEY_LENGTH = "length";
 
     // CONTACT Table - column names
     public static final String KEY_EMAIL = "email";
@@ -95,6 +100,7 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
             + TABLE_DOCUMENT_LOCATIE + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_DOCUMENT_ID + " INTEGER,"
             + KEY_LOCATIE + " TEXT,"
+            + KEY_MEASURING_UNIT + " TEXT,"
             + KEY_CREATED_AT + " DATETIME" + ")";
 
     // Plaatsbeschrijf locatie image table create statement
@@ -102,6 +108,10 @@ public class DatabaseHelperBean extends SQLiteOpenHelper implements DatabaseHelp
             + TABLE_DOCUMENT_LOCATIE_IMAGE + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_DOCUMENT_LOCATIE_ID + " INTEGER,"
             + KEY_IMAGE_URL + " TEXT,"
+            + KEY_TITLE + " TEXT,"
+            + KEY_HEIGHT + " DOUBLE,"
+            + KEY_WIDTH + " DOUBLE,"
+            + KEY_LENGTH + " DOUBLE,"
             + KEY_OMSCHRIJVING + " TEXT" + ")";
 
 

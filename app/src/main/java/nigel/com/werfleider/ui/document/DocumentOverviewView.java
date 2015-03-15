@@ -1,4 +1,4 @@
-package nigel.com.werfleider.ui.werf;
+package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,15 +15,20 @@ import mortar.Mortar;
 import nigel.com.werfleider.R;
 
 /**
- * Created by nigel on 31/01/15.
+ * Created by nigel on 14/03/15.
  */
-public class WerfView extends RelativeLayout {
+public class DocumentOverviewView extends RelativeLayout {
 
-    @InjectView(R.id.werf_list) RecyclerView werfList;
+    @Inject DocumentOverviewScreen.Presenter presenter;
 
-    @Inject WerfScreen.Presenter presenter;
+    @InjectView(R.id.document_overview_list) RecyclerView documentList;
 
-    public WerfView(final Context context, final AttributeSet attrs) {
+    @OnClick(R.id.document_overview_create_button)
+    public void onClick(){
+        presenter.handleCreateClick();
+    }
+
+    public DocumentOverviewView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         Mortar.inject(context, this);
     }
@@ -31,25 +36,20 @@ public class WerfView extends RelativeLayout {
     @Override protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.inject(this);
+
         presenter.takeView(this);
+
+        documentList.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     @Override protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         presenter.dropView(this);
+
         ButterKnife.reset(this);
     }
 
-    @OnClick(R.id.werf_create)
-    public void createWerf(){
-        presenter.handleCreate();
-    }
-
-    public void setLayoutManager(final LinearLayoutManager linearLayoutManager) {
-        werfList.setLayoutManager(linearLayoutManager);
-    }
-
-    public void setAdapter(final WerfAdapter adapter) {
-        werfList.setAdapter(adapter);
+    public void setAdapter(final DocumentOverviewAdapter adapter) {
+        documentList.setAdapter(adapter);
     }
 }

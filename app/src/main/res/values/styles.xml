@@ -29,5 +29,11 @@
         <item name="android:layout_marginRight">20dp</item>
     </style>
 
+    <style name="menu_labels_style">
+        <item name="android:background">@color/material_blue_grey_800</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
 
 </resources>

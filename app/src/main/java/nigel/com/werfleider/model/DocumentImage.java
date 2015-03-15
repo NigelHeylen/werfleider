@@ -14,6 +14,7 @@ public class DocumentImage {
     private String imageURL;
 
     private String description;
+    private String title;
 
     public String getImageURL() {
         return imageURL;
@@ -22,6 +23,10 @@ public class DocumentImage {
     public String getDescription() {
         return description;
     }
+
+    private double height;
+    private double length;
+    private double width;
 
     @Override public String toString() {
         return "PlaatsBeschrijfImage{" +
@@ -64,5 +69,41 @@ public class DocumentImage {
 
     public boolean hasDescription() {
         return !isNullOrEmpty(getDescription());
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public DocumentImage setHeight(final double height) {
+        this.height = height;
+        return this;
+    }
+
+    public double getLength() {
+        return length;
+    }
+
+    public DocumentImage setLength(final double length) {
+        this.length = length;
+        return this;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public DocumentImage setWidth(final double width) {
+        this.width = width;
+        return this;
+    }
+
+    public DocumentImage setTitle(final String title) {
+        this.title = title;
+        return this;
+    }
+
+    public String getTitle() {
+        return isNullOrEmpty(title) ? "" : title;
     }
 }

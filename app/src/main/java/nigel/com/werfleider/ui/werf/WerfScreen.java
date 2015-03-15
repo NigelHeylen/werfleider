@@ -78,14 +78,7 @@ public class WerfScreen implements Blueprint, HasParent<HomeScreen> {
                 return;
             }
 
-            ActionBarOwner.MenuAction menu =
-                    new ActionBarOwner.MenuAction(
-                            "Create", new Action0() {
-                        @Override public void call() {
-                            flow.goTo(new WerfCreateScreen());
-                        }
-                    });
-            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, "WerfScreen", menu));
+            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, "WerfScreen", null));
 
             initView();
 
@@ -121,6 +114,11 @@ public class WerfScreen implements Blueprint, HasParent<HomeScreen> {
             getView().setAdapter(adapter);
 
             adapter.notifyDataSetChanged();
+        }
+
+        public void handleCreate() {
+            flow.goTo(new WerfCreateScreen());
+
         }
     }
 }

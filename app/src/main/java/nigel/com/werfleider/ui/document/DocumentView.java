@@ -5,9 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.squareup.otto.Bus;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -29,21 +28,20 @@ public class DocumentView extends RelativeLayout {
 
     @Inject Picasso pablo;
 
-    @Inject Bus bus;
-
     @Inject Flow flow;
 
+    @InjectView(R.id.document_locations) RecyclerView locations;
 
-    @InjectView(R.id.plaatsbeschrijf_locations) RecyclerView locations;
+    @InjectView(R.id.document_loader) ProgressBarCircularIndeterminate loader;
 
-    @OnClick(R.id.plaatsbeschrijf_floating_button)
+    @OnClick(R.id.document_add_location)
     public void newImageCollection() {
         presenter.newImageCollection();
     }
 
 
-    @OnClick(R.id.document_button_write)
-    public void write() {
+    @OnClick(R.id.document_create_pdf)
+    public void createPdf() {
         presenter.write();
     }
 
@@ -65,12 +63,8 @@ public class DocumentView extends RelativeLayout {
         ButterKnife.reset(this);
     }
 
-    public void showToast(final String message) {
-
-        Toast.makeText(
-                getContext(),
-                message, Toast.LENGTH_SHORT)
-             .show();
+    public void showLoader(boolean show){
+        loader.setVisibility(show ? VISIBLE : GONE);
     }
 
     public void initView(final Document document) {
@@ -88,7 +82,4 @@ public class DocumentView extends RelativeLayout {
         locations.setAdapter(adapter);
     }
 
-    public void saveDocument() {
-        presenter.saveDocument();
-    }
 }
