@@ -24,7 +24,7 @@ import nigel.com.werfleider.dao.document.DocumentLocatieDbHelper;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentImage;
 import nigel.com.werfleider.model.DocumentLocation;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.ui.widget.ImageFileFilter;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -36,14 +36,17 @@ import static java.lang.String.format;
 @Layout(R.layout.picture_grid)
 public class PictureGridScreen implements Blueprint, HasParent<Blueprint> {
 
-    private final Document document;
+    private final Document         document;
+
     private final DocumentLocation collection;
-    private final Werf werf;
+
+    private final WerfInt          werf;
 
     public PictureGridScreen(
             final Document document,
             final DocumentLocation collection,
-            final Werf werf) {
+            final WerfInt werf) {
+
         this.document = document;
 
         this.collection = collection;
@@ -51,25 +54,36 @@ public class PictureGridScreen implements Blueprint, HasParent<Blueprint> {
     }
 
     @Override public String getMortarScopeName() {
+
         return getClass().getName();
     }
 
     @Override public Object getDaggerModule() {
-        return new Module(document, collection);
+
+        return new Module(
+                document,
+                collection);
     }
 
     @Override public Blueprint getParent() {
+
         final int index = document.getFotoReeksList().indexOf(collection);
-        if(index < 0){
-            return new DocumentScreen(werf, document);
+        if (index < 0) {
+            return new DocumentScreen(
+                    werf,
+                    document);
         }
-        return new DocumentLocationDetailScreen(document, document.getFotoReeksList().indexOf(collection), werf);
+        return new DocumentLocationDetailScreen(
+                document,
+                document.getFotoReeksList().indexOf(collection),
+                werf);
     }
 
     @dagger.Module(injects = PictureGridView.class, addsTo = CorePresenter.Module.class)
     static class Module {
 
-        private final Document document;
+        private final Document         document;
+
         private final DocumentLocation collection;
 
         public Module(final Document document, final DocumentLocation collection) {
@@ -161,7 +175,7 @@ public class PictureGridScreen implements Blueprint, HasParent<Blueprint> {
 
         public void getFromSdcard() {
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+            final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
 
             if (file.isDirectory()) {
                 for (File aFile : file.listFiles(new ImageFileFilter())) {

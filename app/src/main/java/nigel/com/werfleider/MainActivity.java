@@ -41,6 +41,7 @@ import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainView;
 import nigel.com.werfleider.model.CreateImage;
+import nigel.com.werfleider.model.EndCameraEvent;
 import nigel.com.werfleider.model.StartCameraEvent;
 
 import static android.content.Intent.ACTION_MAIN;
@@ -53,16 +54,12 @@ import static nigel.com.werfleider.util.MediaFileHandler.getOutputMediaFileUri;
 public class MainActivity extends ActionBarActivity implements ActionBarOwner.View {
     @Inject Bus bus;
 
-    static final String TAG = "TestApp";
-
     private MortarActivityScope activityScope;
     private ActionBarOwner.MenuAction actionBarMenuAction;
 
     @Inject ActionBarOwner actionBarOwner;
     private Flow mainFlow;
     private int imageLocationIndex;
-
-    private final static int MY_ACTIVITYS_AUTH_REQUEST_CODE = 7790;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -216,7 +213,7 @@ public class MainActivity extends ActionBarActivity implements ActionBarOwner.Vi
                 takePicture();
             } else if (resultCode == RESULT_CANCELED) {
 
-                // User cancelled the image capture
+                bus.post(new EndCameraEvent());
             } else {
                 // Image capture failed, advise user
             }

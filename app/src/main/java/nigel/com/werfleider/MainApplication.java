@@ -17,10 +17,17 @@ package nigel.com.werfleider;
 
 import android.app.Activity;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 import mortar.Mortar;
 import mortar.MortarScope;
 import nigel.com.werfleider.commons.core.BaseApplication;
 import nigel.com.werfleider.core.ApplicationModule;
+import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.ParseDocumentImage;
+import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.ParseYard;
 
 public class MainApplication extends BaseApplication {
   private MortarScope rootScope;
@@ -38,6 +45,18 @@ public class MainApplication extends BaseApplication {
 
       rootScope =
               Mortar.createRootScope(BuildConfig.DEBUG, getGraph());
+
+      // Enable Local Datastore.
+      Parse.enableLocalDatastore(this);
+
+      ParseObject.registerSubclass(ParseYard.class);
+      ParseObject.registerSubclass(ParseDocument.class);
+      ParseObject.registerSubclass(ParseDocumentLocation.class);
+      ParseObject.registerSubclass(ParseDocumentImage.class);
+      Parse.initialize(
+              this,
+              "oTMmhRqniCH4RUXpHRvuLoq6tjBm2CokTqYcptdv",
+              "Rkth6TnPi92kwUFAsdv3eqlSgl5Wn9HpNxDvKe4t");
 
   }
 

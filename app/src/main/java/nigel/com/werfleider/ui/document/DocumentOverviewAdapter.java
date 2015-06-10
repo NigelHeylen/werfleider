@@ -23,7 +23,7 @@ import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.dao.document.DocumentDbHelper;
 import nigel.com.werfleider.model.Document;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 
 /**
  * Created by nigel on 14/03/15.
@@ -31,34 +31,43 @@ import nigel.com.werfleider.model.Werf;
 public class DocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Document> documents;
-    private final Context context;
+
+    private final Context        context;
 
     @Inject Flow flow;
 
     @Inject Picasso pablo;
 
-    @Inject Werf werf;
+    @Inject WerfInt werf;
 
     @Inject DocumentDbHelper documentDbHelper;
 
     public DocumentOverviewAdapter(final List<Document> documents, final Context context) {
+
         this.documents = documents;
         this.context = context;
-        Mortar.inject(context, this);
+        Mortar.inject(
+                context,
+                this);
     }
 
     @Override public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.document_overview_item, parent, false);
+
+        final View view = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.document_overview_item,
+                parent,
+                false);
 
         return new ViewHolder(view);
     }
 
     @Override public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+
         final ViewHolder viewHolder = (ViewHolder) holder;
 
         final Document document = documents.get(position);
 
-        if (!document.getFotoReeksList().isEmpty()) {
+        if (!document.getFotoReeksList().isEmpty() && !document.getFotoReeksList().get(0).getImageList().isEmpty()) {
             pablo
                     .load(document.getFotoReeksList().get(0).getImageList().get(0).getOnDiskUrl())
                     .fit()
@@ -80,7 +89,7 @@ public class DocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     @Override public void onClick(final View v) {
                          if(documentDbHelper.deleteDocument(document.getId()) == 1){
                              documents.remove(position);
-                             notifyItemRemoved(position);
+                             notifyDataSetChanged();
 
                              Toast.makeText(context, "Document deleted", Toast.LENGTH_LONG).show();
                          } else {

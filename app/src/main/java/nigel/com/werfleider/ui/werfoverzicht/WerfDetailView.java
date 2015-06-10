@@ -11,9 +11,9 @@ import butterknife.OnClick;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 
-import static nigel.com.werfleider.model.DocumentType.BEMERKINGEN;
+import static nigel.com.werfleider.model.DocumentType.OPMERKINGEN;
 import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
-import static nigel.com.werfleider.model.DocumentType.PLAATSBESCHRIJF;
+import static nigel.com.werfleider.model.DocumentType.AS_BUILT;
 
 /**
  * Created by nigel on 27/12/14.
@@ -41,7 +41,7 @@ public class WerfDetailView extends ScrollView {
 
     @OnClick(R.id.werfoverzicht_button_plaatsbeschrijf)
     public void plaatsBeschrijfClick() {
-        presenter.goToDocumentView(PLAATSBESCHRIJF);
+        presenter.goToDocumentView(AS_BUILT);
     }
 
     @OnClick(R.id.werfoverzicht_button_opmetingen)
@@ -51,7 +51,7 @@ public class WerfDetailView extends ScrollView {
 
     @OnClick(R.id.werfoverzicht_button_bemerkingen)
     public void plannenClick() {
-        presenter.goToDocumentView(BEMERKINGEN);
+        presenter.goToDocumentView(OPMERKINGEN);
     }
 
 

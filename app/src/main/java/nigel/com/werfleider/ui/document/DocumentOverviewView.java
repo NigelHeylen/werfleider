@@ -49,7 +49,7 @@ public class DocumentOverviewView extends RelativeLayout {
         ButterKnife.reset(this);
     }
 
-    public void setAdapter(final DocumentOverviewAdapter adapter) {
+    public void setAdapter(final RecyclerView.Adapter adapter) {
         documentList.setAdapter(adapter);
     }
 }

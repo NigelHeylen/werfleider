@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.document.ParseDocumentLocationDetailView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
+            android:id="@+id/document.image.list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            />
+
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/document.image.detail.tabs"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/document.image.detail.views"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            >
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/document.description"
+                style="@style/Werf.Create.EditText"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:hint="Omschrijving foto "
+                android:inputType="textMultiLine"/>
+
+            <include layout="@layout/parsedocument_location_detail_info"/>
+
+            <include layout="@layout/parsedocumen_location_detail_dimensions"/>
+
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/document.menu.button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        fab:fab_colorNormal="@color/accent"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/document.camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_icon="@drawable/ic_action_camera"
+            fab:fab_title="Take pictures"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/document.edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_icon="@drawable/ic_bird"
+            fab:fab_title="Add pictures"/>
+
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/document.save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_icon="@drawable/ic_skull"
+            fab:fab_title="Save location"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
+    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+        android:id="@+id/location.saver"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        android:background="#1E88E5" />
+
+</nigel.com.werfleider.ui.document.ParseDocumentLocationDetailView>

@@ -36,28 +36,38 @@ public class DocumentView extends RelativeLayout {
 
     @OnClick(R.id.document_add_location)
     public void newImageCollection() {
+
         presenter.newImageCollection();
     }
 
 
     @OnClick(R.id.document_create_pdf)
     public void createPdf() {
+
         presenter.write();
     }
 
     public DocumentView(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        Mortar.inject(context, this);
+
+        super(
+                context,
+                attrs);
+        Mortar.inject(
+                context,
+                this);
     }
 
     @Override protected void onFinishInflate() {
+
         super.onFinishInflate();
         ButterKnife.inject(this);
         presenter.takeView(this);
 
+        locations.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     @Override protected void onDetachedFromWindow() {
+
         super.onDetachedFromWindow();
         presenter.dropView(this);
         ButterKnife.reset(this);
@@ -72,13 +82,13 @@ public class DocumentView extends RelativeLayout {
     }
 
     private void initLocations(final Document document) {
-        final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        final DocumentLocationAdapter adapter = new DocumentLocationAdapter(document, pablo, flow);
+        final DocumentLocationAdapter adapter = new DocumentLocationAdapter(document);
 
-        Mortar.inject(getContext(), adapter);
+        Mortar.inject(
+                getContext(),
+                adapter);
 
-        locations.setLayoutManager(layoutManager);
         locations.setAdapter(adapter);
     }
 

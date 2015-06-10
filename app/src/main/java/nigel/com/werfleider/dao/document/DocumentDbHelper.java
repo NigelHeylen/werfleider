@@ -4,7 +4,7 @@ import java.util.List;
 
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 
 /**
  * Created by nigel on 07/02/15.
@@ -32,7 +32,7 @@ public interface DocumentDbHelper {
     // closing database
     void closeDB();
 
-    List<Document> getDocuments(Werf werf, DocumentType documentType);
+    List<Document> getDocuments(WerfInt werf, DocumentType documentType);
 
     int deleteDocument(int id);
 }

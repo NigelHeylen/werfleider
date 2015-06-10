@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <nigel.com.werfleider.ui.home.HomeView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/home.welcome.text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="18sp"
+        tools:text="Wdup Niggie"/>
+
+    <ImageView
+        android:id="@+id/home.welcome.log.out"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_action_navigation_cancel"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="fitCenter"
+        android:layout_width="50dp"
+        android:layout_height="50dp"/>
 
     <LinearLayout
+        android:layout_below="@id/home.welcome.text"
         style="@style/Werfoverzicht.Item.Row">
 
         <View style="@style/Werfoverzicht.Vertical.Separator"/>

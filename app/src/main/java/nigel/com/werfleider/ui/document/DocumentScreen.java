@@ -22,7 +22,7 @@ import nigel.com.werfleider.core.MainScope;
 import nigel.com.werfleider.dao.document.DocumentDbHelper;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentLocation;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.pdf.FileOperations;
 import rx.Observable;
 import rx.Observer;
@@ -39,25 +39,33 @@ import static rx.schedulers.Schedulers.io;
 @Layout(R.layout.document_view)
 public class DocumentScreen implements Blueprint, HasParent<DocumentOverviewScreen> {
 
-    private final Werf werf;
+    private final WerfInt  werf;
+
     private final Document document;
 
-    public DocumentScreen(final Werf werf, final Document document) {
+    public DocumentScreen(final WerfInt werf, final Document document) {
 
         this.werf = werf;
         this.document = document;
     }
 
     @Override public String getMortarScopeName() {
+
         return getClass().getName();
     }
 
     @Override public Object getDaggerModule() {
-        return new Module(werf, document);
+
+        return new Module(
+                werf,
+                document);
     }
 
     @Override public DocumentOverviewScreen getParent() {
-        return new DocumentOverviewScreen(werf, document.getDocumentType());
+
+        return new DocumentOverviewScreen(
+                werf,
+                document.getDocumentType());
     }
 
     @dagger.Module(injects = {
@@ -66,24 +74,28 @@ public class DocumentScreen implements Blueprint, HasParent<DocumentOverviewScre
     }, addsTo = CorePresenter.Module.class)
     static class Module {
 
-        private final Werf werf;
+        private final WerfInt werf;
+
         private final Document document;
 
-        public Module(final Werf werf, final Document document) {
+        public Module(final WerfInt werf, final Document document) {
 
             this.werf = werf;
             this.document = document;
         }
 
-        @Provides Werf provideWerf() {
+        @Provides WerfInt provideWerf() {
+
             return werf;
         }
 
         @Provides @Singleton Document providePlaatsBeschrijf(final DocumentDbHelper documentDbHelper) {
+
             return documentDbHelper.getDocument(document.getId());
         }
 
         @Provides FileOperations provideFileOperations(final Context context) {
+
             return new FileOperations(context);
         }
     }
@@ -99,41 +111,57 @@ public class DocumentScreen implements Blueprint, HasParent<DocumentOverviewScre
 
         @Inject @MainScope Flow flow;
 
-        @Inject Werf werf;
+        @Inject WerfInt werf;
 
         @Inject DocumentDbHelper documentDbHelper;
 
         @Inject Context context;
 
         @Override public void onLoad(Bundle savedInstanceState) {
+
             super.onLoad(savedInstanceState);
             final DocumentView view = getView();
             if (view == null) {
                 return;
             }
 
-            actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, capitalize(document.getDocumentType().name().toLowerCase()), null));
+            actionBarOwner.setConfig(
+                    new ActionBarOwner.Config(
+                            false,
+                            true,
+                            capitalize(document.getDocumentType().name().toLowerCase()),
+                            null));
 
             initTextFields();
 
         }
 
         private void initTextFields() {
+
             getView().initView(document);
         }
 
         public void newImageCollection() {
-            flow.goTo(new PictureGridScreen(document, new DocumentLocation(""), werf));
+
+            flow.goTo(
+                    new PictureGridScreen(
+                            document,
+                            new DocumentLocation(""),
+                            werf));
         }
 
         public void write() {
+
             getView().showLoader(true);
 
             Observable.create(
                     new Observable.OnSubscribe<Boolean>() {
 
                         @Override public void call(final Subscriber<? super Boolean> subscriber) {
-                            final boolean finished = fop.write(document, werf);
+
+                            final boolean finished = fop.write(
+                                    document,
+                                    werf);
                             if (finished) {
                                 subscriber.onNext(true);
                             } else {

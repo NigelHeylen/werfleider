@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import nigel.com.werfleider.dao.helper.DatabaseHelper;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.dao.helper.DatabaseHelperBean.KEY_CREATED_AT;
@@ -104,7 +104,7 @@ public class DocumentDbHelperBean implements DocumentDbHelper {
         databaseHelper.closeDB();
     }
 
-    @Override public List<Document> getDocuments(final Werf werf, final DocumentType documentType) {
+    @Override public List<Document> getDocuments(final WerfInt werf, final DocumentType documentType) {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
         String selectQuery = "SELECT * FROM " + TABLE_DOCUMENT + " WHERE " +

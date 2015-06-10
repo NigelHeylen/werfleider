@@ -11,7 +11,7 @@ import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.ui.document.DocumentOverviewScreen;
 import nigel.com.werfleider.ui.werf.WerfScreen;
 
@@ -21,9 +21,10 @@ import nigel.com.werfleider.ui.werf.WerfScreen;
 @Layout(R.layout.werf_detail)
 public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
 
-    final Werf werf;
+    final WerfInt werf;
 
-    public WerfDetailScreen(final Werf werf) {
+    public WerfDetailScreen(final WerfInt werf) {
+
         this.werf = werf;
     }
 
@@ -33,10 +34,12 @@ public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
     }
 
     @Override public Object getDaggerModule() {
+
         return new Module(werf);
     }
 
     @Override public WerfScreen getParent() {
+
         return new WerfScreen();
     }
 
@@ -46,14 +49,15 @@ public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
             addsTo = CorePresenter.Module.class)
     static class Module {
 
-        private final Werf werf;
+        private final WerfInt werf;
 
-        public Module(final Werf werf) {
+        public Module(final WerfInt werf) {
 
             this.werf = werf;
         }
 
-        @Provides Werf provideWerf(){
+        @Provides WerfInt provideWerf() {
+
             return werf;
         }
     }
@@ -63,10 +67,14 @@ public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
 
         @Inject Flow flow;
 
-        @Inject Werf werf;
+        @Inject WerfInt werf;
 
         public void goToDocumentView(final DocumentType type) {
-            flow.goTo(new DocumentOverviewScreen(werf, type));
+
+            flow.goTo(
+                    new DocumentOverviewScreen(
+                            werf,
+                            type));
         }
 
     }

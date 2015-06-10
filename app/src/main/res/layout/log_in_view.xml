@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.login.LoginView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:material="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/login.email"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                app:floatingLabel="highlight"/>
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/login.password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="Password"
+                android:inputType="textPassword"
+                app:floatingLabel="highlight"/>
+
+            <LinearLayout
+                android:id="@+id/parse_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <com.gc.materialdesign.views.ButtonFlat
+                    android:id="@+id/login.button.login"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_weight="0.5"
+                    android:background="@color/accent"
+                    android:text="Log in"
+                    android:textSize="18sp"/>
+
+                <com.gc.materialdesign.views.ButtonFlat
+                    android:id="@+id/login.button.signup"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_weight="0.5"
+                    android:background="@color/accent"
+                    android:text="Sign up"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+        android:id="@+id/log.in.progress"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@color/accent"
+        android:visibility="invisible"/>
+
+</nigel.com.werfleider.ui.login.LoginView>

@@ -29,7 +29,7 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.StartCameraEvent;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.util.MeasuringUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -48,16 +48,22 @@ public class DocumentLocationDetailView extends RelativeLayout {
 
     @Inject Picasso pablo;
 
-    @Inject Werf werf;
+    @Inject WerfInt werf;
 
     private ViewHolder holder;
 
     public DocumentLocationDetailView(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        Mortar.inject(context, this);
+
+        super(
+                context,
+                attrs);
+        Mortar.inject(
+                context,
+                this);
     }
 
     @Override protected void onFinishInflate() {
+
         super.onFinishInflate();
 
         holder = new ViewHolder(this);
@@ -67,6 +73,7 @@ public class DocumentLocationDetailView extends RelativeLayout {
 
 
     @Override protected void onDetachedFromWindow() {
+
         super.onDetachedFromWindow();
         presenter.dropView(this);
     }
@@ -80,6 +87,7 @@ public class DocumentLocationDetailView extends RelativeLayout {
                 .setOnClickListener(
                         new View.OnClickListener() {
                             @Override public void onClick(final View v) {
+
                                 bus.post(new StartCameraEvent(position));
                             }
                         });
@@ -89,7 +97,12 @@ public class DocumentLocationDetailView extends RelativeLayout {
                 .setOnClickListener(
                         new View.OnClickListener() {
                             @Override public void onClick(final View v) {
-                                flow.goTo(new PictureGridScreen(document, location, werf));
+
+                                flow.goTo(
+                                        new PictureGridScreen(
+                                                document,
+                                                location,
+                                                werf));
                             }
                         });
 

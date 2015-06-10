@@ -1,11 +1,13 @@
 package nigel.com.werfleider.model;
 
+import com.parse.ParseUser;
+
 import org.joda.time.DateTime;
 
 /**
  * Created by nigel on 31/01/15.
  */
-public class Werf {
+public class Werf implements WerfInt{
 
     private String naam;
     private String nummer;
@@ -82,8 +84,8 @@ public class Werf {
         return this;
     }
 
-    public int getId() {
-        return id;
+    public String getId() {
+        return String.valueOf(id);
     }
 
     public String getNaam() {
@@ -135,7 +137,22 @@ public class Werf {
         return datumAanvang;
     }
 
-    public Werf setDatumAanvang(final String datumAanvang) {
+    @Override public ParseUser getAuthor() {
+
+        return null;
+    }
+
+    @Override public WerfInt setAuthor(final ParseUser user) {
+
+        return null;
+    }
+
+    @Override public WerfInt setCreator(final String creator) {
+
+        return null;
+    }
+
+    public Werf setDatumAanvang(final DateTime datumAanvang) {
         this.datumAanvang = new DateTime(datumAanvang);
         return this;
     }

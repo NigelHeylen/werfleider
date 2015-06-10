@@ -109,7 +109,7 @@ public class PictureGridView extends RelativeLayout {
 
         final View title = LayoutInflater.from(getContext()).inflate(R.layout.picture_grid_title_item, grid, false);
 
-        location = ButterKnife.findById(title, R.id.picture_grid_location);
+        location = ButterKnife.findById(title, R.id.picture_grid_title);
 
         adapter.addHeaderView(title);
 

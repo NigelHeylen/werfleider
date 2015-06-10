@@ -20,7 +20,7 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.dao.document.DocumentLocatieDbHelper;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentLocation;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.ui.widget.CustomTextWatcher;
 
 import static java.lang.String.format;
@@ -30,24 +30,28 @@ import static java.lang.String.format;
  */
 public class DocumentLocationAdapter extends RecyclerView.Adapter<DocumentLocationAdapter.ViewHolder> {
 
-    final Document document;
-    @Inject Picasso pablo;
-    @Inject Flow flow;
-    @Inject Werf werf;
+    final   Document                document;
+
+    @Inject Picasso                 pablo;
+
+    @Inject Flow                    flow;
+
+    @Inject WerfInt                 werf;
+
     @Inject DocumentLocatieDbHelper documentLocatieDbHelper;
 
     public DocumentLocationAdapter(
-            final Document document,
-            final Picasso pablo,
-            final Flow flow) {
+            final Document document) {
+
         this.document = document;
-        this.pablo = pablo;
-        this.flow = flow;
     }
 
     @Override public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
 
-        final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.document_location_item, parent, false);
+        final View itemView = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.document_location_item,
+                parent,
+                false);
 
         return new ViewHolder(itemView);
     }
@@ -60,6 +64,7 @@ public class DocumentLocationAdapter extends RecyclerView.Adapter<DocumentLocati
         holder.mName.addTextChangedListener(
                 new CustomTextWatcher() {
                     @Override public void afterTextChanged(final Editable s) {
+
                         collection.setLocation(s.toString());
                     }
                 });

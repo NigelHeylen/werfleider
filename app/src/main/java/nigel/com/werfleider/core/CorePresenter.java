@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package nigel.com.werfleider.core;
+import com.parse.ParseUser;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -25,6 +27,7 @@ import mortar.Blueprint;
 import nigel.com.werfleider.android.ActionBarModule;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.ui.home.HomeScreen;
+import nigel.com.werfleider.ui.login.LoginScreen;
 import nigel.com.werfleider.util.FlowOwner;
 
 public class CorePresenter implements Blueprint {
@@ -67,7 +70,11 @@ public class CorePresenter implements Blueprint {
     }
 
     @Override protected Blueprint getFirstScreen() {
-      return new HomeScreen();
+        if(ParseUser.getCurrentUser() != null) {
+            return new HomeScreen();
+        } else {
+            return new LoginScreen();
+        }
     }
 
   }

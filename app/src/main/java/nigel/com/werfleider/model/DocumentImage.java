@@ -1,5 +1,7 @@
 package nigel.com.werfleider.model;
 
+import java.util.Date;
+
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
@@ -14,17 +16,23 @@ public class DocumentImage {
     private String imageURL;
 
     private String description;
+
     private String title;
 
+    private Date createdDate;
+
     public String getImageURL() {
+
         return imageURL;
     }
 
     public String getDescription() {
+
         return description;
     }
 
     private double height;
+
     private double length;
     private double width;
 
@@ -105,5 +113,16 @@ public class DocumentImage {
 
     public String getTitle() {
         return isNullOrEmpty(title) ? "" : title;
+    }
+
+    public DocumentImage setCreatedDate(final Date createdDate) {
+
+        this.createdDate = createdDate;
+        return this;
+    }
+
+    public Date getCreatedDate() {
+
+        return createdDate;
     }
 }

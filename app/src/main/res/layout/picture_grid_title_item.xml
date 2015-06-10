@@ -11,18 +11,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/picture.grid.location"
+        android:id="@+id/picture.grid.art.nr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        android:hint="Locatie naam"
+        android:hint="Art. Nr."
         android:textCursorDrawable="@drawable/text_cursor_cyan"
         android:textSize="34sp"
         app:baseColor="@android:color/white"
         app:floatingLabel="highlight"
         app:primaryColor="@color/accent"
         app:singleLineEllipsis="true"/>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/picture.grid.title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:hint="Title"
+        android:textCursorDrawable="@drawable/text_cursor_cyan"
+        android:textSize="34sp"
+        app:baseColor="@android:color/white"
+        app:floatingLabel="highlight"
+        app:primaryColor="@color/accent"
+        app:singleLineEllipsis="true"/>
+
 
 </LinearLayout>

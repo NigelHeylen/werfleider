@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -107,7 +109,7 @@ public class WerfDbHelperBean implements WerfDbHelper {
                 .setOpdrachtgeverStad(c.getString(c.getColumnIndex(KEY_OPDRACHTGEVER_STAD)))
                 .setOmschrijving(c.getString(c.getColumnIndex(KEY_OMSCHRIJVING)))
                 .setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)))
-                .setDatumAanvang(c.getString(c.getColumnIndex(KEY_DATUM_AANVANG)));
+                .setDatumAanvang(new DateTime(c.getString(c.getColumnIndex(KEY_DATUM_AANVANG))));
     }
 
     /*

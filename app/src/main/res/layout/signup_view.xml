@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.login.SignupView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        >
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/signup.name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="First and last name"
+            android:inputType="text"
+            app:floatingLabel="highlight"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/signup.email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            app:floatingLabel="highlight"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/signup.profession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Profession"
+            android:inputType="text"
+            app:floatingLabel="highlight"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/signup.company"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Company"
+            android:inputType="text"
+            app:floatingLabel="highlight"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/signup.password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            app:floatingLabel="highlight"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/signup.password.check"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Password check"
+            android:inputType="textPassword"
+            app:floatingLabel="highlight"/>
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/signup.button"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="5dp"
+            android:text="Sign up"/>
+
+    </LinearLayout>
+
+
+</nigel.com.werfleider.ui.login.SignupView>

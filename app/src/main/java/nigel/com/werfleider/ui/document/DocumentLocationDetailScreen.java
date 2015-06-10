@@ -22,7 +22,7 @@ import nigel.com.werfleider.model.CreateImage;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentImage;
 import nigel.com.werfleider.model.DocumentLocation;
-import nigel.com.werfleider.model.Werf;
+import nigel.com.werfleider.model.WerfInt;
 
 import static java.lang.String.format;
 
@@ -33,29 +33,41 @@ import static java.lang.String.format;
 public class DocumentLocationDetailScreen implements Blueprint, HasParent<DocumentScreen> {
 
     private final Document document;
-    private final int locationIndex;
-    private final Werf werf;
 
-    public DocumentLocationDetailScreen(final Document document, final int locationIndex, final Werf werf) {
+    private final int      locationIndex;
+
+    private final WerfInt  werf;
+
+    public DocumentLocationDetailScreen(final Document document, final int locationIndex, final WerfInt werf) {
+
         this.document = document;
         this.locationIndex = locationIndex;
         this.werf = werf;
     }
 
     @Override public String getMortarScopeName() {
-        return format("%s document: werf id %s, %s, location: %d",
-                      getClass().getName(),
-                      werf.getId(),
-                      document.getDocumentType().name().toLowerCase(),
-                      locationIndex);
+
+        return format(
+                "%s document: yard id %s, %s, location: %d",
+                getClass().getName(),
+                werf.getId(),
+                document.getDocumentType().name().toLowerCase(),
+                locationIndex);
     }
 
     @Override public DocumentScreen getParent() {
-        return new DocumentScreen(werf, document);
+
+        return new DocumentScreen(
+                werf,
+                document);
     }
 
     @Override public Object getDaggerModule() {
-        return new Module(document, locationIndex, werf);
+
+        return new Module(
+                document,
+                locationIndex,
+                werf);
     }
 
     @dagger.Module(injects = DocumentLocationDetailView.class, addsTo = CorePresenter.Module.class)
@@ -64,23 +76,28 @@ public class DocumentLocationDetailScreen implements Blueprint, HasParent<Docume
         final Document document;
 
         final int locationIndex;
-        private final Werf werf;
 
-        Module(final Document document, final int locationIndex, final Werf werf) {
+        private final WerfInt werf;
+
+        Module(final Document document, final int locationIndex, final WerfInt werf) {
+
             this.document = document;
             this.locationIndex = locationIndex;
             this.werf = werf;
         }
 
-        @Provides Werf provideWerf(){
+        @Provides WerfInt provideWerf() {
+
             return werf;
         }
 
         @Provides @Singleton Document providePlaatsBeschrijf() {
+
             return document;
         }
 
-        @Provides int provideLocation(){
+        @Provides int provideLocation() {
+
             return locationIndex;
         }
 
@@ -99,10 +116,12 @@ public class DocumentLocationDetailScreen implements Blueprint, HasParent<Docume
 
         @Inject
         public Presenter(final Bus bus) {
+
             bus.register(this);
         }
 
         @Override protected void onLoad(final Bundle savedInstanceState) {
+
             super.onLoad(savedInstanceState);
 
             DocumentLocationDetailView view = getView();
@@ -112,24 +131,39 @@ public class DocumentLocationDetailScreen implements Blueprint, HasParent<Docume
 
             initActionBar();
 
-            view.initAdapter(document, locationIndex);
+            view.initAdapter(
+                    document,
+                    locationIndex);
         }
 
 
         private void initActionBar() {
-             if(locationIndex >= 0) {
-                actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, document.getFotoReeksList().get(locationIndex).getLocation(), null));
-            } else{
-                actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, "Location", null));
+
+            if (locationIndex >= 0) {
+                actionBarOwner.setConfig(
+                        new ActionBarOwner.Config(
+                                false,
+                                true,
+                                document.getFotoReeksList().get(locationIndex).getLocation(),
+                                null));
+            } else {
+                actionBarOwner.setConfig(
+                        new ActionBarOwner.Config(
+                                false,
+                                true,
+                                "Location",
+                                null));
             }
         }
 
         private DocumentLocation getPlaatsBeschrijfLocatie() {
+
             return document.getFotoReeksList().get(locationIndex);
         }
 
         @Subscribe
         public void reactToImageCreated(final CreateImage createImage) {
+
             document
                     .getFotoReeksList()
                     .get(createImage.getImageLocationIndex())
