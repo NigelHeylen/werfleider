@@ -3,6 +3,7 @@ package nigel.com.werfleider.ui.document;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.SurfaceView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -39,6 +40,10 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
     @InjectView(R.id.document_width) MaterialEditText width;
 
+    @InjectView(R.id.document_quantity) MaterialEditText quantity;
+
+    @InjectView(R.id.document_ms) MaterialEditText ms;
+
     @InjectView(R.id.document_detail_floor) MaterialEditText floor;
 
     @InjectView(R.id.document_detail_location) MaterialEditText location;
@@ -59,6 +64,14 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
     @InjectViews({R.id.document_length, R.id.document_width, R.id.document_height})
     List<MaterialEditText> editTexts;
+
+    @InjectView(R.id.take_picture_surface) SurfaceView surfaceView;
+
+    @OnClick(R.id.take_photo)
+    public void takePhoto() {
+
+        presenter.takePhoto();
+    }
 
     public ParseDocumentLocationDetailView(final Context context, final AttributeSet attrs) {
 
@@ -85,12 +98,6 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
         super.onDetachedFromWindow();
         presenter.dropView(this);
         ButterKnife.reset(this);
-    }
-
-    @OnClick(R.id.document_camera)
-    public void clickCamera() {
-
-        presenter.startCameraEvent();
     }
 
     @OnClick(R.id.document_save)
@@ -120,7 +127,9 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
     
     @OnTextChanged(R.id.document_width)
     public void changeWidth(){
-        
+
+        System.out.println("width.getText().toString() = " + width.getText().toString());
+
         presenter.changeWidth(width.getText().toString());
     }
     
@@ -134,6 +143,18 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
     public void changeLength(){
         
         presenter.changeLength(length.getText().toString());
+    }
+
+    @OnTextChanged(R.id.document_quantity)
+    public void changeQuantity(){
+
+        presenter.changeQuantity(quantity.getText().toString());
+    }
+
+    @OnTextChanged(R.id.document_ms)
+    public void changeMS(){
+
+        presenter.changeMS(ms.getText().toString());
     }
 
     @OnClick(R.id.document_edit)

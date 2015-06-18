@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -51,7 +52,6 @@ import static com.itextpdf.text.Element.ALIGN_CENTER;
 import static com.itextpdf.text.Element.ALIGN_LEFT;
 import static java.lang.String.format;
 import static nigel.com.werfleider.model.ParseDocumentImage.COMPARE_BY_FLOOR;
-import static org.apache.commons.lang3.StringUtils.stripToEmpty;
 import static org.joda.time.DateTime.now;
 
 public class ParseFileOperations {
@@ -170,7 +170,7 @@ public class ParseFileOperations {
                 new Function<ParseDocumentImage, String>() {
                     @Override public String apply(final ParseDocumentImage input) {
 
-                        return stripToEmpty(input.getFloor());
+                        return Strings.nullToEmpty(input.getFloor());
                     }
                 });
 

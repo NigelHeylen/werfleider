@@ -145,8 +145,10 @@ public class WerfScreen implements Blueprint, HasParent<HomeScreen> {
                             } else{
                                 e.printStackTrace();
                             }
-                            getView().loader.setVisibility(
-                                    View.GONE);
+                            if(getView()!= null) {
+                                getView().loader.setVisibility(
+                                        View.GONE);
+                            }
                         }
                     });
         }

@@ -1,16 +1,21 @@
 package nigel.com.werfleider.ui.document;
 
+import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.LinearLayoutManagerEx;
 import android.support.v7.widget.OrientationHelperEx;
 import android.support.v7.widget.RecyclerViewEx;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -19,10 +24,11 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -40,12 +46,10 @@ import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.model.CreateImage;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
 import nigel.com.werfleider.model.ParseYard;
-import nigel.com.werfleider.model.StartCameraEvent;
 import nigel.com.werfleider.util.ImageUtils;
 import nigel.com.werfleider.util.MeasuringUnit;
 
@@ -56,6 +60,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
 import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
+import static nigel.com.werfleider.util.StringUtils.emptyToOne;
 
 /**
  * Created by nigel on 17/04/15.
@@ -147,7 +152,7 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
     }
 
     @Singleton
-    public static class Presenter extends ViewPresenter<ParseDocumentLocationDetailView> {
+    public static class Presenter extends ViewPresenter<ParseDocumentLocationDetailView> implements SurfaceHolder.Callback {
 
         @Inject ParseDocument document;
 
@@ -159,8 +164,6 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
 
         @Inject ActionBarOwner actionBarOwner;
 
-        @Inject Bus bus;
-
         @Inject List<ParseDocumentImage> imageList;
 
         @Inject Flow flow;
@@ -171,11 +174,16 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
 
         private LinearLayoutManagerEx layoutManager;
 
-        @Inject
-        public Presenter(final Bus bus) {
 
-            bus.register(this);
-        }
+        private Camera camera;
+
+        SurfaceHolder surfaceHolder;
+
+        Camera.PictureCallback rawCallback;
+
+        Camera.ShutterCallback shutterCallback;
+
+        Camera.PictureCallback jpegCallback;
 
         @Override protected void onLoad(final Bundle savedInstanceState) {
 
@@ -190,7 +198,41 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
 
             initView();
 
-            getImages();
+            if (imageList.isEmpty()) {
+                getImages();
+            }
+
+            surfaceHolder = getView().surfaceView.getHolder();
+            surfaceHolder.addCallback(this);
+            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+            jpegCallback = new Camera.PictureCallback() {
+
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+
+                    try {
+                        final String path = format(
+                                "%s/%d.jpg",
+                                Environment.getExternalStorageDirectory().getPath(),
+                                System.currentTimeMillis());
+
+                        FileOutputStream fos = new FileOutputStream(path);
+
+                        fos.write(data);
+                        fos.close();
+
+                        final File file = new File(path);
+
+                        reactToImageCreated(file);
+
+                        refreshCamera();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            };
         }
 
         private void initView() {
@@ -206,8 +248,10 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
                         @Override public void onScrollStateChanged(final RecyclerViewEx recyclerViewEx, final int i) {
 
                             if (i == RecyclerViewEx.SCROLL_STATE_IDLE) {
-                                position = layoutManager.findFirstCompletelyVisibleItemPosition();
-                                initPagerDetailViews();
+                                if (position != layoutManager.findFirstCompletelyVisibleItemPosition()) {
+                                    position = layoutManager.findFirstCompletelyVisibleItemPosition();
+                                    initPagerDetailViews();
+                                }
                             }
                         }
 
@@ -219,7 +263,37 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
 
         private void getImages() {
 
-            final ParseQuery<ParseDocumentImage> query = ParseQuery.getQuery(ParseDocumentImage.class);
+            final ParseQuery<ParseDocumentImage> internetQuery = ParseQuery.getQuery(ParseDocumentImage.class);
+            getImages(internetQuery);
+
+
+//            final ParseQuery<ParseDocumentImage> localQuery = ParseQuery.getQuery(ParseDocumentImage.class);
+//
+//            localQuery.whereEqualTo(
+//                    LOCATION_ID,
+//                    location);
+//            localQuery.findInBackground(
+//                    new FindCallback<ParseDocumentImage>() {
+//                        @Override public void done(final List<ParseDocumentImage> list, final ParseException e) {
+//
+//                            System.out.println("local Presenter.done");
+//                            if (e == null) {
+//
+//                                Collections.sort(list);
+//                                imageList.addAll(list);
+//
+//                            } else {
+//                                e.printStackTrace();
+//                            }
+//                            if (getView() != null) {
+//                                getView().progressBar.setVisibility(GONE);
+//                            }
+//                        }
+//                    });
+        }
+
+        private void getImages(final ParseQuery<ParseDocumentImage> query) {
+
             query.whereEqualTo(
                     LOCATION_ID,
                     location);
@@ -228,11 +302,12 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
                     new FindCallback<ParseDocumentImage>() {
                         @Override public void done(final List<ParseDocumentImage> list, final ParseException e) {
 
+                            System.out.println("intern Presenter.done");
                             if (e == null) {
-                                imageList.clear();
 
                                 Collections.sort(list);
                                 imageList.addAll(list);
+
                                 initAdapter();
                                 initPagerDetailViews();
                                 getView().detailTabs.setViewPager(getView().detailViews);
@@ -259,40 +334,43 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
                             null));
         }
 
-        @Subscribe
-        public void reactToImageCreated(final CreateImage createImage) {
 
-            final ParseFile parseFile = ImageUtils.getParseFile(createImage.getCurrentUri());
-            parseFile.saveInBackground(
+        public void reactToImageCreated(final File file) {
+
+            final ParseDocumentImage image = new ParseDocumentImage();
+            image.setImageURL(file.getAbsolutePath())
+                 .setImageTakenDate(new Date())
+                 .setAuthor(ParseUser.getCurrentUser())
+                 .setLocationId(location);
+
+
+            image.saveEventually(
                     new SaveCallback() {
                         @Override public void done(final ParseException e) {
 
                             if (e == null) {
-                                System.out.println("Presenter.done");
+                                imageList.add(image);
+
+                                adapter.notifyDataSetChanged();
+
+                                getView().imageList.smoothScrollToPosition(imageList.size());
+
+                                final ParseFile parseFile = ImageUtils.getParseFile(file.getAbsolutePath());
+                                parseFile.saveInBackground(
+                                        new SaveCallback() {
+                                            @Override public void done(final ParseException e) {
+                                                image.setImage(parseFile);
+                                                image.saveEventually();
+                                            }
+                                        });
                             } else {
                                 e.printStackTrace();
                             }
                         }
                     });
 
-            final ParseDocumentImage image = new ParseDocumentImage();
-            image.setImageURL(createImage.getCurrentUri())
-                 .setImage(parseFile)
-                 .setImageTakenDate(new Date())
-                 .setAuthor(ParseUser.getCurrentUser())
-                 .setLocationId(location);
-
-            imageList.add(image);
-
-            adapter.notifyDataSetChanged();
-
         }
 
-
-        public void startCameraEvent() {
-
-            bus.post(new StartCameraEvent(0));
-        }
 
         public void handleSave() {
 
@@ -317,6 +395,10 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
                         }
                     });
 
+            for (ParseDocumentImage parseDocumentImage : imageList) {
+                parseDocumentImage.saveEventually();
+            }
+
         }
 
         public void initAdapter() {
@@ -326,12 +408,12 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
                             getView().getContext(),
                             getView().progressBar));
 
-            getView().detailViews.setOffscreenPageLimit(5);
+            getView().detailViews.setOffscreenPageLimit(10);
             getView().detailViews.setAdapter(
                     new PagerAdapter() {
                         @Override public int getCount() {
 
-                            return document.getDocumentType() == OPMETINGEN ? 3 : 2;
+                            return document.getDocumentType() == OPMETINGEN ? 4 : 3;
                         }
 
                         @Override public boolean isViewFromObject(final View view, final Object object) {
@@ -353,6 +435,8 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
                                     return "Info";
                                 case 2:
                                     return "Afmetingen";
+                                case 3:
+                                    return "Camera";
                                 default:
                                     return "PIET";
                             }
@@ -405,15 +489,19 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
 
         private void initPagerDetailViews() {
 
-            final ParseDocumentImage image = getCurrentImage();
+            if (imageList.size() != 0) {
+                final ParseDocumentImage image = getCurrentImage();
 
-            getView().width.setText(Double.toString(image.getWidth()));
-            getView().height.setText(Double.toString(image.getHeight()));
-            getView().length.setText(Double.toString(image.getLength()));
+                getView().height.setText(Double.toString(image.getHeight()));
+                getView().length.setText(Double.toString(image.getLength()));
+                getView().width.setText(Double.toString(image.getWidth()));
+                getView().quantity.setText(Integer.toString(image.getQuantity()));
+                getView().ms.setText(image.getMS());
 
-            getView().description.setText(image.getDescription());
-            getView().floor.setText(image.getFloor());
-            getView().location.setText(image.getLocation());
+                getView().description.setText(image.getDescription());
+                getView().floor.setText(image.getFloor());
+                getView().location.setText(image.getLocation());
+            }
 
         }
 
@@ -446,17 +534,17 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
 
         public void changeWidth(final String width) {
 
-            getCurrentImage().setWidth(Double.parseDouble(width));
+            getCurrentImage().setWidth(Double.parseDouble(emptyToOne(width)));
         }
 
         public void changeHeight(final String height) {
 
-            getCurrentImage().setHeight(Double.parseDouble(height));
+            getCurrentImage().setHeight(Double.parseDouble(emptyToOne(height)));
         }
 
         public void changeLength(final String length) {
 
-            getCurrentImage().setLength(Double.parseDouble(length));
+            getCurrentImage().setLength(Double.parseDouble(emptyToOne(length)));
         }
 
 
@@ -478,6 +566,107 @@ public class ParseDocumentLocationDetailScreen implements Blueprint, HasParent<P
                             document,
                             location,
                             yard));
+        }
+
+        public void changeQuantity(final String quantity) {
+
+            getCurrentImage().setQuantity(Integer.parseInt(emptyToOne(quantity)));
+        }
+
+        public void changeMS(final String ms) {
+
+            changeAllMSStringsPerFloor(ms);
+        }
+
+        private void changeAllMSStringsPerFloor(final String ms) {
+
+            for (ParseDocumentImage documentImage : filterOnLocation()) {
+
+                documentImage.setMS(ms);
+            }
+        }
+
+        private Iterable<ParseDocumentImage> filterOnLocation() {
+
+            return Iterables.filter(
+                    imageList,
+                    new Predicate<ParseDocumentImage>() {
+                        @Override public boolean apply(final ParseDocumentImage input) {
+
+                            return input.getLocation().trim().equals(getCurrentImage().getLocation().trim());
+                        }
+                    });
+        }
+
+
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+
+            try {
+                camera = Camera.open();
+            } catch (RuntimeException e) {
+                System.err.println(e);
+                return;
+            }
+
+            Camera.Parameters param;
+            param = camera.getParameters();
+            param.setPreviewSize(
+                    352,
+                    288);
+            param.setRotation(90);
+            camera.setParameters(param);
+            camera.setDisplayOrientation(90);
+
+            try {
+                camera.setPreviewDisplay(surfaceHolder);
+                camera.startPreview();
+            } catch (Exception e) {
+                System.err.println(e);
+                return;
+            }
+        }
+
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            refreshCamera();
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+        }
+
+        public void takePhoto() {
+
+            camera.takePicture(
+                    null,
+                    null,
+                    jpegCallback);
+
+        }
+
+
+        public void refreshCamera() {
+
+            if (surfaceHolder.getSurface() == null) {
+                return;
+            }
+
+            try {
+                camera.stopPreview();
+            } catch (Exception e) {
+            }
+
+            try {
+                camera.setPreviewDisplay(surfaceHolder);
+                camera.startPreview();
+            } catch (Exception e) {
+            }
         }
     }
 }

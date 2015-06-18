@@ -17,9 +17,11 @@ package nigel.com.werfleider;
 
 import android.app.Activity;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import io.fabric.sdk.android.Fabric;
 import mortar.Mortar;
 import mortar.MortarScope;
 import nigel.com.werfleider.commons.core.BaseApplication;
@@ -30,48 +32,59 @@ import nigel.com.werfleider.model.ParseDocumentLocation;
 import nigel.com.werfleider.model.ParseYard;
 
 public class MainApplication extends BaseApplication {
-  private MortarScope rootScope;
+
+    private MortarScope rootScope;
 
     private Activity activeActivity;
 
     @Override
     protected Object[] getApplicationModules() {
-        return new Object[] {
+
+        return new Object[]{
                 ApplicationModule.class};
     }
 
-  @Override public void onCreate() {
-    super.onCreate();
+    @Override public void onCreate() {
 
-      rootScope =
-              Mortar.createRootScope(BuildConfig.DEBUG, getGraph());
+        super.onCreate();
+        Fabric.with(
+                this,
+                new Crashlytics());
 
-      // Enable Local Datastore.
-      Parse.enableLocalDatastore(this);
+        rootScope =
+                Mortar.createRootScope(
+                        BuildConfig.DEBUG,
+                        getGraph());
 
-      ParseObject.registerSubclass(ParseYard.class);
-      ParseObject.registerSubclass(ParseDocument.class);
-      ParseObject.registerSubclass(ParseDocumentLocation.class);
-      ParseObject.registerSubclass(ParseDocumentImage.class);
-      Parse.initialize(
-              this,
-              "oTMmhRqniCH4RUXpHRvuLoq6tjBm2CokTqYcptdv",
-              "Rkth6TnPi92kwUFAsdv3eqlSgl5Wn9HpNxDvKe4t");
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
 
-  }
+        ParseObject.registerSubclass(ParseYard.class);
+        ParseObject.registerSubclass(ParseDocument.class);
+        ParseObject.registerSubclass(ParseDocumentLocation.class);
+        ParseObject.registerSubclass(ParseDocumentImage.class);
+        Parse.initialize(
+                this,
+                "oTMmhRqniCH4RUXpHRvuLoq6tjBm2CokTqYcptdv",
+                "Rkth6TnPi92kwUFAsdv3eqlSgl5Wn9HpNxDvKe4t");
 
-  @Override public Object getSystemService(String name) {
-    if (Mortar.isScopeSystemService(name)) {
-      return rootScope;
     }
-    return super.getSystemService(name);
-  }
+
+    @Override public Object getSystemService(String name) {
+
+        if (Mortar.isScopeSystemService(name)) {
+            return rootScope;
+        }
+        return super.getSystemService(name);
+    }
 
     public void setActiveActivity(final Activity activeActivity) {
+
         this.activeActivity = activeActivity;
     }
 
     public MainActivity getActiveActivity() {
+
         return (MainActivity) activeActivity;
     }
 }

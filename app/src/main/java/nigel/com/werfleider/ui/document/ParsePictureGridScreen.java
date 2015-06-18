@@ -341,6 +341,14 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
                     "Camera");
 
+            final File file2 = new File(Environment.getExternalStorageDirectory().getPath());
+
+            addImages(file);
+            addImages(file2);
+        }
+
+        private void addImages(final File file) {
+
             if (file.isDirectory()) {
                 for (File aFile : file.listFiles(new ImageFileFilter())) {
                     images.add(

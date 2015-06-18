@@ -8,6 +8,9 @@ import com.parse.ParseUser;
 import java.util.Comparator;
 import java.util.Date;
 
+import nigel.com.werfleider.util.MeasuringUnit;
+
+import static com.google.common.base.Strings.nullToEmpty;
 import static nigel.com.werfleider.util.ParseStringUtils.ABSOLUTE_PATH;
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DESCRIPTION;
@@ -18,9 +21,10 @@ import static nigel.com.werfleider.util.ParseStringUtils.IMAGE_TAKEN_DATE;
 import static nigel.com.werfleider.util.ParseStringUtils.LENGTH;
 import static nigel.com.werfleider.util.ParseStringUtils.LOCATION;
 import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
+import static nigel.com.werfleider.util.ParseStringUtils.MS;
+import static nigel.com.werfleider.util.ParseStringUtils.QUANTITY;
 import static nigel.com.werfleider.util.ParseStringUtils.TITLE;
 import static nigel.com.werfleider.util.ParseStringUtils.WIDTH;
-import static org.apache.commons.lang3.StringUtils.stripToEmpty;
 
 /**
  * Created by nigel on 16/04/15.
@@ -126,6 +130,7 @@ public class ParseDocumentImage extends ParseObject implements Comparable<ParseD
 
     public ParseDocumentImage setWidth(final double width) {
 
+        System.out.println("set width width = " + width);
         put(
                 WIDTH,
                 width);
@@ -147,7 +152,7 @@ public class ParseDocumentImage extends ParseObject implements Comparable<ParseD
 
     public String getFloor() {
 
-        return stripToEmpty(getString(FLOOR));
+        return nullToEmpty(getString(FLOOR));
     }
 
     public ParseDocumentImage setFloor(final String floor) {
@@ -158,9 +163,22 @@ public class ParseDocumentImage extends ParseObject implements Comparable<ParseD
         return this;
     }
 
+    public int getQuantity() {
+
+        return getInt(QUANTITY);
+    }
+
+    public ParseDocumentImage setQuantity(final int quantity) {
+
+        put(
+                QUANTITY,
+                quantity);
+        return this;
+    }
+
     public String getLocation() {
 
-        return stripToEmpty(getString(LOCATION));
+        return nullToEmpty(getString(LOCATION));
     }
 
     public ParseDocumentImage setLocation(final String location) {
@@ -195,4 +213,31 @@ public class ParseDocumentImage extends ParseObject implements Comparable<ParseD
                     lhs.getFloor().compareTo(rhs.getFloor());
         }
     };
+
+    public ParseDocumentImage setMS(final String ms) {
+
+        put(MS, ms);
+        return this;
+    }
+
+    public String getMS() {
+
+        return getString(MS);
+    }
+
+    public double getTotal(final MeasuringUnit measuringUnit) {
+
+        switch(measuringUnit.getWeight()){
+            case 0: return getLength();
+            case 1: return getLength() * getWidth();
+            case 2: return getLength() * getWidth() * getHeight();
+        }
+
+        return 0;
+    }
+
+    public boolean hasImage() {
+
+        return getImage() != null;
+    }
 }

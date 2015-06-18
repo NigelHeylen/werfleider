@@ -1,6 +1,6 @@
 package nigel.com.werfleider.model;
 
-import static org.apache.commons.lang3.StringUtils.capitalize;
+import static nigel.com.werfleider.util.StringUtils.*;
 
 /**
  * Created by nigel on 17/02/15.

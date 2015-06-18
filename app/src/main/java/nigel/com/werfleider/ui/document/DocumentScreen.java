@@ -29,7 +29,7 @@ import rx.Observer;
 import rx.Subscriber;
 
 import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.capitalize;
+import static nigel.com.werfleider.util.StringUtils.capitalize;
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 import static rx.schedulers.Schedulers.io;
 

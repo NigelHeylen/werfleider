@@ -5,12 +5,12 @@ import android.graphics.BitmapFactory;
 
 import com.parse.ParseFile;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import static nigel.com.werfleider.util.StringUtils.substringAfterLast;
 
 /**
  * Created by nigel on 02/05/15.
@@ -24,7 +24,9 @@ public class ImageUtils {
         final Bitmap bitmap = ImageUtils.decodeFile(imageFile);
 
         return new ParseFile(
-                StringUtils.substringAfterLast(imageUrl, "/"), getBytesFromBitmap(bitmap));
+                substringAfterLast(
+                        imageUrl,
+                        "/"), getBytesFromBitmap(bitmap));
     }
 
 
@@ -71,5 +73,9 @@ public class ImageUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getOnDiskUrl(final String url){
+        return String.format("file://%s", url);
     }
 }

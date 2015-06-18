@@ -22,9 +22,11 @@ import butterknife.InjectView;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.ParseDocumentImage;
+import nigel.com.werfleider.util.ImageUtils;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Created by nigel on 24/01/15.
@@ -65,8 +67,9 @@ public class ParseDocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
 
         final ParseDocumentImage image = imageList.get(position);
 
+
         pablo
-                .load(image.getImage().getUrl())
+                .load(image.hasImage() ? image.getImage().getUrl() : ImageUtils.getOnDiskUrl(image.getImageURL()))
                 .fit()
                 .centerInside()
                 .into(holder.image);
@@ -76,20 +79,27 @@ public class ParseDocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
                     @Override public void onClick(final View v) {
 
                         progressBar.setVisibility(VISIBLE);
-                        image.deleteInBackground(
-                                new DeleteCallback() {
-                                    @Override public void done(final ParseException e) {
+                        if(isNullOrEmpty(image.getObjectId())){
 
-                                        if (e != null) {
-                                            e.printStackTrace();
-                                        } else {
-                                            imageList.remove(position);
-                                            notifyItemRemoved(position);
+                            imageList.remove(position);
+                            notifyItemRemoved(position);
+                            progressBar.setVisibility(GONE);
+                        } else {
+                            image.deleteInBackground(
+                                    new DeleteCallback() {
+                                        @Override public void done(final ParseException e) {
+
+                                            if (e != null) {
+                                                e.printStackTrace();
+                                            } else {
+                                                imageList.remove(position);
+                                                notifyItemRemoved(position);
+                                            }
+
+                                            progressBar.setVisibility(GONE);
                                         }
-
-                                        progressBar.setVisibility(GONE);
-                                    }
-                                });
+                                    });
+                        }
                     }
                 });
 

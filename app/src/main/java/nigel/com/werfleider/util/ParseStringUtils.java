@@ -79,6 +79,8 @@ public class ParseStringUtils {
     public static final String HEIGHT = "height";
     public static final String LENGTH = "length";
     public static final String WIDTH = "width";
+    public static final String QUANTITY = "quantity";
+    public static final String MS = "ms";
     public static final String FLOOR = "floor";
 
     public static final String ABSOLUTE_PATH = "absolute_path";

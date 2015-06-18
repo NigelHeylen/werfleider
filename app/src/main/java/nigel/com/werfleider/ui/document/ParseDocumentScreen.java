@@ -32,6 +32,7 @@ import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
 import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.pdf.MeasurementsFileOperations;
 import nigel.com.werfleider.pdf.ParseFileOperations;
 import nigel.com.werfleider.ui.werf.YardDetailScreen;
 import nigel.com.werfleider.util.MeasuringUnit;
@@ -112,6 +113,11 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
             return new ParseFileOperations(context);
         }
 
+        @Provides MeasurementsFileOperations provideMeasurementsFileOperations(final Context context) {
+
+            return new MeasurementsFileOperations(context);
+        }
+
         @Provides @Singleton List<ParseDocumentLocation> provideLocations() {
 
             return newArrayList();
@@ -122,6 +128,8 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
     static class Presenter extends ViewPresenter<ParseDocumentView> {
 
         @Inject ParseFileOperations fop;
+
+        @Inject MeasurementsFileOperations measurementsFileOperations;
 
         @Inject ParseDocument document;
 
@@ -189,9 +197,9 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
                             new ParseDocumentLocationAdapter(
                                     getView().getContext()));
 
-            if(document.getDocumentType() == OPMETINGEN) {
+            if (document.getDocumentType() == OPMETINGEN) {
                 getView().addLocation.setTitle("Add post");
-            } else if(document.getDocumentType() == OPMERKINGEN){
+            } else if (document.getDocumentType() == OPMERKINGEN) {
                 getView().addLocation.setTitle("Add opmerking");
             }
         }
@@ -254,7 +262,9 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
 
                                                 for (ParseDocumentImage parseDocumentImage : list) {
 
-                                                    documentImageMultiMap.put((ParseDocumentLocation) parseDocumentImage.getLocationId(), parseDocumentImage);
+                                                    documentImageMultiMap.put(
+                                                            (ParseDocumentLocation) parseDocumentImage.getLocationId(),
+                                                            parseDocumentImage);
                                                 }
 
                                                 final boolean finished = fop.write(
@@ -287,6 +297,91 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
                                   @Override public void onCompleted() {
 
                                       showToast(document.getDocumentType().toString() + ".pdf created");
+
+
+                                      if (document.getDocumentType() == OPMETINGEN) {
+                                          writeMeasurementsDocument();
+                                      } else {
+                                          if (getView() != null) {
+                                              getView().showLoader(false);
+                                          }
+                                      }
+                                  }
+
+                                  @Override public void onError(final Throwable e) {
+
+                                      e.printStackTrace();
+                                      showToast("Something went wrong");
+                                      if (getView() != null) {
+                                          getView().showLoader(false);
+                                      }
+
+                                  }
+
+                                  @Override public void onNext(final Boolean aBoolean) {
+
+                                  }
+                              });
+
+        }
+
+        private void writeMeasurementsDocument() {
+
+            Observable.create(
+                    new Observable.OnSubscribe<Boolean>() {
+
+                        @Override public void call(final Subscriber<? super Boolean> subscriber) {
+
+                            final ParseQuery<ParseDocumentImage> query = ParseQuery.getQuery(ParseDocumentImage.class);
+                            query.whereContainedIn(
+                                    LOCATION_ID,
+                                    locations);
+
+                            query.findInBackground(
+                                    new FindCallback<ParseDocumentImage>() {
+                                        @Override public void done(final List<ParseDocumentImage> list, final ParseException e) {
+
+                                            if (e == null) {
+
+                                                final Multimap<ParseDocumentLocation, ParseDocumentImage> documentImageMultiMap = ArrayListMultimap.create();
+
+                                                for (ParseDocumentImage parseDocumentImage : list) {
+
+                                                    documentImageMultiMap.put(
+                                                            (ParseDocumentLocation) parseDocumentImage.getLocationId(),
+                                                            parseDocumentImage);
+                                                }
+
+                                                final boolean finished = measurementsFileOperations.writeDocument(
+                                                        yard,
+                                                        document,
+                                                        documentImageMultiMap);
+                                                if (finished) {
+                                                    subscriber.onNext(true);
+                                                } else {
+                                                    subscriber.onError(new IOException("Writing to pdf failed"));
+                                                }
+                                                subscriber.onCompleted();
+
+                                            } else {
+                                                e.printStackTrace();
+                                                subscriber.onError(e);
+                                            }
+
+                                            subscriber.onNext(true);
+                                        }
+                                    });
+
+
+                        }
+                    })
+                      .subscribeOn(io())
+                      .observeOn(mainThread())
+                      .subscribe(
+                              new Observer<Boolean>() {
+                                  @Override public void onCompleted() {
+
+                                      showToast("measurements document created");
                                       if (getView() != null) {
                                           getView().showLoader(false);
                                       }

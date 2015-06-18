@@ -44,6 +44,8 @@
 
             <include layout="@layout/parsedocumen_location_detail_dimensions"/>
 
+            <include layout="@layout/take_picture_view"/>
+
         </android.support.v4.view.ViewPager>
     </LinearLayout>
 
@@ -61,14 +63,6 @@
         fab:fab_colorNormal="@color/accent"
         fab:fab_labelStyle="@style/menu_labels_style"
         fab:fab_labelsPosition="left">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/document.camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_action_camera"
-            fab:fab_title="Take pictures"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/document.edit"
