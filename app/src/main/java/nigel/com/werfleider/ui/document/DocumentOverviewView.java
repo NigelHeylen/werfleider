@@ -5,12 +5,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 

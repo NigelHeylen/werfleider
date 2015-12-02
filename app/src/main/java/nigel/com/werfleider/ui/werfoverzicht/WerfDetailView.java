@@ -3,17 +3,15 @@ package nigel.com.werfleider.ui.werfoverzicht;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ScrollView;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 
+import static nigel.com.werfleider.model.DocumentType.AS_BUILT;
 import static nigel.com.werfleider.model.DocumentType.OPMERKINGEN;
 import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
-import static nigel.com.werfleider.model.DocumentType.AS_BUILT;
 
 /**
  * Created by nigel on 27/12/14.

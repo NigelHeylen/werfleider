@@ -12,10 +12,8 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
-
-import org.joda.time.DateTime;
-
 import java.io.IOException;
+import org.joda.time.DateTime;
 
 /**
  * Created by nigel on 04/06/15.
@@ -69,13 +67,8 @@ public class DocumentHeaderFooter extends PdfPageEventHelper {
                         footerFont);
 
                 phrase.add(DateTime.now().toString("dd-MM-yyyy"));
-                ColumnText.showTextAligned(
-                        writer.getDirectContent(),
-                        Element.ALIGN_LEFT,
-                        phrase,
-                        rect.getLeft(),
-                        rect.getBottom(),
-                        0);
+                ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, phrase,
+                    rect.getLeft(), rect.getBottom(), 0);
                 break;
             default:
 

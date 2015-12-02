@@ -4,18 +4,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.DatePicker;
 import android.widget.ScrollView;
-
-import com.rengwuxian.materialedittext.MaterialEditText;
-
-import org.joda.time.DateTime;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.rengwuxian.materialedittext.MaterialEditText;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import org.joda.time.DateTime;
 
 /**
  * Created by nigel on 07/02/15.

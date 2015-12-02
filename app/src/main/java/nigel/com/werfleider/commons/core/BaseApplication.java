@@ -1,13 +1,10 @@
 package nigel.com.werfleider.commons.core;
 
-import android.app.Application;
 import android.content.res.Configuration;
-
+import android.support.multidex.MultiDexApplication;
 import com.squareup.otto.Bus;
-
-import javax.inject.Inject;
-
 import dagger.ObjectGraph;
+import javax.inject.Inject;
 import nigel.com.werfleider.commons.app.ContextModule;
 import nigel.com.werfleider.commons.event.ApplicationConfigurationChanged;
 import nigel.com.werfleider.commons.event.ApplicationConfigurationException;
@@ -17,7 +14,7 @@ import static com.google.common.collect.Lists.asList;
 /**
  * @author Thomas Moerman
  */
-public abstract class BaseApplication extends Application {
+public abstract class BaseApplication extends MultiDexApplication {
 
     @Inject Bus bus;
 

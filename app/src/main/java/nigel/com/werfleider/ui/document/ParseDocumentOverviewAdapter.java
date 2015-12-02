@@ -8,22 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
-import org.joda.time.DateTime;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Picasso;
 import flow.Flow;
+import java.util.List;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseYard;
+import org.joda.time.DateTime;
 
 /**
  * Created by nigel on 14/03/15.

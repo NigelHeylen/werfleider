@@ -1,32 +1,26 @@
 package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import flow.Flow;
+import java.util.List;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentLocation;
 import nigel.com.werfleider.model.ParseYard;
-
-import static java.lang.String.format;
 
 /**
  * Created by nigel on 24/01/15.
@@ -64,13 +58,9 @@ public class ParseDocumentLocationAdapter extends RecyclerView.Adapter<ParseDocu
 
         final ParseDocumentLocation location = locations.get(position);
 
+        holder.title.setText(location.getTitle());
 
-        holder.mName.setText(location.getTitle());
-
-        holder.mImages.setText(
-                format(
-                        "%d images",
-                        0));
+        holder.artNr.setText(location.getArtNr());
 
         holder.mContainer.setOnClickListener(
                 new View.OnClickListener() {
@@ -113,13 +103,11 @@ public class ParseDocumentLocationAdapter extends RecyclerView.Adapter<ParseDocu
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @InjectView(R.id.document_location_item_name)      TextView  mName;
+        @InjectView(R.id.document_location_item_name) TextView title;
 
-        @InjectView(R.id.document_location_item_images)    TextView  mImages;
+        @InjectView(R.id.document_location_item_art_nr) TextView artNr;
 
-        @InjectView(R.id.document_location_item_image)     ImageView mImage;
-
-        @InjectView(R.id.document_location_item_container) CardView  mContainer;
+        @InjectView(R.id.document_location_item_container) RelativeLayout mContainer;
 
         @InjectView(R.id.document_location_item_delete) ImageView delete;
 

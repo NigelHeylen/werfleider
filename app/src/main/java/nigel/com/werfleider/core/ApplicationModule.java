@@ -27,13 +27,11 @@ import nigel.com.werfleider.MainApplication;
 import nigel.com.werfleider.commons.app.AndroidServicesModule;
 import nigel.com.werfleider.commons.app.ContextModule;
 import nigel.com.werfleider.commons.bus.OttoBusModule;
-import nigel.com.werfleider.dao.helper.DatabaseModule;
 
 @Module(includes = {
         ContextModule.class,
         OttoBusModule.class,
-        AndroidServicesModule.class,
-        DatabaseModule.class
+        AndroidServicesModule.class
 },
         library = true,
         injects = MainApplication.class)

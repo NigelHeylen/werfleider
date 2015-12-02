@@ -8,7 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
-
+import butterknife.ButterKnife;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.parse.ParseException;
@@ -17,19 +17,15 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.rengwuxian.materialedittext.MaterialEditText;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import butterknife.ButterKnife;
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
@@ -43,11 +39,11 @@ import nigel.com.werfleider.model.ParseDocumentLocation;
 import nigel.com.werfleider.model.ParseYard;
 import nigel.com.werfleider.ui.widget.HeaderViewRecyclerAdapter;
 import nigel.com.werfleider.ui.widget.ImageFileFilter;
-import nigel.com.werfleider.util.ImageUtils;
 
 import static android.view.View.GONE;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
+import static nigel.com.werfleider.util.ImageUtils.getParseFile;
 
 /**
  * Created by nigel on 17/04/15.
@@ -278,55 +274,67 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
 
         private void saveImages() {
 
-            final Iterable<ParseDocumentImage> transform = Iterables.transform(
-                    indices,
-                    new Function<Integer, ParseDocumentImage>() {
-                        @Override public ParseDocumentImage apply(final Integer input) {
+            final Iterable<ParseDocumentImage> transform = Iterables.transform(indices,
+                new Function<Integer, ParseDocumentImage>() {
+                  @Override public ParseDocumentImage apply(final Integer input) {
 
-                            final ParseFile file = getImageFile(images.get(input));
-                            return new ParseDocumentImage().setAuthor(ParseUser.getCurrentUser())
-                                                           .setLocationId(location)
-                                                           .setImageURL(images.get(input).getImageURL())
-                                                           .setImageTakenDate(images.get(input).getCreatedDate())
-                                                           .setImage(file);
-                        }
-                    });
+                    return new ParseDocumentImage().setAuthor(ParseUser.getCurrentUser())
+                        .setLocationId(location)
+                        .setImageURL(images.get(input).getImageURL())
+                        .setImageTakenDate(images.get(input).getCreatedDate());
+                  }
+                });
 
             final List<ParseDocumentImage> images = newArrayList(transform);
 
-            ParseObject.saveAllInBackground(
-                    images,
-                    new SaveCallback() {
-                        @Override public void done(final ParseException e) {
+            ParseObject.pinAllInBackground(images, new SaveCallback() {
+                  @Override public void done(final ParseException e) {
 
-                            if (e != null) {
-                                e.printStackTrace();
-                            } else {
-                                flow.goTo(
-                                        new ParseDocumentLocationDetailScreen(
-                                                document,
-                                                yard,
-                                                location));
-                                if (getView() != null) {
-                                    Toast.makeText(
-                                            getView().getContext(),
-                                            format(
-                                                    "%s saved",
-                                                    location.getTitle()),
-                                            Toast.LENGTH_LONG).show();
+                    if (e != null) {
+                      e.printStackTrace();
+                    } else {
+                      flow.goTo(new ParseDocumentLocationDetailScreen(document, yard, location));
+                      if (getView() != null) {
+                        Toast.makeText(getView().getContext(),
+                            format("%s saved", location.getTitle()), Toast.LENGTH_LONG).show();
 
-                                    getView().progress.setVisibility(GONE);
+                        getView().progress.setVisibility(GONE);
+                      }
+                    }
+                  }
+                });
+
+            for (final ParseDocumentImage image : images) {
+
+                image.saveEventually(
+                        new SaveCallback() {
+                            @Override public void done(final ParseException e) {
+
+                                if (e == null) {
+                                    final ParseFile file = getParseFile(image.getImageURL());
+                                    file.saveInBackground(
+                                            new SaveCallback() {
+                                                @Override public void done(final ParseException e) {
+
+                                                    if(e == null) {
+                                                        image.setImage(file);
+                                                        image.saveEventually();
+                                                    } else {
+
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            });
+
+                                } else {
+
+                                    e.printStackTrace();
                                 }
                             }
-                        }
-                    });
+                        });
+            }
 
 
-        }
-
-        private ParseFile getImageFile(final DocumentImage documentImage) {
-
-            return ImageUtils.getParseFile(documentImage.getImageURL());
         }
 
         private void initTextFields() {
@@ -367,7 +375,7 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
         public void handleSave() {
 
             saveImages();
-            location.saveInBackground(
+            location.pinInBackground(
                     new SaveCallback() {
                         @Override public void done(final ParseException e) {
 
@@ -380,6 +388,7 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
                             }
                         }
                     });
+            location.saveInBackground();
 
 
         }

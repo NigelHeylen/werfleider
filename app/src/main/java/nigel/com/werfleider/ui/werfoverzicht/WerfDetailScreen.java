@@ -1,11 +1,10 @@
 package nigel.com.werfleider.ui.werfoverzicht;
 
-import javax.inject.Inject;
-
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
+import javax.inject.Inject;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;

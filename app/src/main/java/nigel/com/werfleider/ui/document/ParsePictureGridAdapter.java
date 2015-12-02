@@ -7,17 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.DocumentImage;
@@ -44,14 +40,12 @@ public class ParsePictureGridAdapter extends RecyclerView.Adapter<ParsePictureGr
 
     private int getIndex(final List<DocumentImage> imageList, final ParseDocumentImage documentImage) {
 
-        return Iterables.indexOf(
-                imageList,
-                new Predicate<DocumentImage>() {
-                    @Override public boolean apply(final DocumentImage input) {
+        return Iterables.indexOf(imageList, new Predicate<DocumentImage>() {
+                @Override public boolean apply(final DocumentImage input) {
 
-                        return input.getImageURL().equals(documentImage.getImageURL());
-                    }
-                });
+                    return input.getImageURL().equals(documentImage.getImageURL());
+                }
+            });
     }
 
 

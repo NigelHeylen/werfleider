@@ -4,19 +4,15 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ScrollView;
 import android.widget.Toast;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.rengwuxian.materialedittext.MaterialEditText;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.InjectViews;
 import butterknife.OnClick;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.rengwuxian.materialedittext.MaterialEditText;
+import java.util.List;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 
@@ -37,7 +33,7 @@ public class SignupView extends ScrollView{
 
     @InjectView(R.id.signup_password_check) MaterialEditText check;
 
-    @InjectViews({R.id.signup_name, R.id.signup_email, R.id.signup_profession, R.id.signup_company, R.id.signup_password, R.id.signup_password_check})
+    @InjectViews({ R.id.signup_name, R.id.signup_email, R.id.signup_profession, R.id.signup_company, R.id.signup_password, R.id.signup_password_check})
     List<MaterialEditText> textFields;
 
     @Inject SignupScreen.Presenter presenter;
@@ -85,13 +81,11 @@ public class SignupView extends ScrollView{
 
     private boolean emptyFields() {
 
-        return Iterables.any(
-                textFields,
-                new Predicate<MaterialEditText>() {
-                    @Override public boolean apply(final MaterialEditText input) {
+        return Iterables.any(textFields, new Predicate<MaterialEditText>() {
+                @Override public boolean apply(final MaterialEditText input) {
 
-                        return input.getText().toString().length() <= 0;
-                    }
-                });
+                    return input.getText().toString().length() <= 0;
+                }
+            });
     }
 }

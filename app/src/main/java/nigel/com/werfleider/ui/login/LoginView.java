@@ -4,16 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import com.gc.materialdesign.views.ButtonFlat;
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.rengwuxian.materialedittext.MaterialEditText;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.gc.materialdesign.views.ButtonFlat;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.rengwuxian.materialedittext.MaterialEditText;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 

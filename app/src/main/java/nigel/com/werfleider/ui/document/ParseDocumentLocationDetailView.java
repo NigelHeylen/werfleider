@@ -7,21 +7,17 @@ import android.view.SurfaceView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-
-import com.astuetz.PagerSlidingTabStrip;
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
-import com.rengwuxian.materialedittext.MaterialEditText;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.InjectViews;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.astuetz.PagerSlidingTabStrip;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
+import com.rengwuxian.materialedittext.MaterialEditText;
+import java.util.List;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 
@@ -62,7 +58,7 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
     @InjectView(R.id.location_saver) ProgressBarCircularIndeterminate progressBar;
 
-    @InjectViews({R.id.document_length, R.id.document_width, R.id.document_height})
+    @InjectViews({ R.id.document_length, R.id.document_width, R.id.document_height})
     List<MaterialEditText> editTexts;
 
     @InjectView(R.id.take_picture_surface) SurfaceView surfaceView;
@@ -76,11 +72,11 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
     public ParseDocumentLocationDetailView(final Context context, final AttributeSet attrs) {
 
         super(
-                context,
-                attrs);
+            context,
+            attrs);
         Mortar.inject(
-                context,
-                this);
+            context,
+            this);
     }
 
     @Override protected void onFinishInflate() {
@@ -109,7 +105,7 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
     @OnTextChanged(R.id.document_detail_location)
     public void changeLocation(){
-        
+
         presenter.changeLocation(location.getText().toString());
     }
 
@@ -118,13 +114,13 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
         presenter.changeDescription(description.getText().toString());
     }
-    
+
     @OnTextChanged(R.id.document_detail_floor)
     public void changeFloor(){
-        
+
         presenter.changeFloor(floor.getText().toString());
     }
-    
+
     @OnTextChanged(R.id.document_width)
     public void changeWidth(){
 
@@ -132,16 +128,16 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
         presenter.changeWidth(width.getText().toString());
     }
-    
+
     @OnTextChanged(R.id.document_height)
     public void changeHeight(){
-        
+
         presenter.changeHeight(height.getText().toString());
     }
-    
+
     @OnTextChanged(R.id.document_length)
     public void changeLength(){
-        
+
         presenter.changeLength(length.getText().toString());
     }
 

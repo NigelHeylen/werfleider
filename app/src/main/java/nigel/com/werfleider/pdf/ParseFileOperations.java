@@ -6,9 +6,10 @@ package nigel.com.werfleider.pdf;
 
 import android.content.Context;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
@@ -28,25 +29,22 @@ import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-
-import org.joda.time.DateTime;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
 import nigel.com.werfleider.model.ParseYard;
 import nigel.com.werfleider.model.WerfInt;
+import org.joda.time.DateTime;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.getLast;
 import static com.itextpdf.text.Element.ALIGN_CENTER;
 import static com.itextpdf.text.Element.ALIGN_LEFT;
@@ -56,297 +54,220 @@ import static org.joda.time.DateTime.now;
 
 public class ParseFileOperations {
 
-    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
+  public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
 
-    final static Font titleFont = new Font(
-            Font.FontFamily.HELVETICA,
-            24);
+  final static Font titleFont = new Font(Font.FontFamily.HELVETICA, 24);
 
-    final static Font paragraphTitleFont = new Font(
-            Font.FontFamily.HELVETICA,
-            18,
-            Font.BOLD);
+  final static Font paragraphTitleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
 
-    final static Font paragraphSubTitleFont = new Font(
-            Font.FontFamily.HELVETICA,
-            16,
-            Font.BOLD);
+  final static Font paragraphSubTitleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
 
-    final static Font titleFontBoldUnderline = new Font(
-            Font.FontFamily.HELVETICA,
-            24,
-            Font.BOLD | Font.UNDERLINE);
+  final static Font titleFontBoldUnderline =
+      new Font(Font.FontFamily.HELVETICA, 24, Font.BOLD | Font.UNDERLINE);
 
-    final static Font paragraphFont = new Font(
-            Font.FontFamily.HELVETICA,
-            10);
+  final static Font paragraphFont = new Font(Font.FontFamily.HELVETICA, 10);
 
-    final static int top = 820;
+  final static int top = 820;
 
-    final static int right = 600;
+  final static int right = 600;
 
-    final static int margin = 60;
+  final static int margin = 60;
 
-    final Context context;
+  final Context context;
 
-    @Inject
-    public ParseFileOperations(final Context context) {
+  @Inject public ParseFileOperations(final Context context) {
 
-        this.context = context;
+    this.context = context;
+  }
+
+  private static Paragraph paragraph(final String text) {
+
+    return paragraph(text, ALIGN_LEFT, 150, 20, paragraphFont);
+  }
+
+  private static Paragraph paragraph(final String text, final int alignment, final float indention,
+      final int spacingAfter, final Font font) {
+
+    final Paragraph paragraph = new Paragraph(text, font);
+    paragraph.setAlignment(alignment);
+    paragraph.setIndentationLeft(indention);
+    paragraph.setSpacingAfter(spacingAfter);
+    return paragraph;
+  }
+
+  private static Paragraph spacingParagraph() {
+
+    return new Paragraph("\n\n");
+  }
+
+  private void createFirstPageDocuments(final WerfInt werf, final ParseDocument document,
+      final Document iTextDocument,
+      final Multimap<ParseDocumentLocation, ParseDocumentImage> locationsMap)
+      throws IOException, DocumentException {
+
+    iTextDocument.add(spacingParagraph());
+    iTextDocument.add(
+        paragraph(format("%s:", werf.getNaam()), ALIGN_CENTER, 0, 10, titleFontBoldUnderline));
+
+    iTextDocument.add(paragraph(format("Adres: %s", werf.getOpdrachtAdres())));
+
+    iTextDocument.add(paragraph(document.getDocumentType().toString()));
+
+    iTextDocument.add(paragraph(getFrontPageLocationString(locationsMap)));
+
+    iTextDocument.add(
+        paragraph(format("Opgesteld door: %s", ParseUser.getCurrentUser().getUsername())));
+    iTextDocument.add(paragraph(format("Werf: %s", werf.getNaam())));
+
+    iTextDocument.add(paragraph(format("Datum opmaak: %s", now().toString(DATE_FORMAT))));
+  }
+
+  private String getFrontPageLocationString(
+      final Multimap<ParseDocumentLocation, ParseDocumentImage> document) {
+
+    final ImmutableListMultimap<String, ParseDocumentImage> partionedMap =
+        Multimaps.index(document.values(), new Function<ParseDocumentImage, String>() {
+          @Override public String apply(final ParseDocumentImage input) {
+
+            return Strings.nullToEmpty(input.getFloor());
+          }
+        });
+
+    final StringBuilder builder = new StringBuilder();
+    for (String floor : partionedMap.keySet()) {
+
+      builder.append(format("%s : ", floor));
+      for (ParseDocumentImage documentImage : partionedMap.get(floor)) {
+
+        builder.append(format("%s - ", documentImage.getLocation()));
+      }
+      builder.delete(builder.toString().length() - 2, builder.toString().length());
+      builder.append("\n");
     }
 
-    private static Paragraph paragraph(final String text) {
+    return builder.toString();
+  }
 
-        return paragraph(
-                text,
-                ALIGN_LEFT,
-                150,
-                20,
-                paragraphFont);
-    }
+  public boolean write(final ParseDocument writeDocument, final ParseYard yard,
+      final Multimap<ParseDocumentLocation, ParseDocumentImage> locationsMap) {
 
-    private static Paragraph paragraph(final String text, final int alignment, final float indention, final int spacingAfter, final Font font) {
+    try {
+      final File path = Environment.getExternalStoragePublicDirectory(
+          "werfleider/" + now().toString("d-MM-yyyy"));
 
-        final Paragraph paragraph = new Paragraph(
-                text,
-                font);
-        paragraph.setAlignment(alignment);
-        paragraph.setIndentationLeft(indention);
-        paragraph.setSpacingAfter(spacingAfter);
-        return paragraph;
-    }
+      path.mkdirs();
 
-    private static Paragraph spacingParagraph() {
+      final File file = new File(Environment.getExternalStorageDirectory(),
+          "werfleider/" + now().toString("d-MM-yyyy") + "/" + writeDocument.getDocumentType()
+              .name()
+              .toLowerCase() + ".pdf");
+      // If file does not exists, then create it
 
-        return new Paragraph("\n\n");
-    }
+      if (!file.exists()) {
+        file.createNewFile();
+      }
 
-    private void createFirstPageDocuments(final WerfInt werf, final ParseDocument document, final Document iTextDocument, final Multimap<ParseDocumentLocation, ParseDocumentImage> locationsMap) throws IOException, DocumentException {
+      // step 1
+      final Document document = new Document();
+      // step 2
+      final PdfWriter writer =
+          PdfWriter.getInstance(document, new FileOutputStream(file.getAbsoluteFile()));
 
-        iTextDocument.add(spacingParagraph());
-        iTextDocument.add(
-                paragraph(
-                        format(
-                                "%s:",
-                                werf.getNaam()),
-                        ALIGN_CENTER,
-                        0,
-                        10,
-                        titleFontBoldUnderline));
+      // step 3
+      writer.setBoxSize("art", new Rectangle(36, 54, 559, 788));
 
-        iTextDocument.add(
-                paragraph(
-                        format(
-                                "Adres: %s",
-                                werf.getOpdrachtAdres())));
+      final PdfPageEventHelper event = new DocumentHeaderFooter();
+      writer.setPageEvent(event);
 
-        iTextDocument.add(paragraph(document.getDocumentType().toString()));
+      document.open();
 
-        iTextDocument.add(paragraph(getFrontPageLocationString(locationsMap)));
+      createFirstPageDocuments(yard, writeDocument, document, locationsMap);
 
-        iTextDocument.add(
-                paragraph(
-                        format(
-                                "Opgesteld door: %s",
-                                ParseUser.getCurrentUser().getUsername())));
-        iTextDocument.add(
-                paragraph(
-                        format(
-                                "Werf: %s",
-                                werf.getNaam())));
+      document.newPage();
 
-        iTextDocument.add(
-                paragraph(
-                        format(
-                                "Datum opmaak: %s",
-                                now().toString(DATE_FORMAT))));
+      int chapterIndex = 1;
+      double totalPageHeight;
 
-    }
+      // step 4
+      for (ParseDocumentLocation location : locationsMap.keySet()) {
 
-    private String getFrontPageLocationString(final Multimap<ParseDocumentLocation, ParseDocumentImage> document) {
+        Chapter chapter = new Chapter(
+            new Paragraph(format("%s - %s", location.getArtNr(), location.getTitle()), titleFont),
+            chapterIndex);
+        chapterIndex++;
+        document.add(chapter);
+        totalPageHeight = 0;
 
-        final ImmutableListMultimap<String, ParseDocumentImage> partionedMap = Multimaps.index(
-                document.values(),
-                new Function<ParseDocumentImage, String>() {
-                    @Override public String apply(final ParseDocumentImage input) {
+        final List<ParseDocumentImage> imageList = new ArrayList<>(locationsMap.get(location));
+        Collections.sort(imageList, COMPARE_BY_FLOOR);
 
-                        return Strings.nullToEmpty(input.getFloor());
-                    }
-                });
+        int index = 0;
 
-        final StringBuilder builder = new StringBuilder();
-        for (String floor : partionedMap.keySet()) {
+        for (ParseDocumentImage documentImage : filter(imageList, hasImage())) {
 
-            builder.append(
-                    format(
-                            "%s : ",
-                            floor));
-            for (ParseDocumentImage documentImage : partionedMap.get(floor)) {
+          System.out.println("index = " + index);
+          // demonstrate some table features
+          PdfPTable table = new PdfPTable(2);
+          // table spacing before starts from top
+          table.setSpacingBefore(20);
+          // ook van top
+          table.getDefaultCell().setPadding(5);
+          table.setWidthPercentage(100);
 
-                builder.append(
-                        format(
-                                "%s - ",
-                                documentImage.getLocation()));
-            }
-            builder.delete(
-                    builder.toString().length() - 2,
-                    builder.toString().length());
-            builder.append("\n");
-        }
+          final Image image = Image.getInstance(documentImage.getImage().getData());
 
-        return builder.toString();
-    }
+          table.addCell(image);
 
-    public boolean write(final ParseDocument writeDocument, final ParseYard yard, final Multimap<ParseDocumentLocation, ParseDocumentImage> locationsMap) {
+          final PdfPCell descriptionCell = new PdfPCell();
 
-        try {
-            final File path = Environment.getExternalStoragePublicDirectory(
-                    "werfleider/" + now().toString("d-MM-yyyy"));
+          descriptionCell.addElement(new Phrase(
+                  format("%s\n%s\n\n", documentImage.getFloor(), documentImage.getLocation())));
+          descriptionCell.addElement(new Phrase(
+                  isNullOrEmpty(documentImage.getTitle()) ? documentImage.getTitle()
+                      : format("%s\n", documentImage.getTitle())));
+          descriptionCell.addElement(new Phrase(documentImage.getDescription()));
+          descriptionCell.addElement(new Phrase(format("\n\nGenomen op %s\nImage %d",
+                  new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT), index)));
 
-            path.mkdirs();
+          table.addCell(descriptionCell);
 
-            final File file = new File(
-                    Environment.getExternalStorageDirectory(),
-                    "werfleider/" + now().toString("d-MM-yyyy") + "/" + writeDocument.getDocumentType().name().toLowerCase() + ".pdf");
-            // If file does not exists, then create it
+          document.add(table);
+          totalPageHeight += table.getTotalHeight();
 
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            // step 1
-            final Document document = new Document();
-            // step 2
-            final PdfWriter writer =
-                    PdfWriter.getInstance(
-                            document,
-                            new FileOutputStream(file.getAbsoluteFile()));
-
-            // step 3
-            writer.setBoxSize(
-                    "art",
-                    new Rectangle(
-                            36,
-                            54,
-                            559,
-                            788));
-
-            final PdfPageEventHelper event =
-                    new DocumentHeaderFooter();
-            writer.setPageEvent(event);
-
-            document.open();
-
-
-            createFirstPageDocuments(
-                    yard,
-                    writeDocument,
-                    document,
-                    locationsMap);
-
+          if (totalPageHeight > 450 && !getLast(locationsMap.get(location)).equals(documentImage)) {
             document.newPage();
+            document.add(Chunk.NEWLINE);
+            totalPageHeight = 0;
+          }
 
-            int chapterIndex = 1;
-            double totalPageHeight;
-
-            // step 4
-            for (ParseDocumentLocation location : locationsMap.keySet()) {
-
-                Chapter chapter = new Chapter(
-                        new Paragraph(
-                                format(
-                                        "%s - %s",
-                                        location.getArtNr(),
-                                        location.getTitle()),
-                                titleFont),
-                        chapterIndex);
-                chapterIndex++;
-                document.add(chapter);
-                totalPageHeight = 0;
-
-                final List<ParseDocumentImage> imageList = new ArrayList<>(locationsMap.get(location));
-                Collections.sort(imageList,
-                                 COMPARE_BY_FLOOR);
-
-                int locationFrequency = 0;
-                String currentLocation = "";
-
-                for (ParseDocumentImage documentImage : imageList) {
-
-                    System.out.println("currentLocation = " + currentLocation);
-                    System.out.println("documentImage.getLocation() = " + documentImage.getLocation());
-                    System.out.println("documentImage.getLocation().equals(currentLocation) = " + documentImage.getLocation().equals(currentLocation));
-                    System.out.println();
-
-                    if(currentLocation.isEmpty() || !documentImage.getLocation().trim().equals(currentLocation.trim())){
-
-                        locationFrequency = 0;
-                        currentLocation = documentImage.getLocation();
-                    } else {
-                        locationFrequency++;
-                    }
-
-                    // demonstrate some table features
-                    PdfPTable table = new PdfPTable(2);
-                    // table spacing before starts from top
-                    table.setSpacingBefore(20);
-                    // ook van top
-                    table.getDefaultCell().setPadding(5);
-                    table.setWidthPercentage(100);
-
-                    final Image image = Image.getInstance(documentImage.getImage().getData());
-
-                    table.addCell(image);
-
-                    final PdfPCell descriptionCell = new PdfPCell();
-
-                    descriptionCell.addElement(
-                            new Phrase(
-                                    format(
-                                            "%s\n%s\n\n",
-                                            documentImage.getFloor(),
-                                            documentImage.getLocation())));
-                    descriptionCell.addElement(
-                            new Phrase(
-                                    isNullOrEmpty(documentImage.getTitle()) ? documentImage.getTitle() : format(
-                                            "%s\n",
-                                            documentImage.getTitle())));
-                    descriptionCell.addElement(new Phrase(documentImage.getDescription()));
-                    descriptionCell.addElement(
-                            new Phrase(
-                                    format(
-                                            "\n\nGenomen op %s\nImage %d",
-                                            new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT), locationFrequency)));
-
-                    table.addCell(descriptionCell);
-
-                    document.add(table);
-                    totalPageHeight += table.getTotalHeight();
-
-                    if (totalPageHeight > 450 && !getLast(locationsMap.get(location)).equals(documentImage)) {
-                        document.newPage();
-                        document.add(Chunk.NEWLINE);
-                        totalPageHeight = 0;
-                    }
-                }
-            }
-            // step 5
-            document.close();
-
-            Log.d(
-                    "Success",
-                    "Success");
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (DocumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return false;
+          index++;
         }
+      }
+      // step 5
+      document.close();
+
+      Log.d("Success", "Success");
+      return true;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    } catch (DocumentException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      return false;
+    } catch (ParseException e) {
+      e.printStackTrace();
+      return false;
     }
+  }
+
+  @NonNull private Predicate<ParseDocumentImage> hasImage() {
+
+    return new Predicate<ParseDocumentImage>() {
+      @Override public boolean apply(final ParseDocumentImage input) {
+
+        return input.hasImage();
+      }
+    };
+  }
 }

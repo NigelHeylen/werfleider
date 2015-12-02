@@ -1,16 +1,13 @@
 package nigel.com.werfleider.ui.login;
 
 import android.widget.Toast;
-
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
-import javax.inject.Inject;
-
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
+import javax.inject.Inject;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;

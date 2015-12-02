@@ -2,20 +2,16 @@ package nigel.com.werfleider.ui.home;
 
 import android.os.Bundle;
 import android.widget.Toast;
-
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-
-import javax.inject.Inject;
-
 import flow.Flow;
 import flow.Layout;
+import javax.inject.Inject;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.ui.contacts.ContactScreen;
 import nigel.com.werfleider.ui.login.LoginScreen;
 import nigel.com.werfleider.ui.werf.WerfScreen;
 
@@ -63,7 +59,7 @@ public class HomeScreen implements Blueprint {
 
         public void goToContactsScreen() {
 
-            flow.goTo(new ContactScreen());
+
         }
 
         public void goToWerfScreen() {
@@ -73,23 +69,19 @@ public class HomeScreen implements Blueprint {
 
         public void handleLogOut() {
 
-            ParseUser.logOutInBackground(
-                    new LogOutCallback() {
-                        @Override public void done(final ParseException e) {
-                            if(e == null){
-                                Toast.makeText(
-                                        getView().getContext(),
-                                        "Logged out",
-                                        Toast.LENGTH_LONG).show();
+            ParseUser.logOutInBackground(new LogOutCallback() {
+                  @Override public void done(final ParseException e) {
+                    if (e == null) {
+                      Toast.makeText(getView().getContext(), "Logged out", Toast.LENGTH_LONG)
+                          .show();
 
-                                flow.goTo(new LoginScreen());
-                            } else {
-                                Toast.makeText(getView().getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-
-                            }
-
-                        }
-                    });
+                      flow.goTo(new LoginScreen());
+                    } else {
+                      Toast.makeText(getView().getContext(), e.getLocalizedMessage(),
+                          Toast.LENGTH_LONG).show();
+                    }
+                  }
+                });
 
         }
     }

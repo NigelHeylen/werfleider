@@ -5,7 +5,6 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.DocumentType;
@@ -36,7 +35,8 @@ public class YardDetailDocumentAdapter extends PagerAdapter {
 
     @Override public Object instantiateItem(final ViewGroup container, final int position) {
 
-        final ParseDocumentOverviewView view = (ParseDocumentOverviewView) LayoutInflater.from(context).inflate(R.layout.parsedocument_overview_view, container, false);
+        final ParseDocumentOverviewView
+            view = (ParseDocumentOverviewView) LayoutInflater.from(context).inflate(R.layout.parsedocument_overview_view, container, false);
 
         view.setDocumentType(DocumentType.values()[position]);
         container.addView(view);

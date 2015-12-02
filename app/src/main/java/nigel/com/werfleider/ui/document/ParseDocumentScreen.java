@@ -3,29 +3,28 @@ package nigel.com.werfleider.ui.document;
 import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import java.io.IOException;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
+import java.io.IOException;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
+import nigel.com.werfleider.commons.load.Load;
+import nigel.com.werfleider.commons.recyclerview.DividerItemDecoration;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
 import nigel.com.werfleider.model.ParseDocument;
@@ -41,6 +40,8 @@ import rx.Observer;
 import rx.Subscriber;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static nigel.com.werfleider.commons.load.Load.LOCAL;
+import static nigel.com.werfleider.commons.load.Load.NETWORK;
 import static nigel.com.werfleider.model.DocumentType.OPMERKINGEN;
 import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
 import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_ID;
@@ -161,37 +162,60 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
 
             initView();
 
-            loadData();
+            loadData(LOCAL);
         }
 
-        private void loadData() {
+        private void loadData(final Load load) {
 
-            final ParseQuery<ParseDocumentLocation> query = ParseQuery.getQuery(ParseDocumentLocation.class);
+            final ParseQuery<ParseDocumentLocation> query = ParseQuery
+                    .getQuery(ParseDocumentLocation.class);
+
+            if (load == LOCAL) {
+
+                query.fromLocalDatastore();
+            }
+
             query.whereEqualTo(
                     DOCUMENT_ID,
-                    document);
+                    document)
+                 .findInBackground(
+                         new FindCallback<ParseDocumentLocation>() {
+                             @Override public void done(final List<ParseDocumentLocation> list, final ParseException e) {
 
-            query.findInBackground(
-                    new FindCallback<ParseDocumentLocation>() {
-                        @Override public void done(final List<ParseDocumentLocation> list, final ParseException e) {
+                                 if (e == null) {
 
-                            if (e == null) {
-                                locations.addAll(list);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                e.printStackTrace();
-                            }
-                            if (getView() != null) {
-                                getView().showLoader(false);
-                            }
-                        }
-                    });
+                                     for (ParseDocumentLocation location : list) {
+
+                                         if (!locations.contains(location)) {
+
+                                             locations.add(location);
+                                         }
+                                     }
+                                     ParseObject.pinAllInBackground(list);
+                                     adapter.notifyDataSetChanged();
+
+                                     if (load == LOCAL) {
+
+                                         loadData(NETWORK);
+                                     }
+                                 } else {
+                                     e.printStackTrace();
+                                 }
+                                 if (getView() != null) {
+                                     getView().showLoader(false);
+                                 }
+                             }
+                         });
 
 
         }
 
         private void initView() {
 
+            getView().locations.addItemDecoration(
+                    new DividerItemDecoration(
+                            getView().getContext(),
+                            R.drawable.divider));
             getView().locations.setAdapter(
                     adapter =
                             new ParseDocumentLocationAdapter(
@@ -218,7 +242,7 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
                             MeasuringUnit.M)
                     .setAuthor(ParseUser.getCurrentUser());
 
-            location.saveInBackground(
+            location.pinInBackground(
                     new SaveCallback() {
                         @Override public void done(final ParseException e) {
 
@@ -236,6 +260,8 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
                         }
                     });
 
+            location.saveEventually();
+
         }
 
         public void write() {
@@ -247,45 +273,48 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
 
                         @Override public void call(final Subscriber<? super Boolean> subscriber) {
 
-                            final ParseQuery<ParseDocumentImage> query = ParseQuery.getQuery(ParseDocumentImage.class);
-                            query.whereContainedIn(
-                                    LOCATION_ID,
-                                    locations);
+                            ParseQuery
+                                    .getQuery(ParseDocumentImage.class)
+                                    .whereContainedIn(
+                                            LOCATION_ID,
+                                            locations)
+                                    .fromLocalDatastore()
+                                    .findInBackground(
+                                            new FindCallback<ParseDocumentImage>() {
+                                                @Override public void done(final List<ParseDocumentImage> list, final ParseException e) {
 
-                            query.findInBackground(
-                                    new FindCallback<ParseDocumentImage>() {
-                                        @Override public void done(final List<ParseDocumentImage> list, final ParseException e) {
+                                                    if (e == null) {
 
-                                            if (e == null) {
+                                                        final Multimap<ParseDocumentLocation, ParseDocumentImage>
+                                                            documentImageMultiMap = ArrayListMultimap
+                                                            .create();
 
-                                                final Multimap<ParseDocumentLocation, ParseDocumentImage> documentImageMultiMap = ArrayListMultimap.create();
+                                                        for (ParseDocumentImage parseDocumentImage : list) {
 
-                                                for (ParseDocumentImage parseDocumentImage : list) {
+                                                            documentImageMultiMap.put(
+                                                                    (ParseDocumentLocation) parseDocumentImage.getLocationId(),
+                                                                    parseDocumentImage);
+                                                        }
 
-                                                    documentImageMultiMap.put(
-                                                            (ParseDocumentLocation) parseDocumentImage.getLocationId(),
-                                                            parseDocumentImage);
-                                                }
+                                                        final boolean finished = fop.write(
+                                                                document,
+                                                                yard,
+                                                                documentImageMultiMap);
+                                                        if (finished) {
+                                                            subscriber.onNext(true);
+                                                        } else {
+                                                            subscriber.onError(new IOException("Writing to pdf failed"));
+                                                        }
+                                                        subscriber.onCompleted();
 
-                                                final boolean finished = fop.write(
-                                                        document,
-                                                        yard,
-                                                        documentImageMultiMap);
-                                                if (finished) {
+                                                    } else {
+                                                        e.printStackTrace();
+                                                        subscriber.onError(e);
+                                                    }
+
                                                     subscriber.onNext(true);
-                                                } else {
-                                                    subscriber.onError(new IOException("Writing to pdf failed"));
                                                 }
-                                                subscriber.onCompleted();
-
-                                            } else {
-                                                e.printStackTrace();
-                                                subscriber.onError(e);
-                                            }
-
-                                            subscriber.onNext(true);
-                                        }
-                                    });
+                                            });
 
 
                         }
@@ -332,45 +361,47 @@ public class ParseDocumentScreen implements Blueprint, HasParent<YardDetailScree
 
                         @Override public void call(final Subscriber<? super Boolean> subscriber) {
 
-                            final ParseQuery<ParseDocumentImage> query = ParseQuery.getQuery(ParseDocumentImage.class);
-                            query.whereContainedIn(
-                                    LOCATION_ID,
-                                    locations);
+                            ParseQuery.getQuery(ParseDocumentImage.class)
+                                      .whereContainedIn(
+                                              LOCATION_ID,
+                                              locations)
+                                      .fromLocalDatastore()
+                                      .findInBackground(
+                                              new FindCallback<ParseDocumentImage>() {
+                                                  @Override public void done(final List<ParseDocumentImage> list, final ParseException e) {
 
-                            query.findInBackground(
-                                    new FindCallback<ParseDocumentImage>() {
-                                        @Override public void done(final List<ParseDocumentImage> list, final ParseException e) {
+                                                      if (e == null) {
 
-                                            if (e == null) {
+                                                          final Multimap<ParseDocumentLocation, ParseDocumentImage>
+                                                              documentImageMultiMap = ArrayListMultimap
+                                                              .create();
 
-                                                final Multimap<ParseDocumentLocation, ParseDocumentImage> documentImageMultiMap = ArrayListMultimap.create();
+                                                          for (ParseDocumentImage parseDocumentImage : list) {
 
-                                                for (ParseDocumentImage parseDocumentImage : list) {
+                                                              documentImageMultiMap.put(
+                                                                      (ParseDocumentLocation) parseDocumentImage.getLocationId(),
+                                                                      parseDocumentImage);
+                                                          }
 
-                                                    documentImageMultiMap.put(
-                                                            (ParseDocumentLocation) parseDocumentImage.getLocationId(),
-                                                            parseDocumentImage);
-                                                }
+                                                          final boolean finished = measurementsFileOperations.writeDocument(
+                                                                  yard,
+                                                                  document,
+                                                                  documentImageMultiMap);
+                                                          if (finished) {
+                                                              subscriber.onNext(true);
+                                                          } else {
+                                                              subscriber.onError(new IOException("Writing to pdf failed"));
+                                                          }
+                                                          subscriber.onCompleted();
 
-                                                final boolean finished = measurementsFileOperations.writeDocument(
-                                                        yard,
-                                                        document,
-                                                        documentImageMultiMap);
-                                                if (finished) {
-                                                    subscriber.onNext(true);
-                                                } else {
-                                                    subscriber.onError(new IOException("Writing to pdf failed"));
-                                                }
-                                                subscriber.onCompleted();
+                                                      } else {
+                                                          e.printStackTrace();
+                                                          subscriber.onError(e);
+                                                      }
 
-                                            } else {
-                                                e.printStackTrace();
-                                                subscriber.onError(e);
-                                            }
-
-                                            subscriber.onNext(true);
-                                        }
-                                    });
+                                                      subscriber.onNext(true);
+                                                  }
+                                              });
 
 
                         }

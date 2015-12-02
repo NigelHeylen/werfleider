@@ -4,13 +4,10 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-
-import com.astuetz.PagerSlidingTabStrip;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.astuetz.PagerSlidingTabStrip;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 

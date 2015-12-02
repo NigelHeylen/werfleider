@@ -7,18 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.ParseDocumentImage;
@@ -69,7 +65,8 @@ public class ParseDocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
 
 
         pablo
-                .load(image.hasImage() ? image.getImage().getUrl() : ImageUtils.getOnDiskUrl(image.getImageURL()))
+                .load(image.hasImage() ? image.getImage().getUrl() : ImageUtils.getOnDiskUrl(
+                    image.getImageURL()))
                 .fit()
                 .centerInside()
                 .into(holder.image);

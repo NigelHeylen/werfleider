@@ -2,7 +2,6 @@ package nigel.com.werfleider.pdf;
 
 import android.content.Context;
 import android.os.Environment;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
@@ -17,21 +16,18 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
-import org.joda.time.DateTime;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
 import nigel.com.werfleider.model.ParseYard;
 import nigel.com.werfleider.util.MeasuringUnit;
+import org.joda.time.DateTime;
 
 import static java.lang.String.format;
 import static org.joda.time.DateTime.now;
@@ -41,525 +37,276 @@ import static org.joda.time.DateTime.now;
  */
 public class MeasurementsFileOperations {
 
-    final static Font SMALL_FONT = new Font(
-            Font.FontFamily.HELVETICA,
-            7);
+  final static Font SMALL_FONT = new Font(Font.FontFamily.HELVETICA, 7);
 
-    private final Context context;
+  private final Context context;
 
-    public MeasurementsFileOperations(final Context context) {
+  public MeasurementsFileOperations(final Context context) {
 
-        this.context = context;
+    this.context = context;
+  }
+
+  public boolean writeDocument(final ParseYard yard, final ParseDocument parseDocument,
+      final Multimap<ParseDocumentLocation, ParseDocumentImage> documentMap) {
+
+    Document document = new Document(PageSize.A4, 0, 10, 50, 0);
+    try {
+
+      final File path = Environment.getExternalStoragePublicDirectory(
+          "werfleider/" + now().toString("d-MM-yyyy"));
+
+      path.mkdirs();
+
+      final File file = new File(Environment.getExternalStorageDirectory(),
+          "werfleider/" + now().toString("d-MM-yyyy") + "/opmetingDocument.pdf");
+      // If file does not exists, then create it
+
+      if (!file.exists()) {
+        file.createNewFile();
+      }
+
+      // creation of the different writers
+      final PdfWriter writer =
+          PdfWriter.getInstance(document, new FileOutputStream(file.getAbsoluteFile()));
+
+      writer.setBoxSize("art", new Rectangle(36, 54, 559, 788));
+
+      // various fonts
+
+      document.open();
+
+      document.add(createTable(yard, documentMap));
+
+      document.close();
+      return true;
+    } catch (FileNotFoundException | DocumentException e) {
+      e.printStackTrace();
+      return false;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
     }
+  }
 
-    public boolean writeDocument(final ParseYard yard, final ParseDocument parseDocument, final Multimap<ParseDocumentLocation, ParseDocumentImage> documentMap) {
+  public static PdfPTable createTable(final ParseYard yard,
+      final Multimap<ParseDocumentLocation, ParseDocumentImage> documentMap) {
 
-        Document document = new Document(
-                PageSize.A4,
-                0,
-                10,
-                50,
-                0);
-        try {
+    // a table with three columns
+    PdfPTable table = new PdfPTable(12);
+    // the cell object
+    addHeaders(table, yard);
 
-            final File path = Environment.getExternalStoragePublicDirectory(
-                    "werfleider/" + now().toString("d-MM-yyyy"));
+    for (ParseDocumentLocation location : documentMap.keySet()) {
 
-            path.mkdirs();
+      addLocationHeader(table, location, documentMap.get(location));
 
-            final File file = new File(
-                    Environment.getExternalStorageDirectory(),
-                    "werfleider/" + now().toString("d-MM-yyyy") + "/opmetingDocument.pdf");
-            // If file does not exists, then create it
+      ImmutableListMultimap<String, ParseDocumentImage> floorPartition =
+          Multimaps.index(documentMap.get(location), new Function<ParseDocumentImage, String>() {
+            @Override public String apply(ParseDocumentImage input) {
 
-            if (!file.exists()) {
-                file.createNewFile();
+              return input.getFloor();
             }
+          });
 
-            // creation of the different writers
-            final PdfWriter writer =
-                    PdfWriter.getInstance(
-                            document,
-                            new FileOutputStream(file.getAbsoluteFile()));
+      for (final String floor : floorPartition.keySet()) {
 
-            writer.setBoxSize(
-                    "art",
-                    new Rectangle(
-                            36,
-                            54,
-                            559,
-                            788));
+        addFloorRow(table, location, floor, floorPartition.get(floor));
 
-            // various fonts
+        ImmutableListMultimap<String, ParseDocumentImage> locationPartition =
+            Multimaps.index(documentMap.get(location), new Function<ParseDocumentImage, String>() {
+              @Override public String apply(ParseDocumentImage input) {
 
+                return input.getLocation();
+              }
+            });
 
-            document.open();
+        for (String imageLocation : locationPartition.keySet()) {
 
-            document.add(
-                    createTable(
-                            yard,
-                            documentMap));
+          addLocationRow(table, location, imageLocation, locationPartition.get(imageLocation));
 
-            document.close();
-            return true;
-        } catch (FileNotFoundException | DocumentException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+          int index = 0;
+
+          for (ParseDocumentImage aImage : locationPartition.get(imageLocation)) {
+
+            addImageRow(table, index, aImage, location.getMeasuringUnit());
+            index++;
+          }
         }
+      }
+
+      addEmptyRow(table);
+      addEmptyRow(table);
     }
 
-    public static PdfPTable createTable(final ParseYard yard, final Multimap<ParseDocumentLocation, ParseDocumentImage> documentMap) {
+    return table;
+  }
 
-        // a table with three columns
-        PdfPTable table = new PdfPTable(12);
-        // the cell object
-        addHeaders(
-                table,
-                yard
-                  );
+  private static void addImageRow(final PdfPTable table, int index, final ParseDocumentImage aImage,
+      final MeasuringUnit measuringUnit) {
 
-        for (ParseDocumentLocation location : documentMap.keySet()) {
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 3));
+    table.addCell(getSmallFontPdfCell(Integer.toString(index), 1));
+    table.addCell(getSmallFontPdfCell(Integer.toString(aImage.getQuantity()), 1));
+    table.addCell(getSmallFontPdfCell(format("%.2f", aImage.getLength()), 1));
+    table.addCell(getSmallFontPdfCell(format("%.2f", aImage.getWidth()), 1));
+    table.addCell(getSmallFontPdfCell(format("%.2f", aImage.getHeight()), 1));
+    table.addCell(getSmallFontPdfCell(format("%.2f", aImage.getTotal(measuringUnit)), 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+  }
 
-            addLocationHeader(
-                    table,
-                    location,
-                    documentMap.get(location));
+  private static void addLocationRow(PdfPTable table, ParseDocumentLocation location,
+      String imageLocation, final List<ParseDocumentImage> images) {
 
-            ImmutableListMultimap<String, ParseDocumentImage> floorPartition = Multimaps.index(
-                    documentMap.get(location),
-                    new Function<ParseDocumentImage, String>() {
-                        @Override
-                        public String apply(ParseDocumentImage input) {
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell(imageLocation, 3));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(
+        getSmallFontPdfCell(format("%.2f", getImageTotal(images, location.getMeasuringUnit())), 1));
+    table.addCell(getSmallFontPdfCell(images.get(0).getMS(), 1));
+  }
 
-                            return input.getFloor();
-                        }
-                    });
+  private static void addFloorRow(PdfPTable table, ParseDocumentLocation location, String floor,
+      Collection<ParseDocumentImage> imageCollection) {
 
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell(floor, 3));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell(
+            format("%.2f", getImageTotal(imageCollection, location.getMeasuringUnit())), 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+  }
 
-            for (final String floor : floorPartition.keySet()) {
+  private static double getImageTotal(final Collection<ParseDocumentImage> images,
+      final MeasuringUnit measuringUnit) {
 
-                addFloorRow(
-                        table,
-                        location,
-                        floor,
-                        floorPartition.get(floor));
+    double total = 0;
 
+    for (ParseDocumentImage image : images) {
 
-                ImmutableListMultimap<String, ParseDocumentImage> locationPartition = Multimaps.index(
-                        documentMap.get(location),
-                        new Function<ParseDocumentImage, String>() {
-                            @Override
-                            public String apply(ParseDocumentImage input) {
-
-                                return input.getLocation();
-                            }
-                        });
-
-                for (String imageLocation : locationPartition.keySet()) {
-
-                    addLocationRow(
-                            table,
-                            location,
-                            imageLocation,
-                            locationPartition.get(imageLocation));
-
-                    int index = 0;
-
-                    for (ParseDocumentImage aImage : locationPartition.get(imageLocation)) {
-
-                        addImageRow(
-                                table,
-                                index,
-                                aImage,
-                                location.getMeasuringUnit());
-                        index++;
-                    }
-                }
-            }
-
-            addEmptyRow(table);
-            addEmptyRow(table);
-        }
-
-        return table;
+      total += image.getTotal(measuringUnit);
     }
+    return total;
+  }
 
-    private static void addImageRow(final PdfPTable table, int index, final ParseDocumentImage aImage, final MeasuringUnit measuringUnit) {
+  private static void addEmptyRow(final PdfPTable table) {
 
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        3));
-        table.addCell(
-                getSmallFontPdfCell(
-                        Integer.toString(index),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        Integer.toString(aImage.getQuantity()),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        format(
-                                "%.2f",
-                                aImage.getLength()),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        format(
-                                "%.2f",
-                                aImage.getWidth()),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        format(
-                                "%.2f",
-                                aImage.getHeight()),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        format(
-                                "%.2f",
-                                aImage.getTotal(measuringUnit)),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-    }
+    table.addCell(getSmallFontPdfCell("-", 1));
+    table.addCell(getSmallFontPdfCell("", 3));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+  }
 
-    private static void addLocationRow(PdfPTable table, ParseDocumentLocation location, String imageLocation, final List<ParseDocumentImage> images) {
+  private static void addLocationHeader(PdfPTable table, ParseDocumentLocation location,
+      Collection<ParseDocumentImage> images) {
 
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        imageLocation,
-                        3));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        format(
-                                "%.2f",
-                                getImageTotal(
-                                        images,
-                                        location.getMeasuringUnit())),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        images.get(0).getMS(),
-                        1));
-    }
+    table.addCell(getSmallFontPdfCell(location.getArtNr(), 1));
+    table.addCell(getSmallFontPdfCell("", 3));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell(location.getMeasuringUnit().name(), 1));
+    table.addCell(
+        getSmallFontPdfCell(format("%.2f", getImageTotal(images, location.getMeasuringUnit())), 1));
+    table.addCell(getSmallFontPdfCell("", 1));
+  }
 
-    private static void addFloorRow(PdfPTable table, ParseDocumentLocation location, String floor, Collection<ParseDocumentImage> imageCollection) {
+  private static void addHeaders(PdfPTable table, final ParseYard yard) {
 
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        floor,
-                        3));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        format(
-                                "%.2f",
-                                getImageTotal(
-                                        imageCollection,
-                                        location.getMeasuringUnit())),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-    }
+    PdfPCell cell;
+    // we add a cell with colspan 3
+    cell = new PdfPCell(new Phrase(yard.getOntwerper()));
+    cell.setColspan(4);
+    cell.setRowspan(2);
+    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(cell);
+    // now we add a cell with rowspan 2
+    cell = new PdfPCell(new Phrase("UITGEBREIDE OPMETING"));
+    cell.setColspan(6);
+    cell.setRowspan(2);
+    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(cell);
 
+    cell = new PdfPCell(new Phrase("Blad:"));
+    cell.setRowspan(2);
+    cell.setColspan(2);
+    table.addCell(cell);
 
-    private static double getImageTotal(final Collection<ParseDocumentImage> images, final MeasuringUnit measuringUnit) {
+    cell = new PdfPCell(new Phrase("Group Monument"));
+    cell.setColspan(4);
+    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(cell);
 
-        double total = 0;
+    cell = new PdfPCell(new Phrase("Opdrachtgever: " + yard.getOpdrachtgever()));
+    cell.setColspan(5);
+    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(cell);
+    table.addCell("");
 
-        for (ParseDocumentImage image : images) {
+    cell = new PdfPCell(new Phrase("besteknr:"));
+    cell.setColspan(2);
+    table.addCell(cell);
 
-            total += image.getTotal(measuringUnit);
-        }
-        return total;
-    }
+    cell = new PdfPCell(new Phrase(yard.getOntwerperStad()));
+    cell.setColspan(4);
+    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(cell);
 
-    private static void addEmptyRow(final PdfPTable table) {
+    cell = new PdfPCell(new Phrase("Afmetingen"));
+    cell.setColspan(5);
+    table.addCell(cell);
+    table.addCell("");
 
-        table.addCell(
-                getSmallFontPdfCell(
-                        "-",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        3));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
+    cell = new PdfPCell(new Phrase("datum:" + DateTime.now().toString("dd-MM-yy")));
+    cell.setColspan(2);
+    table.addCell(cell);
 
-    }
+    table.addCell(getSmallFontPdfCell(yard.getOpdrachtAdres(), 11));
+    table.addCell(getSmallFontPdfCell("", 1));
+    table.addCell(getSmallFontPdfCell("art.", 1));
+    table.addCell(getSmallFontPdfCell("beschrijving", 3));
+    table.addCell(getSmallFontPdfCell("foto", 1));
+    table.addCell(getSmallFontPdfCell("#", 1));
+    table.addCell(getSmallFontPdfCell("L", 1));
+    table.addCell(getSmallFontPdfCell("B", 1));
+    table.addCell(getSmallFontPdfCell("D/H", 1));
+    table.addCell(getSmallFontPdfCell("=", 1));
+    table.addCell(getSmallFontPdfCell("TOTAAL", 1));
+    table.addCell(getSmallFontPdfCell("MS", 1));
+  }
 
-    private static void addLocationHeader(PdfPTable table, ParseDocumentLocation location, Collection<ParseDocumentImage> images) {
+  private static PdfPCell getSmallFontPdfCell(final String text, int colspan) {
 
-        table.addCell(
-                getSmallFontPdfCell(
-                        location.getArtNr(),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        3));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        location.getMeasuringUnit().name(),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        format(
-                                "%.2f",
-                                getImageTotal(
-                                        images,
-                                        location.getMeasuringUnit())),
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-    }
+    return getSmallFontPdfCell(text, colspan, 1);
+  }
 
+  private static PdfPCell getSmallFontPdfCell(final String text, int colspan, int rowspan) {
 
-    private static void addHeaders(PdfPTable table, final ParseYard yard) {
+    final Phrase phrase = new Phrase(text, SMALL_FONT);
 
-        PdfPCell cell;
-        // we add a cell with colspan 3
-        cell = new PdfPCell(new Phrase(yard.getOntwerper()));
-        cell.setColspan(4);
-        cell.setRowspan(2);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(cell);
-        // now we add a cell with rowspan 2
-        cell = new PdfPCell(new Phrase("UITGEBREIDE OPMETING"));
-        cell.setColspan(6);
-        cell.setRowspan(2);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(cell);
+    final PdfPCell cell = new PdfPCell(phrase);
+    cell.setColspan(colspan);
+    cell.setRowspan(rowspan);
 
-        cell = new PdfPCell(new Phrase("Blad:"));
-        cell.setRowspan(2);
-        cell.setColspan(2);
-        table.addCell(cell);
-
-        cell = new PdfPCell(new Phrase("Group Monument"));
-        cell.setColspan(4);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(cell);
-
-        cell = new PdfPCell(new Phrase("Opdrachtgever: " + yard.getOpdrachtgever()));
-        cell.setColspan(5);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(cell);
-        table.addCell("");
-
-        cell = new PdfPCell(new Phrase("besteknr:"));
-        cell.setColspan(2);
-        table.addCell(cell);
-
-        cell = new PdfPCell(new Phrase(yard.getOntwerperStad()));
-        cell.setColspan(4);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(cell);
-
-        cell = new PdfPCell(new Phrase("Afmetingen"));
-        cell.setColspan(5);
-        table.addCell(cell);
-        table.addCell("");
-
-        cell = new PdfPCell(new Phrase("datum:" + DateTime.now().toString("dd-MM-yy")));
-        cell.setColspan(2);
-        table.addCell(cell);
-
-        table.addCell(
-                getSmallFontPdfCell(
-                        yard.getOpdrachtAdres(),
-                        11));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "art.",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "beschrijving",
-                        3));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "foto",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "#",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "L",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "B",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "D/H",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "=",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "TOTAAL",
-                        1));
-        table.addCell(
-                getSmallFontPdfCell(
-                        "MS",
-                        1));
-    }
-
-
-    private static PdfPCell getSmallFontPdfCell(final String text, int colspan) {
-
-        return getSmallFontPdfCell(
-                text,
-                colspan,
-                1);
-    }
-
-    private static PdfPCell getSmallFontPdfCell(final String text, int colspan, int rowspan) {
-
-        final Phrase phrase = new Phrase(
-                text,
-                SMALL_FONT);
-
-        final PdfPCell cell = new PdfPCell(phrase);
-        cell.setColspan(colspan);
-        cell.setRowspan(rowspan);
-
-        return cell;
-    }
+    return cell;
+  }
 }

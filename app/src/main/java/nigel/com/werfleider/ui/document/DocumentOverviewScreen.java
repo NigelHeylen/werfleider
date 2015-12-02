@@ -3,26 +3,23 @@ package nigel.com.werfleider.ui.document;
 import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import dagger.Provides;
 import flow.HasParent;
 import flow.Layout;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.dao.document.DocumentDbHelper;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.ParseDocument;
@@ -31,6 +28,8 @@ import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.ui.werfoverzicht.WerfDetailScreen;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static nigel.com.werfleider.commons.load.Load.LOCAL;
+import static nigel.com.werfleider.commons.load.Load.NETWORK;
 import static nigel.com.werfleider.util.ParseStringUtils.CREATOR_ID;
 
 /**
@@ -69,7 +68,6 @@ public class DocumentOverviewScreen implements Blueprint, HasParent<WerfDetailSc
     @dagger.Module(
             injects = {
                     DocumentOverviewView.class,
-                    DocumentOverviewAdapter.class,
             },
             addsTo = CorePresenter.Module.class
     )
@@ -107,17 +105,11 @@ public class DocumentOverviewScreen implements Blueprint, HasParent<WerfDetailSc
 
         @Inject WerfInt werf;
 
-        @Inject DocumentDbHelper documentDbHelper;
-
         @Inject Context context;
 
         @Inject List<ParseDocument> parseDocuments;
 
         private ParseDocumentOverviewAdapter adapter;
-
-//        private DocumentOverviewAdapter adapter;
-
-//        private List<Document> documents;
 
         @Override protected void onLoad(final Bundle savedInstanceState) {
 
@@ -126,41 +118,50 @@ public class DocumentOverviewScreen implements Blueprint, HasParent<WerfDetailSc
                 return;
             }
 
-            adapter = new ParseDocumentOverviewAdapter(getView().getContext(),
-                                                       parseDocuments);
-
-            getDocuments();
-
-//            documents = getDocuments();
-//
-//            adapter = new DocumentOverviewAdapter(
-//                    documents,
-//                    getView().getContext());
-
+            adapter = new ParseDocumentOverviewAdapter(
+                    getView().getContext(),
+                    parseDocuments);
             getView().setAdapter(adapter);
+
+            loadData(LOCAL);
+
         }
 
-        private List<Document> getDocuments() {
+        private List<Document> loadData(final Load load) {
 
             final ParseQuery<ParseDocument> query = ParseQuery.getQuery(ParseDocument.class);
+
+            if(load == LOCAL){
+                query.fromLocalDatastore();
+            }
+
             query.whereEqualTo(
                     CREATOR_ID,
-                    ParseUser.getCurrentUser().getObjectId());
-            query.findInBackground(
-                    new FindCallback<ParseDocument>() {
-                        @Override public void done(final List<ParseDocument> list, final ParseException e) {
+                    ParseUser.getCurrentUser().getObjectId())
+                    .findInBackground(
+                            new FindCallback<ParseDocument>() {
+                                @Override public void done(final List<ParseDocument> list, final ParseException e) {
 
-                            if (e == null) {
-                                parseDocuments.addAll(list);
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
+                                    if (e == null) {
+
+                                        for (ParseDocument document : list) {
+
+                                            if(!parseDocuments.contains(document)){
+                                                parseDocuments.add(document);
+                                            }
+                                        }
+                                        adapter.notifyDataSetChanged();
+                                        ParseObject.pinAllInBackground(list);
+
+                                        if(load == LOCAL){
+
+                                            loadData(NETWORK);
+                                        }
+                                    }
+                                }
+                            });
 
             return newArrayList();
-//                    documentDbHelper.getDocuments(
-//                    yard,
-//                    documentType);
         }
 
         public void handleCreateClick() {
@@ -170,19 +171,13 @@ public class DocumentOverviewScreen implements Blueprint, HasParent<WerfDetailSc
                     "Creating document...",
                     Toast.LENGTH_LONG).show();
 
-//            final Document document = documentDbHelper.createDocument(
-//                    documentType,
-//                    Long.parseLong(yard.getId()));
-
             final ParseDocument parseDocument = new ParseDocument();
             parseDocument.setWerf((ParseYard) werf)
                          .setAuthor(ParseUser.getCurrentUser())
                          .setDocumentType(documentType);
 
-//            parseDocument.setWerf(String.valueOf(yard.getId()))
-//                         .setDocumentType(documentType);
 
-            parseDocument.saveEventually(
+            parseDocument.pinInBackground(
                     new SaveCallback() {
                         @Override public void done(final ParseException e) {
 
@@ -200,8 +195,7 @@ public class DocumentOverviewScreen implements Blueprint, HasParent<WerfDetailSc
                             }
                         }
                     });
-
-//            documents.add(document);
+            parseDocument.saveEventually();
 
         }
     }

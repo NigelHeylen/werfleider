@@ -1,12 +1,11 @@
 package nigel.com.werfleider.ui.werf;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
@@ -23,21 +22,21 @@ import nigel.com.werfleider.ui.document.ParseDocumentOverviewView;
 @Layout(R.layout.yard_detail)
 public class YardDetailScreen implements Blueprint, HasParent<WerfScreen> {
 
-    final ParseYard werf;
+    final ParseYard yard;
 
-    public YardDetailScreen(final ParseYard werf) {
+    public YardDetailScreen(final ParseYard yard) {
 
-        this.werf = werf;
+        this.yard = yard;
     }
 
     @Override public String getMortarScopeName() {
 
-        return getClass().getName() + ": " + werf.getObjectId() + ": " + werf.getNaam();
+        return getClass().getName() + ": " + yard.getObjectId() + ": " + yard.getNaam();
     }
 
     @Override public Object getDaggerModule() {
 
-        return new Module(werf);
+        return new Module(yard);
     }
 
     @Override public WerfScreen getParent() {

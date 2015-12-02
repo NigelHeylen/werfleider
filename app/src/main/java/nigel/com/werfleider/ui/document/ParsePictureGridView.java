@@ -4,15 +4,12 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.squareup.picasso.Picasso;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.squareup.picasso.Picasso;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 
