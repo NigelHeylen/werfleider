@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.squareup.picasso.Picasso;
@@ -94,13 +94,13 @@ public class PictureGridAdapter extends RecyclerView.Adapter<PictureGridAdapter.
 
     static class PictureGridViewHolder extends RecyclerView.ViewHolder {
 
-        @InjectView(R.id.image_grid_item_container) LinearLayout container;
-        @InjectView(R.id.image_grid_item_image) ImageView mGridImage;
-        @InjectView(R.id.image_grid_item_checkmark) ImageView checkmark;
+        @Bind(R.id.image_grid_item_container) LinearLayout container;
+        @Bind(R.id.image_grid_item_image) ImageView mGridImage;
+        @Bind(R.id.image_grid_item_checkmark) ImageView checkmark;
 
         public PictureGridViewHolder(final View itemView) {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

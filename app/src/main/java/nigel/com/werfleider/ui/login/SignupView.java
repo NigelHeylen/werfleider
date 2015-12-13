@@ -5,8 +5,7 @@ import android.util.AttributeSet;
 import android.widget.ScrollView;
 import android.widget.Toast;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.InjectViews;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -21,19 +20,19 @@ import nigel.com.werfleider.R;
  */
 public class SignupView extends ScrollView{
 
-    @InjectView(R.id.signup_name) MaterialEditText name;
+    @Bind(R.id.signup_name) MaterialEditText name;
 
-    @InjectView(R.id.signup_email) MaterialEditText email;
+    @Bind(R.id.signup_email) MaterialEditText email;
 
-    @InjectView(R.id.signup_profession) MaterialEditText profession;
+    @Bind(R.id.signup_profession) MaterialEditText profession;
 
-    @InjectView(R.id.signup_company) MaterialEditText company;
+    @Bind(R.id.signup_company) MaterialEditText company;
 
-    @InjectView(R.id.signup_password) MaterialEditText password;
+    @Bind(R.id.signup_password) MaterialEditText password;
 
-    @InjectView(R.id.signup_password_check) MaterialEditText check;
+    @Bind(R.id.signup_password_check) MaterialEditText check;
 
-    @InjectViews({ R.id.signup_name, R.id.signup_email, R.id.signup_profession, R.id.signup_company, R.id.signup_password, R.id.signup_password_check})
+    @Bind({ R.id.signup_name, R.id.signup_email, R.id.signup_profession, R.id.signup_company, R.id.signup_password, R.id.signup_password_check})
     List<MaterialEditText> textFields;
 
     @Inject SignupScreen.Presenter presenter;
@@ -51,7 +50,7 @@ public class SignupView extends ScrollView{
     @Override protected void onFinishInflate() {
 
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         presenter.takeView(this);
     }
 
@@ -59,7 +58,7 @@ public class SignupView extends ScrollView{
 
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @OnClick(R.id.signup_button)

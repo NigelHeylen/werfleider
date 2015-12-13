@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.squareup.picasso.Picasso;
@@ -22,9 +22,9 @@ public class ParsePictureGridView extends RelativeLayout {
 
     @Inject Picasso pablo;
 
-    @InjectView(R.id.picture_grid) RecyclerView grid;
+    @Bind(R.id.picture_grid) RecyclerView grid;
 
-    @InjectView(R.id.picture_grid_progress) ProgressBarCircularIndeterminate progress;
+    @Bind(R.id.picture_grid_progress) ProgressBarCircularIndeterminate progress;
 
     @OnClick(R.id.picture_grid_save)
     public void save() {
@@ -46,13 +46,13 @@ public class ParsePictureGridView extends RelativeLayout {
     @Override protected void onFinishInflate() {
 
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         presenter.takeView(this);
     }
 
     @Override protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 }

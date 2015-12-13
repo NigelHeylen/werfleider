@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import flow.Flow;
 import java.util.List;
@@ -85,16 +85,16 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @InjectView(R.id.document_overview_item_container) CardView container;
+        @Bind(R.id.document_overview_item_container) CardView container;
 
-        @InjectView(R.id.document_overview_item_image) ImageView image;
-        @InjectView(R.id.document_overview_item_delete) ImageView delete;
+        @Bind(R.id.document_overview_item_image) ImageView image;
+        @Bind(R.id.document_overview_item_delete) ImageView delete;
 
-        @InjectView(R.id.document_overview_item_date) TextView date;
+        @Bind(R.id.document_overview_item_date) TextView date;
 
         public ViewHolder(final View itemView) {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

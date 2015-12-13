@@ -5,7 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.astuetz.PagerSlidingTabStrip;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -16,8 +16,8 @@ import nigel.com.werfleider.R;
  */
 public class YardDetailView extends LinearLayout {
 
-    @InjectView(R.id.yard_document_pager) ViewPager documentPager;
-    @InjectView(R.id.yard_document_tabs) PagerSlidingTabStrip documentTabs;
+    @Bind(R.id.yard_document_pager) ViewPager documentPager;
+    @Bind(R.id.yard_document_tabs) PagerSlidingTabStrip documentTabs;
 
     @Inject YardDetailScreen.Presenter presenter;
 
@@ -34,7 +34,7 @@ public class YardDetailView extends LinearLayout {
     @Override protected void onFinishInflate() {
 
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         bindViews();
         presenter.takeView(this);
@@ -50,7 +50,7 @@ public class YardDetailView extends LinearLayout {
     @Override protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
 }

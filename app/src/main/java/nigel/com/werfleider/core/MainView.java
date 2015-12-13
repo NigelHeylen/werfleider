@@ -23,7 +23,7 @@ import android.widget.FrameLayout;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import flow.Flow;
 import mortar.Blueprint;
 import mortar.Mortar;
@@ -37,8 +37,8 @@ public class MainView extends FrameLayout implements CanShowScreen<Blueprint> {
     private ScreenConductor<Blueprint> screenMaestro;
 
 
-    @InjectView(R.id.container) FrameLayout container;
-    @InjectView(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.container) FrameLayout container;
+    @Bind(R.id.toolbar) Toolbar toolbar;
 
     public MainView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,7 +47,7 @@ public class MainView extends FrameLayout implements CanShowScreen<Blueprint> {
 
     @Override protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         screenMaestro = new ScreenConductor<>(getContext(), container);
         corePresenter.takeView(this);
     }

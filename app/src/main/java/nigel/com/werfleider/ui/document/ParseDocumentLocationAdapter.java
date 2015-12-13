@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.squareup.picasso.Picasso;
@@ -103,18 +103,18 @@ public class ParseDocumentLocationAdapter extends RecyclerView.Adapter<ParseDocu
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @InjectView(R.id.document_location_item_name) TextView title;
+        @Bind(R.id.document_location_item_name) TextView title;
 
-        @InjectView(R.id.document_location_item_art_nr) TextView artNr;
+        @Bind(R.id.document_location_item_art_nr) TextView artNr;
 
-        @InjectView(R.id.document_location_item_container) RelativeLayout mContainer;
+        @Bind(R.id.document_location_item_container) RelativeLayout mContainer;
 
-        @InjectView(R.id.document_location_item_delete) ImageView delete;
+        @Bind(R.id.document_location_item_delete) ImageView delete;
 
         public ViewHolder(final View itemView) {
 
             super(itemView);
-            ButterKnife.inject(
+            ButterKnife.bind(
                     this,
                     itemView);
         }

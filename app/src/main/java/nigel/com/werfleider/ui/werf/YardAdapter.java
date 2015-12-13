@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import flow.Flow;
 import java.util.List;
 import javax.inject.Inject;
@@ -78,19 +78,19 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
 
     static class YardViewHolder extends RecyclerView.ViewHolder {
 
-        @InjectView(R.id.werf_item_container) CardView container;
+        @Bind(R.id.werf_item_container) CardView container;
 
-        @InjectView(R.id.werf_item_naam) TextView naam;
+        @Bind(R.id.werf_item_naam) TextView naam;
 
-        @InjectView(R.id.werf_item_nr) TextView nr;
+        @Bind(R.id.werf_item_nr) TextView nr;
 
-        @InjectView(R.id.werf_item_delete) ImageView delete;
+        @Bind(R.id.werf_item_delete) ImageView delete;
 
         public YardViewHolder(final View itemView) {
 
             super(itemView);
 
-            ButterKnife.inject(
+            ButterKnife.bind(
                     this,
                     itemView);
         }

@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -19,7 +19,7 @@ public class DocumentOverviewView extends RelativeLayout {
 
     @Inject DocumentOverviewScreen.Presenter presenter;
 
-    @InjectView(R.id.document_overview_list) RecyclerView documentList;
+    @Bind(R.id.document_overview_list) RecyclerView documentList;
 
     @OnClick(R.id.document_overview_create_button)
     public void onClick(){
@@ -33,7 +33,7 @@ public class DocumentOverviewView extends RelativeLayout {
 
     @Override protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         presenter.takeView(this);
 
@@ -44,7 +44,7 @@ public class DocumentOverviewView extends RelativeLayout {
         super.onDetachedFromWindow();
         presenter.dropView(this);
 
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     public void setAdapter(final RecyclerView.Adapter adapter) {

@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<nigel.com.werfleider.ui.contacts.ContactView
+<nigel.com.werfleider.ui.contact.ContactsView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/contacts.swipe.to.refrsh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/contacts.list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/take.photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
-        fab:fab_colorNormal="@color/accent"
-        fab:fab_icon="@drawable/ic_action_camera"
-        fab:fab_title="Take Photo"/>
 
-</nigel.com.werfleider.ui.contacts.ContactView>
+
+</nigel.com.werfleider.ui.contact.ContactsView>

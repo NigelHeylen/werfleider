@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
@@ -21,11 +21,11 @@ public class ParseDocumentView extends RelativeLayout {
 
     @Inject ParseDocumentScreen.Presenter presenter;
 
-    @InjectView(R.id.document_locations) RecyclerView locations;
+    @Bind(R.id.document_locations) RecyclerView locations;
 
-    @InjectView(R.id.document_loader) ProgressBarCircularIndeterminate loader;
+    @Bind(R.id.document_loader) ProgressBarCircularIndeterminate loader;
 
-    @InjectView(R.id.document_add_location) AddFloatingActionButton addLocation;
+    @Bind(R.id.document_add_location) AddFloatingActionButton addLocation;
 
     @OnClick(R.id.document_add_location)
     public void newImageCollection() {
@@ -53,7 +53,7 @@ public class ParseDocumentView extends RelativeLayout {
     @Override protected void onFinishInflate() {
 
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         presenter.takeView(this);
 
         locations.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -63,7 +63,7 @@ public class ParseDocumentView extends RelativeLayout {
 
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     public void showLoader(boolean show){

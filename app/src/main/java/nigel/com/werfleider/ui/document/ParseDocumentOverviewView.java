@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import javax.inject.Inject;
@@ -21,9 +21,9 @@ public class ParseDocumentOverviewView extends RelativeLayout {
 
     @Inject ParseDocumentOverviewPresenter presenter;
 
-    @InjectView(R.id.document_overview_list) RecyclerView documentList;
+    @Bind(R.id.document_overview_list) RecyclerView documentList;
 
-    @InjectView(R.id.document_overview_loader) ProgressBarCircularIndeterminate loader;
+    @Bind(R.id.document_overview_loader) ProgressBarCircularIndeterminate loader;
 
     @OnClick(R.id.document_overview_create_button)
     public void onClick(){
@@ -41,7 +41,7 @@ public class ParseDocumentOverviewView extends RelativeLayout {
 
     @Override protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         presenter.takeView(this);
 
@@ -52,7 +52,7 @@ public class ParseDocumentOverviewView extends RelativeLayout {
         super.onDetachedFromWindow();
         presenter.dropView(this);
 
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     public void setAdapter(final RecyclerView.Adapter adapter) {

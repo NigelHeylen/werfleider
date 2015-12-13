@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -16,7 +16,7 @@ import nigel.com.werfleider.R;
  */
 public class HomeView extends RelativeLayout {
 
-    @InjectView(R.id.home_welcome_text) TextView welcome;
+    @Bind(R.id.home_welcome_text) TextView welcome;
 
     @Inject HomeScreen.Presenter presenter;
 
@@ -27,14 +27,14 @@ public class HomeView extends RelativeLayout {
 
     @Override protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         presenter.takeView(this);
     }
 
     @Override protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @OnClick(R.id.Home_Button_Contacts)

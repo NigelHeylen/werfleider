@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
@@ -21,17 +21,17 @@ public class LoginView extends RelativeLayout {
 
     @Inject LoginScreen.Presenter presenter;
 
-    @InjectView(R.id.login_button_login) ButtonFlat logIn;
+    @Bind(R.id.login_button_login) ButtonFlat logIn;
 
-    @InjectView(R.id.login_button_signup) ButtonFlat signUp;
+    @Bind(R.id.login_button_signup) ButtonFlat signUp;
 
-//    @InjectView(R.id.log_in_log_out_btn) ButtonRectangle logOut;
+//    @Bind(R.id.log_in_log_out_btn) ButtonRectangle logOut;
 
-    @InjectView(R.id.login_email) MaterialEditText email;
+    @Bind(R.id.login_email) MaterialEditText email;
 
-    @InjectView(R.id.login_password) MaterialEditText password;
+    @Bind(R.id.login_password) MaterialEditText password;
 
-    @InjectView(R.id.log_in_progress) ProgressBarCircularIndeterminate progressCircle;
+    @Bind(R.id.log_in_progress) ProgressBarCircularIndeterminate progressCircle;
 
     public LoginView(final Context context, final AttributeSet attrs) {
 
@@ -46,7 +46,7 @@ public class LoginView extends RelativeLayout {
     @Override protected void onFinishInflate() {
 
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         presenter.takeView(this);
     }
 
@@ -54,7 +54,7 @@ public class LoginView extends RelativeLayout {
 
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @OnClick(R.id.login_button_login)

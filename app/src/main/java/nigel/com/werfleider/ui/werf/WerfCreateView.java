@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.DatePicker;
 import android.widget.ScrollView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import javax.inject.Inject;
@@ -18,22 +18,22 @@ import org.joda.time.DateTime;
  */
 public class WerfCreateView extends ScrollView{
 
-    @InjectView(R.id.werf_create_naam) MaterialEditText naam;
-    @InjectView(R.id.werf_create_nummer) MaterialEditText nummer;
+    @Bind(R.id.werf_create_naam) MaterialEditText naam;
+    @Bind(R.id.werf_create_nummer) MaterialEditText nummer;
 
-    @InjectView(R.id.werf_create_opdracht_adres) MaterialEditText opdrachtAdres;
-    @InjectView(R.id.werf_create_opdracht_stad) MaterialEditText opdrachtStad;
+    @Bind(R.id.werf_create_opdracht_adres) MaterialEditText opdrachtAdres;
+    @Bind(R.id.werf_create_opdracht_stad) MaterialEditText opdrachtStad;
 
-    @InjectView(R.id.werf_create_ontwerper) MaterialEditText ontwerper;
-    @InjectView(R.id.werf_create_ontwerper_adres) MaterialEditText ontwerperAdres;
-    @InjectView(R.id.werf_create_ontwerper_stad) MaterialEditText ontwerperStad;
+    @Bind(R.id.werf_create_ontwerper) MaterialEditText ontwerper;
+    @Bind(R.id.werf_create_ontwerper_adres) MaterialEditText ontwerperAdres;
+    @Bind(R.id.werf_create_ontwerper_stad) MaterialEditText ontwerperStad;
 
-    @InjectView(R.id.werf_create_opdrachtgever) MaterialEditText opdrachtgever;
-    @InjectView(R.id.werf_create_opdrachtgever_adres) MaterialEditText opdrachtgeverAdres;
-    @InjectView(R.id.werf_create_opdrachtgever_stad) MaterialEditText opdrachtgeverStad;
+    @Bind(R.id.werf_create_opdrachtgever) MaterialEditText opdrachtgever;
+    @Bind(R.id.werf_create_opdrachtgever_adres) MaterialEditText opdrachtgeverAdres;
+    @Bind(R.id.werf_create_opdrachtgever_stad) MaterialEditText opdrachtgeverStad;
 
-    @InjectView(R.id.werf_create_omschrijving) MaterialEditText omschrijving;
-    @InjectView(R.id.werf_create_datum_aanvang) DatePicker datumAanvang;
+    @Bind(R.id.werf_create_omschrijving) MaterialEditText omschrijving;
+    @Bind(R.id.werf_create_datum_aanvang) DatePicker datumAanvang;
 
 
     @OnClick(R.id.werf_create_save)
@@ -62,13 +62,13 @@ public class WerfCreateView extends ScrollView{
 
     @Override protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         presenter.takeView(this);
     }
 
     @Override protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 }

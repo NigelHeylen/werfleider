@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
@@ -109,17 +109,17 @@ public class ParseDocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
 
     static class ViewHolder extends RecyclerViewEx.ViewHolder {
 
-        @InjectView(R.id.document_image_list_container) CardView container;
+        @Bind(R.id.document_image_list_container) CardView container;
 
-        @InjectView(R.id.document_image_list_image) ImageView image;
+        @Bind(R.id.document_image_list_image) ImageView image;
 
-        @InjectView(R.id.document_image_list_image_delete) ImageView delete;
+        @Bind(R.id.document_image_list_image_delete) ImageView delete;
 
-        @InjectView(R.id.document_image_list_image_active) ImageView active;
+        @Bind(R.id.document_image_list_image_active) ImageView active;
 
         public ViewHolder(final View itemView) {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

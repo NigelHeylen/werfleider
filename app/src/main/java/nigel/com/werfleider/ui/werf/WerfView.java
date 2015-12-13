@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import javax.inject.Inject;
@@ -18,9 +18,9 @@ import nigel.com.werfleider.R;
  */
 public class WerfView extends RelativeLayout {
 
-    @InjectView(R.id.werf_list) RecyclerView werfList;
+    @Bind(R.id.werf_list) RecyclerView werfList;
 
-    @InjectView(R.id.werf_loader) ProgressBarCircularIndeterminate loader;
+    @Bind(R.id.werf_loader) ProgressBarCircularIndeterminate loader;
 
     @Inject WerfScreen.Presenter presenter;
 
@@ -37,7 +37,7 @@ public class WerfView extends RelativeLayout {
     @Override protected void onFinishInflate() {
 
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         presenter.takeView(this);
     }
 
@@ -45,7 +45,7 @@ public class WerfView extends RelativeLayout {
 
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @OnClick(R.id.werf_create)

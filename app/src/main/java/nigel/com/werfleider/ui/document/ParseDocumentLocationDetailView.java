@@ -8,8 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.InjectViews;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.astuetz.PagerSlidingTabStrip;
@@ -28,40 +27,40 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
     @Inject ParseDocumentLocationDetailScreen.Presenter presenter;
 
-    @InjectView(R.id.document_description) MaterialEditText description;
+    @Bind(R.id.document_description) MaterialEditText description;
 
-    @InjectView(R.id.document_length) MaterialEditText length;
+    @Bind(R.id.document_length) MaterialEditText length;
 
-    @InjectView(R.id.document_height) MaterialEditText height;
+    @Bind(R.id.document_height) MaterialEditText height;
 
-    @InjectView(R.id.document_width) MaterialEditText width;
+    @Bind(R.id.document_width) MaterialEditText width;
 
-    @InjectView(R.id.document_quantity) MaterialEditText quantity;
+    @Bind(R.id.document_quantity) MaterialEditText quantity;
 
-    @InjectView(R.id.document_ms) MaterialEditText ms;
+    @Bind(R.id.document_ms) MaterialEditText ms;
 
-    @InjectView(R.id.document_detail_floor) MaterialEditText floor;
+    @Bind(R.id.document_detail_floor) MaterialEditText floor;
 
-    @InjectView(R.id.document_detail_location) MaterialEditText location;
+    @Bind(R.id.document_detail_location) MaterialEditText location;
 
-    @InjectView(R.id.document_measuring_units) Spinner measuringUnits;
+    @Bind(R.id.document_measuring_units) Spinner measuringUnits;
 
-    @InjectView(R.id.document_image_list) RecyclerViewPager imageList;
+    @Bind(R.id.document_image_list) RecyclerViewPager imageList;
 
-    @InjectView(R.id.document_image_detail_tabs) PagerSlidingTabStrip detailTabs;
+    @Bind(R.id.document_image_detail_tabs) PagerSlidingTabStrip detailTabs;
 
-    @InjectView(R.id.document_image_detail_views) ViewPager detailViews;
+    @Bind(R.id.document_image_detail_views) ViewPager detailViews;
 
-    @InjectView(R.id.document_location_detail_info_container) LinearLayout infoContainer;
+    @Bind(R.id.document_location_detail_info_container) LinearLayout infoContainer;
 
-    @InjectView(R.id.document_location_detail_dimensions_container) RelativeLayout dimensionContainer;
+    @Bind(R.id.document_location_detail_dimensions_container) RelativeLayout dimensionContainer;
 
-    @InjectView(R.id.location_saver) ProgressBarCircularIndeterminate progressBar;
+    @Bind(R.id.location_saver) ProgressBarCircularIndeterminate progressBar;
 
-    @InjectViews({ R.id.document_length, R.id.document_width, R.id.document_height})
+    @Bind({ R.id.document_length, R.id.document_width, R.id.document_height})
     List<MaterialEditText> editTexts;
 
-    @InjectView(R.id.take_picture_surface) SurfaceView surfaceView;
+    @Bind(R.id.take_picture_surface) SurfaceView surfaceView;
 
     @OnClick(R.id.take_photo)
     public void takePhoto() {
@@ -83,7 +82,7 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
         super.onFinishInflate();
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         presenter.takeView(this);
 
 
@@ -93,7 +92,7 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
 
         super.onDetachedFromWindow();
         presenter.dropView(this);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @OnClick(R.id.document_save)
