@@ -15,41 +15,52 @@ import nigel.com.werfleider.ui.document.ParseDocumentOverviewView;
  */
 public class YardDetailDocumentAdapter extends PagerAdapter {
 
-    private final Context context;
+  private final Context context;
 
-    public YardDetailDocumentAdapter(final Context context) {
+  public YardDetailDocumentAdapter(final Context context) {
 
-        Mortar.inject(context, this);
-        this.context = context;
+    Mortar.inject(context, this);
+    this.context = context;
+  }
+
+  @Override public int getCount() {
+
+    return DocumentType.values().length + 1;
+  }
+
+  @Override public boolean isViewFromObject(final View view, final Object object) {
+
+    return object == view;
+  }
+
+  @Override public Object instantiateItem(final ViewGroup container, final int position) {
+
+    if (position < DocumentType.values().length) {
+      final ParseDocumentOverviewView view =
+          (ParseDocumentOverviewView) LayoutInflater.from(context)
+              .inflate(R.layout.parsedocument_overview_view, container, false);
+
+      view.setDocumentType(DocumentType.values()[position]);
+      container.addView(view);
+      return view;
+    } else {
+
+      final InviteContactsView view = (InviteContactsView) LayoutInflater.from(context)
+          .inflate(R.layout.invite_contacts_view, container, false);
+      container.addView(view);
+      return view;
     }
+  }
 
-    @Override public int getCount() {
+  @Override
+  public void destroyItem(final ViewGroup container, final int position, final Object object) {
 
-        return DocumentType.values().length;
-    }
+    container.removeView((View) object);
+  }
 
-    @Override public boolean isViewFromObject(final View view, final Object object) {
+  @Override public CharSequence getPageTitle(final int position) {
 
-        return object == view;
-    }
-
-    @Override public Object instantiateItem(final ViewGroup container, final int position) {
-
-        final ParseDocumentOverviewView
-            view = (ParseDocumentOverviewView) LayoutInflater.from(context).inflate(R.layout.parsedocument_overview_view, container, false);
-
-        view.setDocumentType(DocumentType.values()[position]);
-        container.addView(view);
-        return view;
-    }
-
-    @Override public void destroyItem(final ViewGroup container, final int position, final Object object) {
-
-        container.removeView((View) object);
-    }
-
-    @Override public CharSequence getPageTitle(final int position) {
-
-        return DocumentType.values()[position].toString();
-    }
+    return position < DocumentType.values().length ? DocumentType.values()[position].toString()
+        : context.getString(R.string.tInvites);
+  }
 }

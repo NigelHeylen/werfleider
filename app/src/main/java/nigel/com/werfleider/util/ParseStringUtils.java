@@ -86,4 +86,5 @@ public class ParseStringUtils {
     public static final String ABSOLUTE_PATH = "absolute_path";
 
     public static final String CONTACTS = "contacts";
+    public static final String INVITES = "invites";
 }

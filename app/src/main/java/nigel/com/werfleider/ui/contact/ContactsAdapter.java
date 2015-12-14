@@ -114,7 +114,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     return contactsList.contains(user);
   }
 
-  static class ContactsViewHolder extends RecyclerView.ViewHolder {
+  public static class ContactsViewHolder extends RecyclerView.ViewHolder {
 
     @Bind(R.id.contact_item_name) TextView name;
     @Bind(R.id.contact_item_profession) TextView profession;

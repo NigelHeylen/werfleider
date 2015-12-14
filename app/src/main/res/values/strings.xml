@@ -12,5 +12,7 @@
     <string name="tTechnischeFiches">Technische Fiches</string>
     <string name="tMails">Emails</string>
     <string name="tBemerkingen">Bemerkingen</string>
+    <string name="tInvites">Invites</string>
+    <string name="tContacts">Contacts</string>
 
 </resources>
