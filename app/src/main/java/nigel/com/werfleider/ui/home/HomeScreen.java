@@ -10,7 +10,7 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.ui.contact.ContactsScreen;
+import nigel.com.werfleider.ui.contact.ContactsTopScreen;
 import nigel.com.werfleider.ui.login.LoginScreen;
 import nigel.com.werfleider.ui.werf.WerfScreen;
 
@@ -58,7 +58,7 @@ public class HomeScreen implements Blueprint {
 
         public void goToContactsScreen() {
 
-          flow.goTo(new ContactsScreen());
+          flow.goTo(new ContactsTopScreen());
 
         }
 

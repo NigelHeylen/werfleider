@@ -1,7 +1,6 @@
 package nigel.com.werfleider.ui.contact;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import com.parse.ParseUser;
 import dagger.Provides;
 import flow.HasParent;
@@ -11,25 +10,22 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import mortar.Blueprint;
+import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.service.contacts.GetContacts;
 import nigel.com.werfleider.service.contacts.GetContactsRx;
 import nigel.com.werfleider.ui.home.HomeScreen;
-import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.ParseStringUtils;
 import rx.subjects.PublishSubject;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static nigel.com.werfleider.ui.contact.Contacts.ALL_USERS;
-import static nigel.com.werfleider.ui.contact.ContactsScreen.Module.USER_DATA;
 
 /**
  * Created by nigel on 13/12/15.
  */
 
-@Layout(R.layout.contacts_view) public class ContactsScreen
-    implements Blueprint, HasParent<HomeScreen> {
+@Layout(R.layout.contacts_top_view) public class ContactsTopScreen implements Blueprint, HasParent<HomeScreen> {
 
   @Override public String getMortarScopeName() {
 
@@ -47,7 +43,8 @@ import static nigel.com.werfleider.ui.contact.ContactsScreen.Module.USER_DATA;
 
   @dagger.Module(
       injects = {
-          ContactsView.class, ContactsAdapter.class
+          ContactsView.class, ContactsAdapter.class, ContactsPagerAdapter.class,
+          ContactsTopView.class
       },
       includes = {
       },
@@ -79,78 +76,23 @@ import static nigel.com.werfleider.ui.contact.ContactsScreen.Module.USER_DATA;
     }
   }
 
-  static class ContactsPresenter extends ReactiveViewPresenter<ContactsView> {
+  static class ContactsTopPresenter extends ViewPresenter<ContactsTopView> {
 
-    @Inject GetContacts getContacts;
+    private ContactsPagerAdapter adapter;
 
-    @Inject @Named(USER_DATA) List<ParseUser> adapterData;
-
-    @Inject PublishSubject<SocialAction> socialActionBus;
-
-    private ContactsAdapter adapter;
-
-    private Contacts contacts;
+    @Inject public ContactsTopPresenter() {
+    }
 
     @Override protected void onLoad(final Bundle savedInstanceState) {
 
       super.onLoad(savedInstanceState);
-      if (getView() == null || contacts == null) return;
+      if (getView() == null) return;
 
       initView();
-
-      loadData();
     }
 
     private void initView() {
-
-      getView().list.setLayoutManager(new LinearLayoutManager(getView().getContext()));
-      getView().list.setAdapter(adapter = new ContactsAdapter(getView().getContext(), contacts));
-    }
-
-    public void handleRefresh() {
-
-      loadData();
-    }
-
-    private void loadData() {
-
-      subscribe(getContacts.getUsers().subscribe(this::bindRows, this::handleError));
-    }
-
-    private void handleError(Throwable throwable) {
-
-      throwable.printStackTrace();
-      finishRefreshing();
-    }
-
-    private void bindRows(final List<ParseUser> users) {
-
-      if (!adapterData.isEmpty()) {
-
-        adapterData.clear();
-      }
-
-      adapter.notifyDataSetChanged();
-      adapterData.addAll(users);
-      finishRefreshing();
-    }
-
-    public void setContacts(Contacts contacts) {
-      this.contacts = contacts;
-      initView();
-
-      if (contacts.equals(ALL_USERS)) {
-
-        loadData();
-      }
-
-      subscribe(socialActionBus.subscribe(action -> {
-        adapter.notifyDataSetChanged();
-      }));
-    }
-
-    private void finishRefreshing() {
-      getView().swipeRefreshLayout.setRefreshing(false);
+      getView().pager.setAdapter(adapter = new ContactsPagerAdapter(getView().getContext()));
     }
   }
 }

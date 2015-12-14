@@ -1,6 +1,7 @@
 package nigel.com.werfleider.service.contacts;
 
-import nigel.com.werfleider.model.User;
+import com.parse.ParseUser;
+import java.util.List;
 import rx.Observable;
 
 /**
@@ -8,5 +9,5 @@ import rx.Observable;
  */
 public interface GetContacts {
 
-  Observable<User> getUsers();
+  Observable<List<ParseUser>> getUsers();
 }

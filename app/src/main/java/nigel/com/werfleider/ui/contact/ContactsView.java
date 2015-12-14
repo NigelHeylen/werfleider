@@ -14,7 +14,7 @@ import nigel.com.werfleider.R;
 /**
  * Created by nigel on 13/12/15.
  */
-public class ContactsView extends FrameLayout {
+public class ContactsView extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener {
 
   @Inject ContactsScreen.ContactsPresenter presenter;
 
@@ -37,6 +37,9 @@ public class ContactsView extends FrameLayout {
     if (!isInEditMode()) {
       ButterKnife.bind(this);
       presenter.takeView(this);
+
+      swipeRefreshLayout.setOnRefreshListener(this);
+      swipeRefreshLayout.setRefreshing(true);
     }
   }
 
@@ -45,5 +48,14 @@ public class ContactsView extends FrameLayout {
     super.onDetachedFromWindow();
     presenter.dropView(this);
     ButterKnife.unbind(this);
+  }
+
+  @Override public void onRefresh() {
+
+    presenter.handleRefresh();
+  }
+
+  public void setContacts(final Contacts contacts) {
+    presenter.setContacts(contacts);
   }
 }
