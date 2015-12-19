@@ -12,13 +12,13 @@ import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.ui.document.DocumentOverviewScreen;
-import nigel.com.werfleider.ui.werf.WerfScreen;
+import nigel.com.werfleider.ui.werf.YardListScreen;
 
 /**
  * Created by nigel on 27/12/14.
  */
 @Layout(R.layout.werf_detail)
-public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
+public class WerfDetailScreen implements Blueprint, HasParent<YardListScreen> {
 
     final WerfInt werf;
 
@@ -37,9 +37,9 @@ public class WerfDetailScreen implements Blueprint, HasParent<WerfScreen> {
         return new Module(werf);
     }
 
-    @Override public WerfScreen getParent() {
+    @Override public YardListScreen getParent() {
 
-        return new WerfScreen();
+        return new YardListScreen();
     }
 
 

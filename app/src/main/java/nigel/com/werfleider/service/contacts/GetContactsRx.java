@@ -3,7 +3,6 @@ package nigel.com.werfleider.service.contacts;
 import com.parse.ParseUser;
 import java.util.List;
 import javax.inject.Inject;
-import nigel.com.werfleider.model.ParseYard;
 import rx.Observable;
 
 /**

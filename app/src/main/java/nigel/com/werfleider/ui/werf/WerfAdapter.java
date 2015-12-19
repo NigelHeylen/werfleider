@@ -13,7 +13,7 @@ import flow.Flow;
 import java.util.List;
 import javax.inject.Inject;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.model.WerfInt;
 
 import static java.lang.String.format;
@@ -39,13 +39,13 @@ public class WerfAdapter extends RecyclerView.Adapter<WerfAdapter.WerfViewHolder
 
     final WerfInt werf = parseWerfs.get(position);
 
-    holder.naam.setText((werf instanceof ParseYard ? "Parse " : "") + werf.getNaam());
+    holder.naam.setText((werf instanceof Yard ? "Parse " : "") + werf.getNaam());
     holder.nr.setText(werf.getNummer());
 
     holder.container.setOnClickListener(new View.OnClickListener() {
           @Override public void onClick(final View v) {
 
-            flow.goTo(new YardDetailScreen((ParseYard) werf));
+            flow.goTo(new YardDetailScreen((Yard) werf));
           }
         });
 

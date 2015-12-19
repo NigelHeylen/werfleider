@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.astuetz.PagerSlidingTabStrip;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.List;
@@ -54,6 +55,8 @@ public class ParseDocumentLocationDetailView extends RelativeLayout {
     @Bind(R.id.document_location_detail_info_container) LinearLayout infoContainer;
 
     @Bind(R.id.document_location_detail_dimensions_container) RelativeLayout dimensionContainer;
+
+    @Bind(R.id.document_menu_button) FloatingActionsMenu actionsMenu;
 
     @Bind(R.id.location_saver) ProgressBarCircularIndeterminate progressBar;
 

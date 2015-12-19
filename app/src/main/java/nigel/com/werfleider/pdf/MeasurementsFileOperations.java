@@ -25,7 +25,7 @@ import java.util.List;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.MeasuringUnit;
 import org.joda.time.DateTime;
 
@@ -46,7 +46,7 @@ public class MeasurementsFileOperations {
     this.context = context;
   }
 
-  public boolean writeDocument(final ParseYard yard, final ParseDocument parseDocument,
+  public boolean writeDocument(final Yard yard, final ParseDocument parseDocument,
       final Multimap<ParseDocumentLocation, ParseDocumentImage> documentMap) {
 
     Document document = new Document(PageSize.A4, 0, 10, 50, 0);
@@ -88,7 +88,7 @@ public class MeasurementsFileOperations {
     }
   }
 
-  public static PdfPTable createTable(final ParseYard yard,
+  public static PdfPTable createTable(final Yard yard,
       final Multimap<ParseDocumentLocation, ParseDocumentImage> documentMap) {
 
     // a table with three columns
@@ -230,7 +230,7 @@ public class MeasurementsFileOperations {
     table.addCell(getSmallFontPdfCell("", 1));
   }
 
-  private static void addHeaders(PdfPTable table, final ParseYard yard) {
+  private static void addHeaders(PdfPTable table, final Yard yard) {
 
     PdfPCell cell;
     // we add a cell with colspan 3

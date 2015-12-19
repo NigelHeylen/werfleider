@@ -3,7 +3,7 @@ package nigel.com.werfleider.model;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
-
+import java.util.List;
 import org.joda.time.DateTime;
 
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
@@ -16,6 +16,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.DEFINITION;
 import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER;
 import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER_ADDRESS;
 import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER_CITY;
+import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 import static nigel.com.werfleider.util.ParseStringUtils.NUMBER;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_ADDRESS;
@@ -25,14 +26,14 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_CITY;
  * Created by nigel on 14/04/15.
  */
 @ParseClassName("Werf")
-public class ParseYard extends ParseObject implements WerfInt{
+public class Yard extends ParseObject implements WerfInt{
 
     @Override public String getNaam() {
 
         return getString(NAME);
     }
 
-    @Override public ParseYard setNaam(final String naam) {
+    @Override public Yard setNaam(final String naam) {
 
         put(NAME, naam);
         return this;
@@ -43,7 +44,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(NUMBER);
     }
 
-    @Override public ParseYard setNummer(final String nummer) {
+    @Override public Yard setNummer(final String nummer) {
 
         put(NUMBER, nummer);
         return this;
@@ -54,7 +55,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(YARD_ADDRESS);
     }
 
-    @Override public ParseYard setOpdrachtAdres(final String opdrachtAdres) {
+    @Override public Yard setOpdrachtAdres(final String opdrachtAdres) {
 
         put(YARD_ADDRESS, opdrachtAdres);
         return this;
@@ -65,7 +66,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(YARD_CITY);
     }
 
-    @Override public ParseYard setOpdrachtStad(final String opdrachtStad) {
+    @Override public Yard setOpdrachtStad(final String opdrachtStad) {
 
         put(YARD_CITY, opdrachtStad);
         return this;
@@ -76,7 +77,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(DESIGNER);
     }
 
-    @Override public ParseYard setOntwerper(final String ontwerper) {
+    @Override public Yard setOntwerper(final String ontwerper) {
 
         put(DESIGNER, ontwerper);
         return this;
@@ -87,7 +88,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(DESIGNER_CITY);
     }
 
-    @Override public ParseYard setOntwerperStad(final String ontwerperStad) {
+    @Override public Yard setOntwerperStad(final String ontwerperStad) {
 
         put(DESIGNER_CITY, ontwerperStad);
         return this;
@@ -98,7 +99,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(DESIGNER_ADDRESS);
     }
 
-    @Override public ParseYard setOntwerperAdres(final String ontwerperAdres) {
+    @Override public Yard setOntwerperAdres(final String ontwerperAdres) {
 
         put(DESIGNER_ADDRESS, ontwerperAdres);
         return this;
@@ -109,7 +110,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(CONTRACTOR);
     }
 
-    @Override public ParseYard setOpdrachtgever(final String opdrachtgever) {
+    @Override public Yard setOpdrachtgever(final String opdrachtgever) {
 
         put(CONTRACTOR, opdrachtgever);
         return this;
@@ -120,7 +121,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(CONTRACTOR_ADDRESS);
     }
 
-    @Override public ParseYard setOpdrachtgeverAdres(final String opdrachtgeverAdres) {
+    @Override public Yard setOpdrachtgeverAdres(final String opdrachtgeverAdres) {
 
         put(CONTRACTOR_ADDRESS, opdrachtgeverAdres);
         return this;
@@ -131,7 +132,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(CONTRACTOR_CITY);
     }
 
-    @Override public ParseYard setOpdrachtgeverStad(final String opdrachtgeverStad) {
+    @Override public Yard setOpdrachtgeverStad(final String opdrachtgeverStad) {
 
         put(CONTRACTOR_CITY, opdrachtgeverStad);
         return this;
@@ -142,7 +143,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getString(DEFINITION);
     }
 
-    @Override public ParseYard setOmschrijving(final String omschrijving) {
+    @Override public Yard setOmschrijving(final String omschrijving) {
 
         put(DEFINITION, omschrijving);
         return this;
@@ -153,7 +154,7 @@ public class ParseYard extends ParseObject implements WerfInt{
         return new DateTime(getString(DATE_START_WORK));
     }
 
-    @Override public ParseYard setDatumAanvang(final DateTime datumAanvang) {
+    @Override public Yard setDatumAanvang(final DateTime datumAanvang) {
 
         put(DATE_START_WORK, datumAanvang.toString());
         return this;
@@ -164,12 +165,12 @@ public class ParseYard extends ParseObject implements WerfInt{
         return getParseUser(AUTHOR);
     }
 
-    @Override public ParseYard setAuthor(ParseUser user) {
+    @Override public Yard setAuthor(ParseUser user) {
         put(AUTHOR, user);
         return this;
     }
 
-    @Override public ParseYard setCreator(final String creator) {
+    @Override public Yard setCreator(final String creator) {
         put(CREATOR, creator);
         return this;
     }
@@ -177,5 +178,9 @@ public class ParseYard extends ParseObject implements WerfInt{
     @Override public String getId() {
 
         return getObjectId();
+    }
+
+    public List<ParseUser> getInvites() {
+        return getList(INVITES);
     }
 }

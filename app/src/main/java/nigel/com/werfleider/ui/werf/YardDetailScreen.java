@@ -11,7 +11,7 @@ import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.document.DocumentOverviewScreen;
 import nigel.com.werfleider.ui.document.ParseDocumentOverviewAdapter;
 import nigel.com.werfleider.ui.document.ParseDocumentOverviewView;
@@ -22,11 +22,11 @@ import static com.google.common.collect.Lists.newArrayList;
  * Created by nigel on 17/04/15.
  */
 @Layout(R.layout.yard_detail) public class YardDetailScreen
-    implements Blueprint, HasParent<WerfScreen> {
+    implements Blueprint, HasParent<YardsOverviewScreen> {
 
-  final ParseYard yard;
+  final Yard yard;
 
-  public YardDetailScreen(final ParseYard yard) {
+  public YardDetailScreen(final Yard yard) {
 
     this.yard = yard;
   }
@@ -41,9 +41,9 @@ import static com.google.common.collect.Lists.newArrayList;
     return newArrayList(new Module(yard), new InviteContactsScreen.Module(yard));
   }
 
-  @Override public WerfScreen getParent() {
+  @Override public YardsOverviewScreen getParent() {
 
-    return new WerfScreen();
+    return new YardsOverviewScreen();
   }
 
   @dagger.Module(
@@ -53,14 +53,14 @@ import static com.google.common.collect.Lists.newArrayList;
       }, addsTo = CorePresenter.Module.class)
   static class Module {
 
-    private final ParseYard werf;
+    private final Yard werf;
 
-    public Module(final ParseYard werf) {
+    public Module(final Yard werf) {
 
       this.werf = werf;
     }
 
-    @Provides @Singleton ParseYard provideWerf() {
+    @Provides @Singleton Yard provideWerf() {
 
       return werf;
     }
@@ -70,7 +70,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
     @Inject Flow flow;
 
-    @Inject ParseYard werf;
+    @Inject Yard werf;
 
     public void goToDocumentView(final DocumentType type) {
 

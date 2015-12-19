@@ -2,7 +2,6 @@ package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -14,7 +13,7 @@ import mortar.ViewPresenter;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.ParseDocument;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 
 import static android.view.View.GONE;
 import static com.google.common.collect.Lists.newArrayList;
@@ -28,117 +27,107 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_ID;
  */
 public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentOverviewView> {
 
-    private DocumentType documentType;
+  private DocumentType documentType;
 
-    @Inject ParseYard yard;
+  @Inject Yard yard;
 
-    @Inject Context context;
+  @Inject Context context;
 
-    private List<ParseDocument> parseDocuments;
+  final List<ParseDocument> parseDocuments = newArrayList();
 
-    private ParseDocumentOverviewAdapter adapter;
+  private ParseDocumentOverviewAdapter adapter;
 
-    private void loadData() {
+  private void loadData() {
 
-        parseDocuments = newArrayList();
-        getView().setAdapter(
-                adapter = new ParseDocumentOverviewAdapter(
-                        getView().getContext(),
-                        parseDocuments));
+    getView().setAdapter(
+        adapter = new ParseDocumentOverviewAdapter(getView().getContext(), parseDocuments));
 
-        loadDocuments(LOCAL);
+    if(yard.getAuthor() != ParseUser.getCurrentUser()){
 
+      getView().create.setVisibility(GONE);
     }
 
-    private void loadDocuments(final Load load) {
+    loadDocuments(LOCAL);
+  }
 
-        final ParseQuery<ParseDocument> query = ParseQuery
-                .getQuery(ParseDocument.class);
+  private void loadDocuments(final Load load) {
 
-        if (load == LOCAL) {
+    final ParseQuery<ParseDocument> query = ParseQuery.getQuery(ParseDocument.class);
 
-            query.fromLocalDatastore();
+    if (load == LOCAL) {
+
+      query.fromLocalDatastore();
+    }
+
+    query.whereEqualTo(YARD_ID, yard)
+        .whereEqualTo(DOCUMENT_TYPE, documentType.name())
+        .findInBackground((list, e) -> {
+
+          if (e == null) {
+
+            for (ParseDocument doc : list) {
+
+              if (!parseDocuments.contains(doc)) {
+
+                parseDocuments.add(doc);
+              }
+            }
+
+            ParseObject.pinAllInBackground(parseDocuments);
+            adapter.notifyDataSetChanged();
+
+            if (load == LOCAL) {
+
+              loadDocuments(NETWORK);
+            }
+          } else {
+            e.printStackTrace();
+          }
+
+          if (getView() != null) {
+            getView().loader.setVisibility(GONE);
+          }
+        });
+  }
+
+  public void handleCreateClick() {
+
+    Toast.makeText(context, "Creating document...", Toast.LENGTH_LONG).show();
+
+    final ParseDocument parseDocument = new ParseDocument();
+    parseDocument.setWerf(yard).setAuthor(ParseUser.getCurrentUser()).setDocumentType(documentType);
+
+    parseDocument.pinInBackground(new SaveCallback() {
+      @Override public void done(final ParseException e) {
+
+        if (e == null) {
+          parseDocuments.add(parseDocument);
+          Toast.makeText(context,
+              "Document " + parseDocument.getDocumentType().toString() + " saved.",
+              Toast.LENGTH_LONG).show();
+
+          adapter.notifyItemInserted(parseDocuments.size() - 1);
+        } else {
+          e.printStackTrace();
         }
+      }
+    });
 
-        query.whereEqualTo(
-                YARD_ID,
-                yard)
-             .whereEqualTo(
-                     DOCUMENT_TYPE,
-                     documentType.name()
-                          )
-             .findInBackground(
-                     new FindCallback<ParseDocument>() {
-                         @Override public void done(final List<ParseDocument> list, final ParseException e) {
+    parseDocument.saveEventually();
+  }
 
-                             if (e == null) {
+  public void setDocumentType(final DocumentType documentType) {
 
-                                 for (ParseDocument doc : list) {
+    this.documentType = documentType;
+    initView();
+    loadData();
+  }
 
-                                     if(!parseDocuments.contains(doc)){
+  private void initView() {
 
-                                         parseDocuments.add(doc);
-                                     }
-                                 }
+    if (yard.getAuthor() == ParseUser.getCurrentUser()) {
 
-                                 ParseObject.pinAllInBackground(parseDocuments);
-                                 adapter.notifyDataSetChanged();
-
-                                 if (load == LOCAL){
-
-                                     loadDocuments(NETWORK);
-                                 }
-                             } else {
-                                 e.printStackTrace();
-                             }
-
-                             if (getView() != null) {
-                                 getView().loader.setVisibility(
-                                         GONE);
-                             }
-                         }
-                     });
-
+      getView().create.setVisibility(GONE);
     }
-
-    public void handleCreateClick() {
-
-        Toast.makeText(
-                context,
-                "Creating document...",
-                Toast.LENGTH_LONG).show();
-
-        final ParseDocument parseDocument = new ParseDocument();
-        parseDocument.setWerf(yard)
-                     .setAuthor(ParseUser.getCurrentUser())
-                     .setDocumentType(documentType);
-
-        parseDocument.pinInBackground(
-                new SaveCallback() {
-                    @Override public void done(final ParseException e) {
-
-                        if (e == null) {
-                            parseDocuments.add(parseDocument);
-                            Toast.makeText(
-                                    context,
-                                    "Document " + parseDocument.getDocumentType().toString() + " saved.",
-                                    Toast.LENGTH_LONG).show();
-
-                            adapter.notifyItemInserted(parseDocuments.size() - 1);
-
-                        } else {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-        parseDocument.saveEventually();
-
-    }
-
-    public void setDocumentType(final DocumentType documentType) {
-
-        this.documentType = documentType;
-        loadData();
-    }
+  }
 }

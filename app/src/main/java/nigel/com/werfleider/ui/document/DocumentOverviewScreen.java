@@ -23,7 +23,7 @@ import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.ParseDocument;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.ui.werfoverzicht.WerfDetailScreen;
 
@@ -172,7 +172,7 @@ public class DocumentOverviewScreen implements Blueprint, HasParent<WerfDetailSc
                     Toast.LENGTH_LONG).show();
 
             final ParseDocument parseDocument = new ParseDocument();
-            parseDocument.setWerf((ParseYard) werf)
+            parseDocument.setWerf((Yard) werf)
                          .setAuthor(ParseUser.getCurrentUser())
                          .setDocumentType(documentType);
 

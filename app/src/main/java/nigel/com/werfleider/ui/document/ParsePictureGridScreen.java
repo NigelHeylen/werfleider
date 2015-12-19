@@ -36,7 +36,7 @@ import nigel.com.werfleider.model.DocumentImage;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.widget.HeaderViewRecyclerAdapter;
 import nigel.com.werfleider.ui.widget.ImageFileFilter;
 
@@ -55,12 +55,12 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
 
     private final ParseDocumentLocation location;
 
-    private final ParseYard yard;
+    private final Yard yard;
 
     public ParsePictureGridScreen(
             final ParseDocument document,
             final ParseDocumentLocation location,
-            final ParseYard yard) {
+            final Yard yard) {
 
         this.document = document;
 
@@ -102,9 +102,9 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
 
         private final ParseDocumentLocation location;
 
-        private final ParseYard yard;
+        private final Yard yard;
 
-        public Module(final ParseDocument document, final ParseDocumentLocation location, final ParseYard yard) {
+        public Module(final ParseDocument document, final ParseDocumentLocation location, final Yard yard) {
 
 
             this.document = document;
@@ -122,7 +122,7 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
             return location;
         }
 
-        @Provides @Singleton ParseYard provideYard() {
+        @Provides @Singleton Yard provideYard() {
 
             return yard;
         }
@@ -145,7 +145,7 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
 
         @Inject ParseDocument document;
 
-        @Inject ParseYard yard;
+        @Inject Yard yard;
 
         @Inject ActionBarOwner actionBarOwner;
 

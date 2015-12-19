@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.ParseStringUtils;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -38,7 +38,7 @@ public class InvitesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
   @Inject Resources resources;
 
-  @Inject @Named(INVITES_YARD) ParseYard yard;
+  @Inject @Named(INVITES_YARD) Yard yard;
 
   public static final int HEADER = 200;
 

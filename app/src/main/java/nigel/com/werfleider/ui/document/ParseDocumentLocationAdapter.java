@@ -8,10 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.parse.DeleteCallback;
-import com.parse.ParseException;
+import butterknife.ButterKnife;
+import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 import flow.Flow;
 import java.util.List;
@@ -20,103 +19,88 @@ import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentLocation;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * Created by nigel on 24/01/15.
  */
-public class ParseDocumentLocationAdapter extends RecyclerView.Adapter<ParseDocumentLocationAdapter.ViewHolder> {
+public class ParseDocumentLocationAdapter
+    extends RecyclerView.Adapter<ParseDocumentLocationAdapter.ViewHolder> {
 
-    @Inject ParseDocument document;
+  @Inject ParseDocument document;
 
-    @Inject Picasso pablo;
+  @Inject Picasso pablo;
 
-    @Inject Flow flow;
+  @Inject Flow flow;
 
-    @Inject ParseYard yard;
+  @Inject Yard yard;
 
-    @Inject List<ParseDocumentLocation> locations;
+  @Inject List<ParseDocumentLocation> locations;
 
-    public ParseDocumentLocationAdapter(final Context context) {
+  public ParseDocumentLocationAdapter(final Context context) {
 
-        Mortar.inject(
-                context,
-                this);
-    }
+    Mortar.inject(context, this);
+  }
 
-    @Override public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+  @Override public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
 
-        final View itemView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.document_location_item,
-                parent,
-                false);
+    final View itemView = LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.document_location_item, parent, false);
 
-        return new ViewHolder(itemView);
-    }
+    return new ViewHolder(itemView);
+  }
 
-    @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
+  @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        final ParseDocumentLocation location = locations.get(position);
+    final ParseDocumentLocation location = locations.get(position);
 
-        holder.title.setText(location.getTitle());
+    holder.title.setText(location.getTitle());
 
-        holder.artNr.setText(location.getArtNr());
+    holder.artNr.setText(location.getArtNr());
 
-        holder.mContainer.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override public void onClick(final View v) {
+    holder.mContainer.setOnClickListener(
+        v -> flow.goTo(new ParseDocumentLocationDetailScreen(document, yard, location)));
 
-                        flow.goTo(
-                                new ParseDocumentLocationDetailScreen(
-                                        document,
-                                        yard,
-                                        location));
-                    }
-                });
+    holder.delete.setVisibility(
+        location.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);
 
-        holder.delete.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override public void onClick(final View v) {
-                        location.deleteEventually(
-                                new DeleteCallback() {
-                                    @Override public void done(final ParseException e) {
+    holder.delete.setOnClickListener(v -> {
+      location.deleteEventually(e -> {
 
-                                        if(e == null) {
-                                            System.out.println("ParseDocumentLocationAdapter.done");
-                                        } else {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                        locations.remove(position);
-                        notifyItemRemoved(position);
-                    }
-                });
-
-    }
-
-    @Override public int getItemCount() {
-
-        return locations.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        @Bind(R.id.document_location_item_name) TextView title;
-
-        @Bind(R.id.document_location_item_art_nr) TextView artNr;
-
-        @Bind(R.id.document_location_item_container) RelativeLayout mContainer;
-
-        @Bind(R.id.document_location_item_delete) ImageView delete;
-
-        public ViewHolder(final View itemView) {
-
-            super(itemView);
-            ButterKnife.bind(
-                    this,
-                    itemView);
+        if (e == null) {
+          System.out.println("ParseDocumentLocationAdapter.done");
+        } else {
+          e.printStackTrace();
         }
+      });
+
+      locations.remove(position);
+      notifyItemRemoved(position);
+    });
+  }
+
+  @Override public int getItemCount() {
+
+    return locations.size();
+  }
+
+  public class ViewHolder extends RecyclerView.ViewHolder {
+
+    @Bind(R.id.document_location_item_name) TextView title;
+
+    @Bind(R.id.document_location_item_art_nr) TextView artNr;
+
+    @Bind(R.id.document_location_item_container) RelativeLayout mContainer;
+
+    @Bind(R.id.document_location_item_delete) ImageView delete;
+
+    public ViewHolder(final View itemView) {
+
+      super(itemView);
+      ButterKnife.bind(this, itemView);
     }
+  }
 }

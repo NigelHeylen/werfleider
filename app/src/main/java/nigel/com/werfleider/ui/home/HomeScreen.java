@@ -12,7 +12,7 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.ui.contact.ContactsTopScreen;
 import nigel.com.werfleider.ui.login.LoginScreen;
-import nigel.com.werfleider.ui.werf.WerfScreen;
+import nigel.com.werfleider.ui.werf.YardsOverviewScreen;
 
 import static java.lang.String.format;
 import static nigel.com.werfleider.util.ParseStringUtils.NAME;
@@ -25,7 +25,7 @@ public class HomeScreen implements Blueprint {
 
     @Override public String getMortarScopeName() {
 
-        return getClass().getName();
+        return getClass().getSimpleName();
     }
 
     @Override public Object getDaggerModule() {
@@ -64,7 +64,7 @@ public class HomeScreen implements Blueprint {
 
         public void goToWerfScreen() {
 
-            flow.goTo(new WerfScreen());
+            flow.goTo(new YardsOverviewScreen());
         }
 
         public void handleLogOut() {

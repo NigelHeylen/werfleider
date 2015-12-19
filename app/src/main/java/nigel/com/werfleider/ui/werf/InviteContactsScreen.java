@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.ParseStringUtils;
 
@@ -28,9 +28,9 @@ import static com.google.common.collect.Lists.newArrayList;
   public static final String INVITES = "invites";
   public static final String INVITES_YARD = "invites";
 
-  final ParseYard yard;
+  final Yard yard;
 
-  public InviteContactsScreen(ParseYard yard) {
+  public InviteContactsScreen(Yard yard) {
     this.yard = yard;
   }
 
@@ -52,9 +52,9 @@ import static com.google.common.collect.Lists.newArrayList;
       },
       addsTo = CorePresenter.Module.class) static class Module {
 
-    private final ParseYard yard;
+    private final Yard yard;
 
-    public Module(final ParseYard yard) {
+    public Module(final Yard yard) {
       this.yard = yard;
     }
 
@@ -74,7 +74,7 @@ import static com.google.common.collect.Lists.newArrayList;
       return invites != null ? invites : newArrayList();
     }
 
-    @Provides @Named(INVITES_YARD) ParseYard parseYard(){
+    @Provides @Named(INVITES_YARD) Yard parseYard(){
 
       return yard;
     }
@@ -86,7 +86,7 @@ import static com.google.common.collect.Lists.newArrayList;
     @Inject @Named(CONTACTS) List<ParseUser> contacts;
     @Inject @Named(INVITES) List<ParseUser> invites;
 
-    @Inject @Named(INVITES_YARD) ParseYard yard;
+    @Inject @Named(INVITES_YARD) Yard yard;
 
     private InvitesRecyclerAdapter adapter;
 

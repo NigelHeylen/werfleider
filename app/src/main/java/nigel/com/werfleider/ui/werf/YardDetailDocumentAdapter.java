@@ -5,9 +5,12 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.parse.ParseUser;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.DocumentType;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.document.ParseDocumentOverviewView;
 
 /**
@@ -17,6 +20,8 @@ public class YardDetailDocumentAdapter extends PagerAdapter {
 
   private final Context context;
 
+  @Inject Yard yard;
+
   public YardDetailDocumentAdapter(final Context context) {
 
     Mortar.inject(context, this);
@@ -25,7 +30,8 @@ public class YardDetailDocumentAdapter extends PagerAdapter {
 
   @Override public int getCount() {
 
-    return DocumentType.values().length + 1;
+    return yard.getAuthor() == ParseUser.getCurrentUser() ? DocumentType.values().length + 1
+        : DocumentType.values().length;
   }
 
   @Override public boolean isViewFromObject(final View view, final Object object) {

@@ -39,7 +39,7 @@ import javax.inject.Inject;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.model.WerfInt;
 import org.joda.time.DateTime;
 
@@ -148,7 +148,7 @@ public class ParseFileOperations {
     return builder.toString();
   }
 
-  public boolean write(final ParseDocument writeDocument, final ParseYard yard,
+  public boolean write(final ParseDocument writeDocument, final Yard yard,
       final Multimap<ParseDocumentLocation, ParseDocumentImage> locationsMap) {
 
     try {

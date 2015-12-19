@@ -19,7 +19,7 @@ public class ParseDocument extends ParseObject {
         return getParseObject(YARD_ID);
     }
 
-    public ParseDocument setWerf(final ParseYard werf) {
+    public ParseDocument setWerf(final Yard werf) {
 
         put(
                 YARD_ID,

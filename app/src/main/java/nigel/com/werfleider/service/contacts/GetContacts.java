@@ -2,7 +2,6 @@ package nigel.com.werfleider.service.contacts;
 
 import com.parse.ParseUser;
 import java.util.List;
-import nigel.com.werfleider.model.ParseYard;
 import rx.Observable;
 
 /**

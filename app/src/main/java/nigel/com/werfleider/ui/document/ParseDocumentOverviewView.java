@@ -9,6 +9,7 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -24,6 +25,8 @@ public class ParseDocumentOverviewView extends RelativeLayout {
     @Bind(R.id.document_overview_list) RecyclerView documentList;
 
     @Bind(R.id.document_overview_loader) ProgressBarCircularIndeterminate loader;
+
+    @Bind(R.id.document_overview_create_button) AddFloatingActionButton create;
 
     @OnClick(R.id.document_overview_create_button)
     public void onClick(){

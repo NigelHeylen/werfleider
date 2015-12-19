@@ -29,7 +29,7 @@ import nigel.com.werfleider.core.ApplicationModule;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 
 public class MainApplication extends BaseApplication {
 
@@ -59,7 +59,7 @@ public class MainApplication extends BaseApplication {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
 
-        ParseObject.registerSubclass(ParseYard.class);
+        ParseObject.registerSubclass(Yard.class);
         ParseObject.registerSubclass(ParseDocument.class);
         ParseObject.registerSubclass(ParseDocumentLocation.class);
         ParseObject.registerSubclass(ParseDocumentImage.class);

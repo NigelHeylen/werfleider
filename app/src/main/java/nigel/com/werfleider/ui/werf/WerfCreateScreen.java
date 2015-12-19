@@ -13,7 +13,7 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.model.ParseYard;
+import nigel.com.werfleider.model.Yard;
 import org.joda.time.DateTime;
 
 import static nigel.com.werfleider.util.ParseStringUtils.NAME;
@@ -22,7 +22,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
  * Created by nigel on 07/02/15.
  */
 @Layout(R.layout.werf_create_view)
-public class WerfCreateScreen implements Blueprint, HasParent<WerfScreen> {
+public class WerfCreateScreen implements Blueprint, HasParent<YardListScreen> {
 
     @Override public String getMortarScopeName() {
         return getClass().getName();
@@ -32,8 +32,8 @@ public class WerfCreateScreen implements Blueprint, HasParent<WerfScreen> {
         return new Module();
     }
 
-    @Override public WerfScreen getParent() {
-        return new WerfScreen();
+    @Override public YardListScreen getParent() {
+        return new YardListScreen();
     }
 
     @dagger.Module(
@@ -66,9 +66,9 @@ public class WerfCreateScreen implements Blueprint, HasParent<WerfScreen> {
                 final String omschrijving,
                 final DateTime datumAanvang) {
 
-            final ParseYard parseYard = new ParseYard();
+            final Yard yard = new Yard();
 
-            parseYard.setNaam(naam)
+            yard.setNaam(naam)
                     .setNummer(nummer)
                     .setOpdrachtAdres(opdrachtAdres)
                     .setOpdrachtStad(opdrachtStad)
@@ -83,7 +83,7 @@ public class WerfCreateScreen implements Blueprint, HasParent<WerfScreen> {
                     .setCreator(ParseUser.getCurrentUser().getString(NAME))
                     .setAuthor(ParseUser.getCurrentUser());
 
-            parseYard.pinInBackground(
+            yard.pinInBackground(
                     new SaveCallback() {
                         @Override public void done(final ParseException e) {
 
@@ -92,13 +92,13 @@ public class WerfCreateScreen implements Blueprint, HasParent<WerfScreen> {
                                         context,
                                         "Werf " + naam + " saved.",
                                         Toast.LENGTH_LONG).show();
-                                flow.goTo(new WerfScreen());
+                                flow.goTo(new YardListScreen());
 
                             }
                         }
                     });
 
-            parseYard.saveEventually();
+            yard.saveEventually();
 
         }
     }
