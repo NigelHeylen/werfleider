@@ -13,7 +13,6 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.inject.Inject;
@@ -35,9 +34,9 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
 
   @Inject StartActivityForResultPresenter startActivityForResultPresenter;
 
-  private String mCurrentPhotoPath;
+  private Uri fileUri;
 
-  static final int REQUEST_IMAGE_CAPTURE = 1;
+  static final int REQUEST_IMAGE_CAPTURE = 500;
 
   @Override protected void onLoad(Bundle savedInstanceState) {
     super.onLoad(savedInstanceState);
@@ -53,27 +52,14 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
         .subscribe(granted -> {
 
           if (granted) {
-            Intent takePictureIntent =
-                new Intent(MediaStore.ACTION_IMAGE_CAPTURE).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            // Ensure that there's a camera activity to handle the intent
-            if (takePictureIntent.resolveActivity(getView().getContext().getPackageManager())
-                != null) {
-              // Create the File where the photo should go
-              File photoFile = null;
-              try {
-                photoFile = createImageFile();
-              } catch (IOException ex) {
-                ex.printStackTrace();
-                // Error occurred while creating the File
-              }
-              // Continue only if the File was successfully created
-              if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                startActivityForResultPresenter.setConfig(
-                    new StartActivityForResultPresenter.Config(takePictureIntent,
-                        REQUEST_IMAGE_CAPTURE));
-              }
-            }
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
+                "img_" + timeStamp + ".jpg");
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            fileUri = Uri.fromFile(photo);
+            startActivityForResultPresenter.setConfig(
+                new StartActivityForResultPresenter.Config(intent, REQUEST_IMAGE_CAPTURE));
           } else {
 
             Toast.makeText(getView().getContext(), "Please grant the permission", Toast.LENGTH_LONG)
@@ -82,25 +68,11 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
         });
   }
 
-  private File createImageFile() throws IOException {
-    // Create an image file name
-    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-    String imageFileName = "JPEG_" + timeStamp + "_";
-    File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-    File image = File.createTempFile(imageFileName,  /* prefix */
-        ".jpg",         /* suffix */
-        storageDir      /* directory */);
-
-    // Save a file: path for use with ACTION_VIEW intents
-    mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-    return image;
-  }
-
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
     if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
 
-      reactToImageCreated(mCurrentPhotoPath);
+      reactToImageCreated(fileUri.getPath());
     }
   }
 
@@ -133,5 +105,10 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
         });
       }
     });
+  }
+
+  @Override protected void onExitScope() {
+    super.onExitScope();
+    startActivityForResultPresenter.removeListener();
   }
 }

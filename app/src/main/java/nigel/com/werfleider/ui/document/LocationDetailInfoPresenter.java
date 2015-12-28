@@ -19,12 +19,18 @@ public class LocationDetailInfoPresenter extends ReactiveViewPresenter<LocationD
     super.onLoad(savedInstanceState);
     if (getView() == null) return;
 
+    documentImage = documentImageBus.getValue();
     subscribe(documentImageBus.subscribe(this::bindDocumentImage));
+    if(documentImage != null){
+
+      bindDocumentImage(documentImage);
+    }
   }
 
   private void bindDocumentImage(final ParseDocumentImage documentImage){
 
     this.documentImage = documentImage;
+    if(getView() == null) return;
     getView().floor.setText(documentImage.getFloor());
     getView().location.setText(documentImage.getLocation());
   }

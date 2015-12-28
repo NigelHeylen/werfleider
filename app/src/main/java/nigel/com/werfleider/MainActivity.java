@@ -17,18 +17,14 @@ package nigel.com.werfleider;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 import flow.Flow;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -38,15 +34,10 @@ import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainView;
-import nigel.com.werfleider.model.CreateImage;
-import nigel.com.werfleider.model.EndCameraEvent;
-import nigel.com.werfleider.model.StartCameraEvent;
 
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
 import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
-import static nigel.com.werfleider.util.MediaFileHandler.MEDIA_TYPE_IMAGE;
-import static nigel.com.werfleider.util.MediaFileHandler.getOutputMediaFileUri;
 
 public class MainActivity extends AppCompatActivity implements ActionBarOwner.View,
     StartActivityForResultPresenter.Activity {
@@ -199,43 +190,10 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
     return false;
   }
 
-  private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-      if (resultCode == RESULT_OK) {
-        // Image captured and saved to fileUri specified in the Intent
-
-        Toast.makeText(this, "Image saved to:\n" + currentUri, Toast.LENGTH_LONG).show();
-
-        bus.post(new CreateImage(currentUri, imageLocationIndex));
-        takePicture();
-      } else if (resultCode == RESULT_CANCELED) {
-
-        bus.post(new EndCameraEvent());
-      } else {
-        // Image capture failed, advise user
-      }
-    }
+    startActivityForResultPresenter.onActivityResult(requestCode, resultCode, data);
   }
 
-  private String currentUri;
-
-  public void takePicture() {
-    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-    Uri fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
-    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-
-    currentUri = fileUri.getPath();
-
-    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-  }
-
-  @Subscribe public void reactToCameraEvent(final StartCameraEvent startCameraEvent) {
-    this.imageLocationIndex = startCameraEvent.position;
-    takePicture();
-  }
 }

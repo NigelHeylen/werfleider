@@ -40,6 +40,12 @@ public class LocationDetailDimensionsPresenter
 
     initView();
 
+    this.documentImage = documentImageBus.getValue();
+    if(documentImage != null){
+
+      bindDocumentImage(documentImage);
+    }
+
     subscribe(documentImageBus.subscribe(this::bindDocumentImage));
   }
 
@@ -99,7 +105,8 @@ public class LocationDetailDimensionsPresenter
   private void bindDocumentImage(final ParseDocumentImage documentImage) {
 
     this.documentImage = documentImage;
-    System.out.println("documentImage = " + documentImage);
+    if(getView() == null) return;
+
     getView().height.setText(Double.toString(documentImage.getHeight()));
     getView().width.setText(Double.toString(documentImage.getWidth()));
     getView().length.setText(Double.toString(documentImage.getLength()));

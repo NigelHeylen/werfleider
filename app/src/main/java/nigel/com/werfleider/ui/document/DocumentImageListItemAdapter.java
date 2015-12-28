@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.parse.DeleteCallback;
-import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
@@ -73,22 +71,20 @@ public class DocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
       progressBar.setVisibility(VISIBLE);
       if (isNullOrEmpty(image.getObjectId())) {
 
-        adapterData.remove(position);
+        adapterData.remove(image);
         notifyItemRemoved(position);
         progressBar.setVisibility(GONE);
       } else {
-        image.deleteInBackground(new DeleteCallback() {
-          @Override public void done(final ParseException e) {
+        image.deleteInBackground(e -> {
 
-            if (e != null) {
-              e.printStackTrace();
-            } else {
-              adapterData.remove(position);
-              notifyItemRemoved(position);
-            }
-
-            progressBar.setVisibility(GONE);
+          if (e != null) {
+            e.printStackTrace();
+          } else {
+            adapterData.remove(image);
+            notifyItemRemoved(position);
           }
+
+          progressBar.setVisibility(GONE);
         });
       }
     });

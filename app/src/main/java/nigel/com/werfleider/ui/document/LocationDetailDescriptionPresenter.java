@@ -20,13 +20,20 @@ public class LocationDetailDescriptionPresenter extends ReactiveViewPresenter<Lo
     if (getView() == null) return;
 
     documentImage = documentImageBus.getValue();
+    if(documentImage != null){
+
+      bindDocumentImage(documentImage);
+    }
+
     subscribe(documentImageBus.subscribe(this::bindDocumentImage));
   }
 
   private void bindDocumentImage(final ParseDocumentImage documentImage) {
 
     this.documentImage = documentImage;
-    getView().description.setText(documentImage.getDescription());
+    if(getView() != null) {
+      getView().description.setText(documentImage.getDescription());
+    }
   }
 
   public void changeDescription(final String description) {

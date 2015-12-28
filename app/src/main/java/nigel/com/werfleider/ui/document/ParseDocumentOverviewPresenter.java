@@ -57,7 +57,6 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
       query.fromLocalDatastore();
     }
 
-    System.out.println("ParseDocumentOverviewPresenter.loadDocuments");
     query.whereEqualTo(YARD_ID, yard)
         .whereEqualTo(DOCUMENT_TYPE, documentType.name())
         .findInBackground((list, e) -> {
