@@ -83,7 +83,7 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
 
     @Override public Blueprint getParent() {
 
-        return new ParseDocumentLocationDetailScreen(
+        return new LocationDetailScreen(
                 document,
                 yard,
                 location);
@@ -293,7 +293,7 @@ public class ParsePictureGridScreen implements Blueprint, HasParent<Blueprint> {
                     if (e != null) {
                       e.printStackTrace();
                     } else {
-                      flow.goTo(new ParseDocumentLocationDetailScreen(document, yard, location));
+                      flow.goTo(new LocationDetailScreen(document, yard, location));
                       if (getView() != null) {
                         Toast.makeText(getView().getContext(),
                             format("%s saved", location.getTitle()), Toast.LENGTH_LONG).show();

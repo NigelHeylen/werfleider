@@ -2,6 +2,7 @@ package nigel.com.werfleider.ui.werf;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
@@ -37,7 +38,8 @@ public class InviteContactsView extends RelativeLayout
 
     if (!isInEditMode()) {
       ButterKnife.bind(this);
-      presenter.takeView(this);
+      list.setLayoutManager(new LinearLayoutManager(getContext()));
+      list.setAdapter(new InvitesRecyclerAdapter(getContext()));
 
       swipeRefreshLayout.setOnRefreshListener(this);
     }

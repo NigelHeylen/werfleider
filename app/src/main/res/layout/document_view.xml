@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_bird"
+            fab:fab_icon="@drawable/ic_create"
             fab:fab_title="Create pdf"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

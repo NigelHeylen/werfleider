@@ -113,7 +113,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_action_camera"
+            fab:fab_icon="@drawable/ic_camera"
             fab:fab_title="Take pictures"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_bird"
+            fab:fab_icon="@drawable/ic_edit"
             fab:fab_title="Edit location"/>
 
 
@@ -130,7 +130,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_skull"
+            fab:fab_icon="@drawable/ic_save"
             fab:fab_title="Save location"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

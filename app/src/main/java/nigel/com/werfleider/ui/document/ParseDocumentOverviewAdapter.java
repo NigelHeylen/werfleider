@@ -28,20 +28,15 @@ import static android.view.View.VISIBLE;
  */
 public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-  private final Context context;
-
   private final List<ParseDocument> documents;
 
   @Inject Flow flow;
-
-  @Inject Picasso pablo;
 
   @Inject Yard yard;
 
   public ParseDocumentOverviewAdapter(final Context context,
       final List<ParseDocument> parseDocuments) {
 
-    this.context = context;
     this.documents = parseDocuments;
     Mortar.inject(context, this);
   }

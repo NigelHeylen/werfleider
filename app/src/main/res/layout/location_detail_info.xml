@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.document.LocationDetailInfoView
+    android:id="@+id/document.location.detail.info.container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/document.detail.floor"
+        style="@style/Werf.Create.EditText"
+        android:layout_marginLeft="20dp"
+        android:hint="Verdieping "
+        android:inputType="textShortMessage"/>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/document.detail.location"
+        style="@style/Werf.Create.EditText"
+        android:layout_marginLeft="20dp"
+        android:hint="Locatie "
+        android:inputType="textShortMessage"/>
+
+
+</nigel.com.werfleider.ui.document.LocationDetailInfoView>

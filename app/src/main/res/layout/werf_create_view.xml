@@ -27,10 +27,10 @@
                 android:hint="Werf naam"
                 android:textCursorDrawable="@drawable/text_cursor_cyan"
                 android:textSize="34sp"
-                app:baseColor="@android:color/white"
-                app:floatingLabel="highlight"
-                app:primaryColor="@color/accent"
-                app:singleLineEllipsis="true"/>
+                app:met_baseColor="@android:color/white"
+                app:met_floatingLabel="highlight"
+                app:met_primaryColor="@color/accent"
+                app:met_singleLineEllipsis="true"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/werf.create.nummer"
@@ -38,9 +38,9 @@
                 android:layout_height="wrap_content"
                 android:hint="Werf nummer"
                 android:textCursorDrawable="@drawable/text_cursor_cyan"
-                app:baseColor="@android:color/white"
-                app:floatingLabel="highlight"
-                app:primaryColor="@color/accent"/>
+                app:met_baseColor="@android:color/white"
+                app:met_floatingLabel="highlight"
+                app:met_primaryColor="@color/accent"/>
 
         </LinearLayout>
 

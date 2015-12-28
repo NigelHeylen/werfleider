@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.document.LocationDetailDimensionsView
+    android:id="@+id/document.location.detail.dimensions.container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/document.length"
+        style="@style/Werf.Create.EditText"
+        android:layout_width="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:hint="L: "
+        android:inputType="numberDecimal"
+        tools:visibility="visible"
+        android:visibility="gone"/>
+
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/document.width"
+        style="@style/Werf.Create.EditText"
+        android:layout_width="60dp"
+        android:layout_toRightOf="@id/document.length"
+        android:hint="B: "
+        android:inputType="numberDecimal"
+        tools:visibility="visible"
+        android:visibility="gone"/>
+
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/document.height"
+        style="@style/Werf.Create.EditText"
+        android:layout_width="80dp"
+        android:layout_marginRight="0dp"
+        android:layout_toRightOf="@id/document.width"
+        android:hint="H: "
+        android:inputType="numberDecimal"
+        tools:visibility="visible"
+        android:visibility="gone"/>
+
+    <Spinner
+        android:id="@+id/document.measuring.units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/document.height"/>
+
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/document.quantity"
+        style="@style/Werf.Create.EditText"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/document.length"
+        android:layout_marginLeft="20dp"
+        android:hint="Quantity: "
+        android:inputType="number"
+        tools:visibility="visible"
+        android:visibility="visible"/>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/document.ms"
+        style="@style/Werf.Create.EditText"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/document.length"
+        android:layout_toRightOf="@+id/document.quantity"
+        android:layout_marginLeft="20dp"
+        android:hint="MS: "
+        android:inputType="number"
+        tools:visibility="visible"
+        android:visibility="visible"/>
+
+</nigel.com.werfleider.ui.document.LocationDetailDimensionsView>

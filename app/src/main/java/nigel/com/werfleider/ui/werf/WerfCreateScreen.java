@@ -2,9 +2,7 @@ package nigel.com.werfleider.ui.werf;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
@@ -22,7 +20,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
  * Created by nigel on 07/02/15.
  */
 @Layout(R.layout.werf_create_view)
-public class WerfCreateScreen implements Blueprint, HasParent<YardListScreen> {
+public class WerfCreateScreen implements Blueprint, HasParent<YardsOverviewScreen> {
 
     @Override public String getMortarScopeName() {
         return getClass().getName();
@@ -32,8 +30,8 @@ public class WerfCreateScreen implements Blueprint, HasParent<YardListScreen> {
         return new Module();
     }
 
-    @Override public YardListScreen getParent() {
-        return new YardListScreen();
+    @Override public YardsOverviewScreen getParent() {
+        return new YardsOverviewScreen();
     }
 
     @dagger.Module(
@@ -83,20 +81,17 @@ public class WerfCreateScreen implements Blueprint, HasParent<YardListScreen> {
                     .setCreator(ParseUser.getCurrentUser().getString(NAME))
                     .setAuthor(ParseUser.getCurrentUser());
 
-            yard.pinInBackground(
-                    new SaveCallback() {
-                        @Override public void done(final ParseException e) {
+            yard.pinInBackground(e -> {
 
-                            if (e == null) {
-                                Toast.makeText(
-                                        context,
-                                        "Werf " + naam + " saved.",
-                                        Toast.LENGTH_LONG).show();
-                                flow.goTo(new YardListScreen());
+                if (e == null) {
+                    Toast.makeText(
+                            context,
+                            "Werf " + naam + " saved.",
+                            Toast.LENGTH_LONG).show();
+                    flow.goTo(new YardListScreen());
 
-                            }
-                        }
-                    });
+                }
+            });
 
             yard.saveEventually();
 

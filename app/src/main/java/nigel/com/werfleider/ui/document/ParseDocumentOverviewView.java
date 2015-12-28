@@ -5,8 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
@@ -45,7 +45,6 @@ public class ParseDocumentOverviewView extends RelativeLayout {
     @Override protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.bind(this);
-
         presenter.takeView(this);
 
         documentList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -54,7 +53,6 @@ public class ParseDocumentOverviewView extends RelativeLayout {
     @Override protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         presenter.dropView(this);
-
         ButterKnife.unbind(this);
     }
 
@@ -65,6 +63,5 @@ public class ParseDocumentOverviewView extends RelativeLayout {
     public void setDocumentType(final DocumentType documentType) {
 
         presenter.setDocumentType(documentType);
-
     }
 }

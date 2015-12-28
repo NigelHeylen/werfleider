@@ -1,7 +1,7 @@
 package nigel.com.werfleider.ui.werf;
 
+import android.os.Bundle;
 import dagger.Provides;
-import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
 import javax.inject.Inject;
@@ -10,9 +10,7 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.Yard;
-import nigel.com.werfleider.ui.document.DocumentOverviewScreen;
 import nigel.com.werfleider.ui.document.ParseDocumentOverviewAdapter;
 import nigel.com.werfleider.ui.document.ParseDocumentOverviewView;
 
@@ -33,7 +31,12 @@ import static com.google.common.collect.Lists.newArrayList;
 
   @Override public String getMortarScopeName() {
 
-    return getClass().getName() + ": " + yard.getObjectId() + ": " + yard.getNaam();
+    return getClass().getSimpleName()
+        + "{yard_id: "
+        + yard.getObjectId()
+        + ", yard_name: "
+        + yard.getNaam()
+        + "}";
   }
 
   @Override public Object getDaggerModule() {
@@ -50,8 +53,7 @@ import static com.google.common.collect.Lists.newArrayList;
       injects = {
           YardDetailView.class, YardDetailDocumentAdapter.class, ParseDocumentOverviewView.class,
           ParseDocumentOverviewAdapter.class
-      }, addsTo = CorePresenter.Module.class)
-  static class Module {
+      }, addsTo = CorePresenter.Module.class) static class Module {
 
     private final Yard werf;
 
@@ -68,13 +70,14 @@ import static com.google.common.collect.Lists.newArrayList;
 
   @Singleton static class Presenter extends ViewPresenter<YardDetailView> {
 
-    @Inject Flow flow;
-
-    @Inject Yard werf;
-
-    public void goToDocumentView(final DocumentType type) {
-
-      flow.goTo(new DocumentOverviewScreen(werf, type));
+    @Inject public Presenter() {
     }
+
+    @Override protected void onLoad(Bundle savedInstanceState) {
+      super.onLoad(savedInstanceState);
+      if(getView() == null) return;
+      getView().initView();
+    }
+
   }
 }

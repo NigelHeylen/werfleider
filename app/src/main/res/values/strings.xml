@@ -16,5 +16,6 @@
     <string name="tContacts">Contacts</string>
     <string name="tInvitedYards">Invited Yards</string>
     <string name="tMyYards">My Yards</string>
+    <string name="tOpenCamera">Click here to open your camera app.</string>
 
 </resources>

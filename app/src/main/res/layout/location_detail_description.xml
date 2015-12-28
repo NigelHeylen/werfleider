@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.document.LocationDetailDescriptionView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/document.description"
+    style="@style/Werf.Create.EditText"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:hint="Omschrijving foto "
+    android:inputType="textMultiLine"
+    tools:showIn="@layout/parsedocument_location_detail_view"
+    />

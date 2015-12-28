@@ -1,7 +1,5 @@
 package nigel.com.werfleider.ui.werf;
 
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import com.parse.ParseUser;
 import dagger.Provides;
 import flow.Layout;
@@ -81,31 +79,12 @@ import static com.google.common.collect.Lists.newArrayList;
 
   }
 
-  static class InviteContactsPresenter extends ReactiveViewPresenter<InviteContactsView> {
+  @Singleton static class InviteContactsPresenter extends ReactiveViewPresenter<InviteContactsView> {
 
-    @Inject @Named(CONTACTS) List<ParseUser> contacts;
-    @Inject @Named(INVITES) List<ParseUser> invites;
-
-    @Inject @Named(INVITES_YARD) Yard yard;
-
-    private InvitesRecyclerAdapter adapter;
-
-    @Override protected void onLoad(final Bundle savedInstanceState) {
-
-      super.onLoad(savedInstanceState);
-      if (getView() == null) return;
-
-      initView();
-    }
-
-    private void initView() {
-
-      getView().list.setLayoutManager(new LinearLayoutManager(getView().getContext()));
-      getView().list.setAdapter(adapter = new InvitesRecyclerAdapter(getView().getContext()));
+    @Inject public InviteContactsPresenter() {
     }
 
     public void handleRefresh() {
-
 
     }
   }

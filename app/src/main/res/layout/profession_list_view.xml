@@ -81,7 +81,7 @@
             android:layout_gravity="center"
             android:layout_weight="0.1"
             android:background="@color/teal"
-            android:src="@drawable/ic_action_add_person"/>
+            android:src="@drawable/ic_person_add"/>
     </LinearLayout>
 
 

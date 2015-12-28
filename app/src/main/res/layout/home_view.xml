@@ -18,7 +18,7 @@
     <ImageView
         android:id="@+id/home.welcome.log.out"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_action_navigation_cancel"
+        android:src="@drawable/ic_cancel"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
         android:scaleType="fitCenter"
@@ -40,7 +40,7 @@
 
                 <ImageView
                     style="@style/Werfoverzicht.Item.Icon"
-                    android:src="@drawable/ic_action_group"
+                    android:src="@drawable/ic_contacts"
                     />
 
                 <TextView
@@ -61,7 +61,7 @@
 
                 <ImageView
                     style="@style/Werfoverzicht.Item.Icon"
-                    android:src="@drawable/ic_globe"
+                    android:src="@drawable/ic_home"
                     />
 
                 <TextView

@@ -112,14 +112,6 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
           ParseObject.pinAllInBackground(list);
 
-          //for (Yard yard : list) {
-          //
-          //  for (ParseUser user : yard.getInvites()) {
-          //
-          //    System.out.println("user.getEmail() = " + user.getObjectId());
-          //  }
-          //}
-
           if (load == LOCAL) {
             loadData(NETWORK);
           }

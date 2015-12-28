@@ -15,11 +15,9 @@
  */
 package nigel.com.werfleider.android;
 
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 import nigel.com.werfleider.MainActivity;
 import nigel.com.werfleider.core.ApplicationModule;
 
@@ -27,5 +25,9 @@ import nigel.com.werfleider.core.ApplicationModule;
 public class ActionBarModule {
   @Provides @Singleton ActionBarOwner provideActionBarOwner() {
     return new ActionBarOwner();
+  }
+
+  @Provides @Singleton StartActivityForResultPresenter provideActivityForResultPresenter() {
+    return new StartActivityForResultPresenter();
   }
 }

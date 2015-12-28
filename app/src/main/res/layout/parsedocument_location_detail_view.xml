@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<nigel.com.werfleider.ui.document.ParseDocumentLocationDetailView
+<nigel.com.werfleider.ui.document.LocationDetailView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,23 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            >
+            />
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/document.description"
-                style="@style/Werf.Create.EditText"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:hint="Omschrijving foto "
-                android:inputType="textMultiLine"/>
-
-            <include layout="@layout/parsedocument_location_detail_info"/>
-
-            <include layout="@layout/parsedocumen_location_detail_dimensions"/>
-
-            <include layout="@layout/take_picture_view"/>
-
-        </android.support.v4.view.ViewPager>
     </LinearLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
@@ -69,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_bird"
+            fab:fab_icon="@drawable/ic_edit"
             fab:fab_title="Add pictures"/>
 
 
@@ -78,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_skull"
+            fab:fab_icon="@drawable/ic_save"
             fab:fab_title="Save location"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
@@ -94,4 +78,4 @@
         android:visibility="visible"
         android:background="#1E88E5" />
 
-</nigel.com.werfleider.ui.document.ParseDocumentLocationDetailView>
+</nigel.com.werfleider.ui.document.LocationDetailView>

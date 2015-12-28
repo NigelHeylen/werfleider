@@ -15,34 +15,36 @@
  */
 package nigel.com.werfleider.core;
 
+import android.os.Parcelable;
+import android.util.SparseArray;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import javax.inject.Singleton;
-
+import com.google.gson.reflect.TypeToken;
 import dagger.Module;
 import dagger.Provides;
 import flow.Parcer;
+import java.lang.reflect.Type;
+import javax.inject.Singleton;
 import nigel.com.werfleider.MainApplication;
+import nigel.com.werfleider.android.SparseArrayTypeAdapter;
 import nigel.com.werfleider.commons.app.AndroidServicesModule;
 import nigel.com.werfleider.commons.app.ContextModule;
 import nigel.com.werfleider.commons.bus.OttoBusModule;
 
 @Module(includes = {
-        ContextModule.class,
-        OttoBusModule.class,
-        AndroidServicesModule.class
+    ContextModule.class, OttoBusModule.class, AndroidServicesModule.class
 },
-        library = true,
-        injects = MainApplication.class)
-public class ApplicationModule {
+    library = true,
+    injects = MainApplication.class) public class ApplicationModule {
 
-    @Provides @Singleton Gson provideGson() {
-        return new GsonBuilder().create();
-    }
+  @Provides @Singleton Gson provideGson() {
+    Type sparseArrayType = new TypeToken<SparseArray<Parcelable>>() {
+    }.getType();
+    return new GsonBuilder().registerTypeAdapter(sparseArrayType,
+        new SparseArrayTypeAdapter<>(Parcelable.class)).create();
+  }
 
-    @Provides @Singleton Parcer<Object> provideParcer(Gson gson) {
-        return new GsonParcer<Object>(gson);
-    }
-
+  @Provides @Singleton Parcer<Object> provideParcer(Gson gson) {
+    return new GsonParcer<>(gson);
+  }
 }

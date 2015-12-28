@@ -2,11 +2,9 @@ package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import java.util.List;
 import javax.inject.Inject;
 import mortar.ViewPresenter;
@@ -59,6 +57,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
       query.fromLocalDatastore();
     }
 
+    System.out.println("ParseDocumentOverviewPresenter.loadDocuments");
     query.whereEqualTo(YARD_ID, yard)
         .whereEqualTo(DOCUMENT_TYPE, documentType.name())
         .findInBackground((list, e) -> {
@@ -97,19 +96,17 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
     final ParseDocument parseDocument = new ParseDocument();
     parseDocument.setWerf(yard).setAuthor(ParseUser.getCurrentUser()).setDocumentType(documentType);
 
-    parseDocument.pinInBackground(new SaveCallback() {
-      @Override public void done(final ParseException e) {
+    parseDocument.pinInBackground(e -> {
 
-        if (e == null) {
-          parseDocuments.add(parseDocument);
-          Toast.makeText(context,
-              "Document " + parseDocument.getDocumentType().toString() + " saved.",
-              Toast.LENGTH_LONG).show();
+      if (e == null) {
+        parseDocuments.add(parseDocument);
+        Toast.makeText(context,
+            "Document " + parseDocument.getDocumentType().toString() + " saved.",
+            Toast.LENGTH_LONG).show();
 
-          adapter.notifyItemInserted(parseDocuments.size() - 1);
-        } else {
-          e.printStackTrace();
-        }
+        adapter.notifyItemInserted(parseDocuments.size() - 1);
+      } else {
+        e.printStackTrace();
       }
     });
 
@@ -125,7 +122,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   private void initView() {
 
-    if (yard.getAuthor() == ParseUser.getCurrentUser()) {
+    if (yard.getAuthor() != ParseUser.getCurrentUser()) {
 
       getView().create.setVisibility(GONE);
     }

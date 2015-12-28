@@ -150,7 +150,9 @@ import static nigel.com.werfleider.ui.contact.ContactsScreen.Module.USER_DATA;
     }
 
     private void finishRefreshing() {
-      getView().swipeRefreshLayout.setRefreshing(false);
+      if(getView() != null) {
+        getView().swipeRefreshLayout.setRefreshing(false);
+      }
     }
   }
 }

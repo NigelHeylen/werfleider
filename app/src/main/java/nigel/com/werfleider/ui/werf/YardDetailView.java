@@ -35,12 +35,10 @@ public class YardDetailView extends LinearLayout {
 
         super.onFinishInflate();
         ButterKnife.bind(this);
-
-        bindViews();
         presenter.takeView(this);
     }
 
-    private void bindViews() {
+    protected void initView() {
 
         documentPager.setAdapter(new YardDetailDocumentAdapter(getContext()));
         documentPager.setOffscreenPageLimit(5);
