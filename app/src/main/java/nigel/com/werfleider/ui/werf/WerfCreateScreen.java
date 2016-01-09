@@ -1,6 +1,5 @@
 package nigel.com.werfleider.ui.werf;
 
-import android.content.Context;
 import android.os.Bundle;
 import com.parse.ParseUser;
 import dagger.Provides;

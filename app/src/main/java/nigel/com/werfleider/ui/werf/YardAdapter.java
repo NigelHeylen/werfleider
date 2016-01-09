@@ -18,8 +18,6 @@ import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.Yard;
 
-import static java.lang.String.format;
-
 /**
  * Created by nigel on 04/02/15.
  */
@@ -27,12 +25,16 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
 
   @Inject Flow flow;
 
+  @Inject Context context;
+
   final List<Yard> yards;
   private final YardType yardType;
+  private final YardListView parent;
 
-  public YardAdapter(List<Yard> yards, final Context context, YardType yardType) {
+  public YardAdapter(List<Yard> yards, final Context context, YardType yardType, YardListView parent) {
     this.yards = yards;
     this.yardType = yardType;
+    this.parent = parent;
     Mortar.inject(context, this);
   }
 
@@ -56,16 +58,22 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
     holder.edit.setOnClickListener(v -> flow.goTo(new WerfCreateScreen(werf)));
 
     holder.delete.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
-    holder.delete.setOnClickListener(v -> {
+    holder.delete.setOnClickListener(
+        v -> new SnackBar.Builder(context, parent).withMessage(
+            "Are you sure you want to delete this yard?")
+            .withActionMessage("Delete")
+            .withTextColorId(R.color.green)
+            .withOnClickListener(token -> {
 
-      yards.remove(werf);
-      notifyItemRemoved(position);
-    });
-  }
+              werf.deleteEventually(e -> {
+                if (e == null) {
+                  yards.remove(werf);
 
-  private String getMailFormat(final String type, final int number) {
-
-    return format("%s: %d emails", type, number);
+                  notifyItemRemoved(position);
+                }
+              });
+            })
+            .show());
   }
 
   @Override public int getItemCount() {

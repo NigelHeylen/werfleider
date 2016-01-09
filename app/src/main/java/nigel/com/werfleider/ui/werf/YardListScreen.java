@@ -125,7 +125,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
       getView().setLayoutManager(new LinearLayoutManager(getView().getContext()));
 
-      getView().setAdapter(adapter = new YardAdapter(adapterData, getView().getContext(), yardType));
+      getView().setAdapter(adapter = new YardAdapter(adapterData, getView().getContext(), yardType, getView()));
 
       if(yardType == INVITED){
 
