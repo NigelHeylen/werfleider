@@ -267,4 +267,11 @@ public class LocationDetailAudioView extends ScrollView {
 
     resetButton.setVisibility(show ? VISIBLE : INVISIBLE);
   }
+
+  public void hideRecordViews() {
+    recordButton.setVisibility(GONE);
+    recordProgress.setVisibility(GONE);
+    recordSeconds.setVisibility(GONE);
+    recordContainer.setVisibility(GONE);
+  }
 }

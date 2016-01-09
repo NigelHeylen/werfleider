@@ -1,6 +1,7 @@
 package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
+import com.parse.ParseUser;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import nigel.com.werfleider.model.ParseDocumentImage;
@@ -38,6 +39,14 @@ public class LocationDetailAudioPresenter extends ReactiveViewPresenter<Location
 
       getView().reset();
       resetTimerSubscription();
+
+      if(!documentImage.getAuthor().equals(ParseUser.getCurrentUser())){
+
+        if(getView() != null){
+
+          getView().hideRecordViews();
+        }
+      }
 
       if (documentImage.hasAudio()) {
 
