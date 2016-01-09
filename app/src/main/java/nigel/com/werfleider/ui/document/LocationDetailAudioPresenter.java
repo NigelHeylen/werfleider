@@ -105,6 +105,8 @@ public class LocationDetailAudioPresenter extends ReactiveViewPresenter<Location
 
     resetTimerSubscription();
     getView().showResetButton(true);
+    getView().prepareMediaPlayer();
+    getView().showPlayAudio(true);
   }
 
   public void stopPlaying() {
@@ -115,6 +117,7 @@ public class LocationDetailAudioPresenter extends ReactiveViewPresenter<Location
   public void resetAudio() {
 
     AudioUtils.saveByteArrayToFile(getView().getFileName(), documentImage.getAudio());
+    getView().setPlaySeconds(0);
     getView().prepareMediaPlayer();
     getView().showPlayAudio(true);
   }

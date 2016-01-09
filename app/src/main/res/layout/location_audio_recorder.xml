@@ -103,7 +103,7 @@
           android:layout_height="wrap_content"
           android:layout_toRightOf="@+id/location.detail.play.audio"
           android:layout_marginTop="32dp"
-          android:layout_toLeftOf="@id/location.detail.play.reset"
+          android:layout_toLeftOf="@+id/location.detail.play.reset"
           />
 
       <TextView

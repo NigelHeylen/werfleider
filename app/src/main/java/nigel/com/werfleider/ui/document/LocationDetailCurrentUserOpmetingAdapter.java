@@ -6,6 +6,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.parse.ParseUser;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -14,19 +15,18 @@ import nigel.com.werfleider.model.ParseDocument;
 /**
  * Created by nigel on 26/12/15.
  */
-public class LocationDetailPagerAdapter extends PagerAdapter {
+public class LocationDetailCurrentUserOpmetingAdapter extends PagerAdapter {
 
   @Inject ParseDocument document;
 
-  public LocationDetailPagerAdapter(Context context) {
+  public LocationDetailCurrentUserOpmetingAdapter(Context context) {
 
     Mortar.inject(context, this);
   }
 
   @Override public int getCount() {
 
-    //return document.getDocumentType() == OPMETINGEN ? 4 : 3;
-    return 5;
+    return document.getAuthor() == ParseUser.getCurrentUser() ? 5 : 4;
   }
 
   @Override public boolean isViewFromObject(final View view, final Object object) {

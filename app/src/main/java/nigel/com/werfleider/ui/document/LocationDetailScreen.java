@@ -1,9 +1,13 @@
 package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManagerEx;
 import android.support.v7.widget.OrientationHelperEx;
 import android.support.v7.widget.RecyclerViewEx;
+import android.view.View;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -18,6 +22,7 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.core.CorePresenter;
+import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
@@ -74,7 +79,8 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
           LocationDetailView.class, DocumentImageListItemAdapter.class,
           LocationDetailDescriptionView.class, LocationDetailDimensionsView.class,
           LocationDetailInfoView.class, LocationDetailCameraView.class,
-          LocationDetailPagerAdapter.class, LocationDetailAudioView.class
+          LocationDetailCurrentUserOpmetingAdapter.class,
+          LocationDetailCurrentUserRegularAdapter.class, LocationDetailAudioView.class
       },
       addsTo = CorePresenter.Module.class) static class Module {
 
@@ -184,7 +190,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
         public void onScrollStateChanged(final RecyclerViewEx recyclerViewEx, final int i) {
 
           if (i == RecyclerViewEx.SCROLL_STATE_IDLE) {
-            if (position != layoutManager.findFirstCompletelyVisibleItemPosition()) {
+            if (position != layoutManager.findFirstCompletelyVisibleItemPosition() && position != -1) {
               position = layoutManager.findFirstCompletelyVisibleItemPosition();
               documentImageBus.onNext(adapterData.get(position));
             }
@@ -276,7 +282,37 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
       getView().imageList.setAdapter(adapter =
           new DocumentImageListItemAdapter(getView().getContext(), getView().progressBar));
-      getView().detailViews.setAdapter(new LocationDetailPagerAdapter(getView().getContext()));
+      getView().detailViews.setAdapter(getPagerAdapter());
+      getView().detailViews.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override public void onPageSelected(int position) {
+
+          if (document.getDocumentType() == DocumentType.OPMETINGEN) {
+
+            getView().actionsMenu.setVisibility(position == 3 ? GONE : View.VISIBLE);
+          } else {
+
+            getView().actionsMenu.setVisibility(position == 2 ? GONE : View.VISIBLE);
+          }
+        }
+
+        @Override public void onPageScrollStateChanged(int state) {
+
+        }
+      });
+    }
+
+    @NonNull private PagerAdapter getPagerAdapter() {
+      if(document.getDocumentType() == DocumentType.OPMETINGEN) {
+        return new LocationDetailCurrentUserOpmetingAdapter(getView().getContext());
+      } else {
+
+        return new LocationDetailCurrentUserRegularAdapter(getView().getContext());
+      }
     }
 
     public void handleEdit() {
