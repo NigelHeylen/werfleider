@@ -15,6 +15,10 @@ public class ReactiveViewPresenter<V extends View> extends ViewPresenter<V>{
   @Override protected void onExitScope() {
     super.onExitScope();
 
+    unsubscribe();
+  }
+
+  public void unsubscribe() {
     subscription.unsubscribe();
     subscription = new CompositeSubscription();
   }

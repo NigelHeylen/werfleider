@@ -74,7 +74,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
           LocationDetailView.class, DocumentImageListItemAdapter.class,
           LocationDetailDescriptionView.class, LocationDetailDimensionsView.class,
           LocationDetailInfoView.class, LocationDetailCameraView.class,
-          LocationDetailPagerAdapter.class
+          LocationDetailPagerAdapter.class, LocationDetailAudioView.class
       },
       addsTo = CorePresenter.Module.class) static class Module {
 

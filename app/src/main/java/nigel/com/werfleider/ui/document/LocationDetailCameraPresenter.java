@@ -82,6 +82,7 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
     image.setImageURL(path)
         .setImageTakenDate(new Date())
         .setAuthor(ParseUser.getCurrentUser())
+        .setImageBytes(ImageUtils.getBytesFromFilePath(path))
         .setLocationId(location);
 
     image.pinInBackground(e -> {

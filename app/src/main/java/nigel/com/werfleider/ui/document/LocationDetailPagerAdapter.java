@@ -26,7 +26,7 @@ public class LocationDetailPagerAdapter extends PagerAdapter {
   @Override public int getCount() {
 
     //return document.getDocumentType() == OPMETINGEN ? 4 : 3;
-    return 4;
+    return 5;
   }
 
   @Override public boolean isViewFromObject(final View view, final Object object) {
@@ -47,6 +47,9 @@ public class LocationDetailPagerAdapter extends PagerAdapter {
         break;
       case 2:
         view = getView(R.layout.location_detail_dimensions, container);
+        break;
+      case 3:
+        view = getView(R.layout.location_audio_recorder, container);
         break;
       default:
         view = getView(R.layout.location_camera_intent, container);
@@ -71,6 +74,8 @@ public class LocationDetailPagerAdapter extends PagerAdapter {
       case 2:
         return "Afmetingen";
       case 3:
+        return "Audio";
+      case 4:
         return "Camera";
       default:
         return "";

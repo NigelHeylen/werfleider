@@ -11,11 +11,13 @@ import nigel.com.werfleider.util.MeasuringUnit;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static nigel.com.werfleider.util.ParseStringUtils.ABSOLUTE_PATH;
+import static nigel.com.werfleider.util.ParseStringUtils.AUDIO_BYTES;
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DESCRIPTION;
 import static nigel.com.werfleider.util.ParseStringUtils.FLOOR;
 import static nigel.com.werfleider.util.ParseStringUtils.HEIGHT;
 import static nigel.com.werfleider.util.ParseStringUtils.IMAGE;
+import static nigel.com.werfleider.util.ParseStringUtils.IMAGE_BYTES;
 import static nigel.com.werfleider.util.ParseStringUtils.IMAGE_TAKEN_DATE;
 import static nigel.com.werfleider.util.ParseStringUtils.LENGTH;
 import static nigel.com.werfleider.util.ParseStringUtils.LOCATION;
@@ -224,5 +226,30 @@ import static nigel.com.werfleider.util.ParseStringUtils.WIDTH;
   public boolean hasImage() {
 
     return getImage() != null;
+  }
+
+  public ParseDocumentImage setImageBytes(byte[] bytesFromFilePath) {
+    put(IMAGE_BYTES, bytesFromFilePath);
+    return this;
+  }
+
+  public byte[] getImageBytes() {
+
+    return getBytes(IMAGE_BYTES);
+  }
+
+  public ParseDocumentImage setAudio(byte[] audioBytes) {
+    put(AUDIO_BYTES, audioBytes);
+    return this;
+  }
+
+  public boolean hasAudio(){
+
+    return containsKey(AUDIO_BYTES) && getAudio().length > 0;
+  }
+
+  public byte[] getAudio(){
+
+    return getBytes(AUDIO_BYTES);
   }
 }

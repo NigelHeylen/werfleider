@@ -71,6 +71,8 @@ public class ParseStringUtils {
 
     public static final String IMAGE = "image";
     public static final String IMAGE_TAKEN_DATE = "image_taken_date";
+    public static final String IMAGE_BYTES = "image_bytes";
+    public static final String AUDIO_BYTES = "audio_bytes";
     public static final String IMAGES = "images";
     public static final String AUTHOR = "author";
     public static final String ART_NR = "art_nr";

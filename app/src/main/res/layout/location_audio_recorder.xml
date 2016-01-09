@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.document.LocationDetailAudioView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="@dimen/screen.margin"
+      android:paddingRight="@dimen/screen.margin"
+      android:paddingTop="@dimen/screen.margin"
+      android:orientation="vertical"
+      >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/screen.margin"
+        android:text="@string/tNew"
+        />
+
+    <RelativeLayout
+        android:id="@+id/location.detail.record.container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+      <com.getbase.floatingactionbutton.FloatingActionButton
+          android:id="@+id/location.detail.record.audio"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          fab:fab_icon="@drawable/ic_record_audio"
+          />
+
+      <com.gc.materialdesign.views.ProgressBarDeterminate
+          android:id="@+id/location.detail.record.progress"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@+id/location.detail.record.audio"
+          android:layout_marginTop="32dp"
+          android:layout_toLeftOf="@+id/location.detail.record.save"
+          />
+
+      <TextView
+          android:id="@+id/location.detail.record.seconds"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/location.detail.record.audio"
+          android:layout_centerHorizontal="true"
+          android:layout_marginLeft="32dp"
+          android:text="0"
+          />
+      <TextView
+          android:id="@+id/location.detail.record.seconds.max"
+          android:layout_below="@id/location.detail.record.audio"
+          android:layout_toRightOf="@id/location.detail.record.seconds"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="/30"
+          />
+
+      <com.getbase.floatingactionbutton.FloatingActionButton
+          android:id="@+id/location.detail.record.save"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          fab:fab_icon="@drawable/ic_save"
+          fab:fab_size="mini"
+          android:layout_marginTop="8dp"
+          android:layout_alignParentRight="true"
+          />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/screen.margin"
+        android:text="@string/tSaved"
+        />
+
+    <RelativeLayout
+        android:id="@+id/location.detail.play.container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+      <com.getbase.floatingactionbutton.FloatingActionButton
+          android:id="@+id/location.detail.play.audio"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          fab:fab_icon="@drawable/ic_play"
+          />
+
+      <com.gc.materialdesign.views.ProgressBarDeterminate
+          android:id="@+id/location.detail.play.progress"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@+id/location.detail.play.audio"
+          android:layout_marginTop="32dp"
+          android:layout_toLeftOf="@id/location.detail.play.reset"
+          />
+
+      <TextView
+          android:id="@+id/location.detail.play.seconds"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/location.detail.play.audio"
+          android:layout_centerHorizontal="true"
+          android:layout_marginLeft="32dp"
+          android:text="0"
+          />
+      <TextView
+          android:id="@+id/location.detail.play.seconds.max"
+          android:layout_below="@id/location.detail.play.audio"
+          android:layout_toRightOf="@id/location.detail.play.seconds"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="/30"
+          />
+
+      <com.getbase.floatingactionbutton.FloatingActionButton
+          android:id="@+id/location.detail.play.reset"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          fab:fab_icon="@drawable/ic_reset"
+          fab:fab_size="mini"
+          android:layout_marginTop="8dp"
+          android:layout_alignParentRight="true"
+          />
+    </RelativeLayout>
+
+
+  </LinearLayout>
+
+
+</nigel.com.werfleider.ui.document.LocationDetailAudioView>
