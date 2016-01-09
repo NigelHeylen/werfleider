@@ -91,6 +91,7 @@ dependencies {
   compile 'com.lsjwzh:recyclerviewpager:0.5.3'
 
   compile 'com.parse.bolts:bolts-android:1.+'
+  compile 'com.github.mrengineer13:snackbar:1.2.0'
 
   compile 'com.parse:parse-android:1.11.0'
 

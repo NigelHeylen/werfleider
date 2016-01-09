@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.github.mrengineer13.snackbar.SnackBar;
 import flow.Flow;
 import java.util.List;
 import javax.inject.Inject;
@@ -52,6 +53,8 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
 
     holder.container.setOnClickListener(v -> flow.goTo(new YardDetailScreen(werf)));
 
+    holder.edit.setOnClickListener(v -> flow.goTo(new WerfCreateScreen(werf)));
+
     holder.delete.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
     holder.delete.setOnClickListener(v -> {
 
@@ -79,6 +82,7 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
     @Bind(R.id.werf_item_nr) TextView nr;
 
     @Bind(R.id.werf_item_delete) ImageView delete;
+    @Bind(R.id.werf_item_edit) ImageView edit;
 
     public YardViewHolder(final View itemView) {
 

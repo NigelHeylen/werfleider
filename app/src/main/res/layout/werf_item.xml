@@ -8,12 +8,19 @@
     android:padding="3dp">
 
     <ImageView
+        android:id="@+id/werf.item.edit"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="60dp"
+        android:src="@drawable/ic_edit"/>
+
+    <ImageView
         android:id="@+id/werf.item.delete"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="right"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right|center_vertical"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
         android:src="@drawable/ic_delete"/>
 
     <LinearLayout
@@ -38,42 +45,6 @@
             android:padding="8dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:text="57289ab3"/>
-
-        <!--<TextView-->
-            <!--android:id="@+id/werf.item.messages.architect"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/blue"-->
-            <!--android:padding="8dp"-->
-            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-            <!--tools:text="Medium Text"/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/werf.item.messages.bouwmeester"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/yellow"-->
-            <!--android:padding="8dp"-->
-            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-            <!--tools:text="Medium Text"/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/werf.item.messages.nog"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/purple"-->
-            <!--android:padding="8dp"-->
-            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-            <!--tools:text="Medium Text"/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/werf.item.messages.enNog"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/teal"-->
-            <!--android:padding="8dp"-->
-            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-            <!--tools:text="Medium Text"/>-->
     </LinearLayout>
 
 
