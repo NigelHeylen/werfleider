@@ -5,6 +5,7 @@ import android.widget.Toast;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import flow.Flow;
 import java.util.List;
 import javax.inject.Inject;
 import mortar.ViewPresenter;
@@ -31,16 +32,18 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   @Inject Context context;
 
+  @Inject Flow flow;
+
   final List<ParseDocument> parseDocuments = newArrayList();
 
   private ParseDocumentOverviewAdapter adapter;
 
   private void loadData() {
 
-    getView().setAdapter(
-        adapter = new ParseDocumentOverviewAdapter(getView().getContext(), parseDocuments));
+    getView().setAdapter(adapter =
+        new ParseDocumentOverviewAdapter(getView().getContext(), parseDocuments, getView()));
 
-    if(yard.getAuthor() != ParseUser.getCurrentUser()){
+    if (yard.getAuthor() != ParseUser.getCurrentUser()) {
 
       getView().create.setVisibility(GONE);
     }
@@ -90,26 +93,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   public void handleCreateClick() {
 
-    Toast.makeText(context, "Creating document...", Toast.LENGTH_LONG).show();
-
-    final ParseDocument parseDocument = new ParseDocument();
-    parseDocument.setWerf(yard).setAuthor(ParseUser.getCurrentUser()).setDocumentType(documentType);
-
-    parseDocument.pinInBackground(e -> {
-
-      if (e == null) {
-        parseDocuments.add(parseDocument);
-        Toast.makeText(context,
-            "Document " + parseDocument.getDocumentType().toString() + " saved.",
-            Toast.LENGTH_LONG).show();
-
-        adapter.notifyItemInserted(parseDocuments.size() - 1);
-      } else {
-        e.printStackTrace();
-      }
-    });
-
-    parseDocument.saveEventually();
+    flow.goTo(new DocumentCreateScreen(yard, documentType));
   }
 
   public void setDocumentType(final DocumentType documentType) {

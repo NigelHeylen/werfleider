@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.parse.ParseUser;
-import com.squareup.picasso.Picasso;
 import flow.Flow;
 import java.util.List;
 import javax.inject.Inject;
@@ -28,16 +28,19 @@ import static android.view.View.VISIBLE;
  */
 public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+  @Inject Context context;
   private final List<ParseDocument> documents;
+  private final ParseDocumentOverviewView parent;
 
   @Inject Flow flow;
 
   @Inject Yard yard;
 
   public ParseDocumentOverviewAdapter(final Context context,
-      final List<ParseDocument> parseDocuments) {
+      final List<ParseDocument> parseDocuments, ParseDocumentOverviewView parent) {
 
     this.documents = parseDocuments;
+    this.parent = parent;
     Mortar.inject(context, this);
   }
 
@@ -57,18 +60,30 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
     final ParseDocument document = documents.get(position);
 
     viewHolder.date.setText(new DateTime(document.getCreatedAt()).toString("dd-MM-yyyy"));
+    viewHolder.name.setText(document.getName());
 
     viewHolder.container.setOnClickListener(
         v -> flow.goTo(new ParseDocumentScreen(yard, document)));
 
     viewHolder.delete.setVisibility(
         yard.getAuthor() == ParseUser.getCurrentUser() ? VISIBLE : View.GONE);
+    viewHolder.edit.setVisibility(
+        yard.getAuthor() == ParseUser.getCurrentUser() ? VISIBLE : View.GONE);
 
-    viewHolder.delete.setOnClickListener(v -> {
-      document.deleteEventually();
-      documents.remove(position);
-      notifyItemRemoved(position);
-    });
+    viewHolder.edit.setOnClickListener(
+        v -> flow.goTo(new DocumentCreateScreen(yard, document.getDocumentType(), document)));
+
+    viewHolder.delete.setOnClickListener(v -> new SnackBar.Builder(context, parent).withMessage(
+        "Are you sure you want to delete this document?")
+        .withActionMessage("Delete")
+        .withTextColorId(R.color.green)
+        .withOnClickListener(token -> document.deleteEventually(e -> {
+          if (e == null) {
+            documents.remove(position);
+            notifyItemRemoved(position);
+          }
+        }))
+        .show());
   }
 
   @Override public int getItemCount() {
@@ -79,10 +94,11 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
 
     @Bind(R.id.document_overview_item_container) CardView container;
 
-    @Bind(R.id.document_overview_item_image) ImageView image;
     @Bind(R.id.document_overview_item_delete) ImageView delete;
+    @Bind(R.id.document_overview_item_edit) ImageView edit;
 
     @Bind(R.id.document_overview_item_date) TextView date;
+    @Bind(R.id.document_overview_item_name) TextView name;
 
     public ViewHolder(final View itemView) {
       super(itemView);

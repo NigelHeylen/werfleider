@@ -19,5 +19,6 @@
     <string name="tOpenCamera">Click here to open your camera app.</string>
     <string name="tSaved">Saved</string>
     <string name="tNew">New</string>
+    <string name="tSave">Save</string>
 
 </resources>

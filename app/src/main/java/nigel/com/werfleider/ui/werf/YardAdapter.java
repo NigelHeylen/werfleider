@@ -58,6 +58,8 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
     holder.edit.setOnClickListener(v -> flow.goTo(new WerfCreateScreen(werf)));
 
     holder.delete.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
+    holder.edit.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
+
     holder.delete.setOnClickListener(
         v -> new SnackBar.Builder(context, parent).withMessage(
             "Are you sure you want to delete this yard?")

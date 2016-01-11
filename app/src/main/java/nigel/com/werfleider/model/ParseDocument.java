@@ -6,45 +6,53 @@ import com.parse.ParseUser;
 
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_TYPE;
+import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_ID;
 
 /**
  * Created by nigel on 14/04/15.
  */
-@ParseClassName("Document")
-public class ParseDocument extends ParseObject {
+@ParseClassName("Document") public class ParseDocument extends ParseObject {
 
-    public ParseObject getWerfId() {
+  public ParseObject getWerfId() {
 
-        return getParseObject(YARD_ID);
-    }
+    return getParseObject(YARD_ID);
+  }
 
-    public ParseDocument setWerf(final Yard werf) {
+  public ParseDocument setWerf(final Yard werf) {
 
-        put(
-                YARD_ID,
-                werf);
-        return this;
-    }
+    put(YARD_ID, werf);
+    return this;
+  }
 
-    public DocumentType getDocumentType() {
+  public DocumentType getDocumentType() {
 
-        return DocumentType.valueOf(getString(DOCUMENT_TYPE));
-    }
+    return DocumentType.valueOf(getString(DOCUMENT_TYPE));
+  }
 
-    public ParseDocument setDocumentType(final DocumentType documentType){
+  public ParseDocument setDocumentType(final DocumentType documentType) {
 
-        put(DOCUMENT_TYPE, documentType.name());
-        return this;
-    }
+    put(DOCUMENT_TYPE, documentType.name());
+    return this;
+  }
 
+  public ParseUser getAuthor() {
+    return getParseUser(AUTHOR);
+  }
 
-    public ParseUser getAuthor() {
-        return getParseUser(AUTHOR);
-    }
+  public ParseDocument setAuthor(ParseUser user) {
+    put(AUTHOR, user);
+    return this;
+  }
 
-    public ParseDocument setAuthor(ParseUser user) {
-        put(AUTHOR, user);
-        return this;
-    }
+  public ParseDocument setName(final String name) {
+
+    put(NAME, name);
+    return this;
+  }
+
+  public String getName(){
+
+    return getString(NAME);
+  }
 }

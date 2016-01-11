@@ -9,33 +9,47 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/screen.margin"
         android:padding="4dp">
 
-        <ImageView
-            android:id="@+id/document.overview.item.image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            tools:background="@color/teal"/>
 
         <TextView
-            android:id="@+id/document.overview.item.date"
+            android:id="@+id/document.overview.item.name"
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_toRightOf="@+id/document.overview.item.image"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            tools:text="Kelder"/>
+        <TextView
+            android:id="@+id/document.overview.item.date"
+            android:layout_below="@id/document.overview.item.name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginBottom="10dp"
             tools:text="24-03-1989"/>
+
 
         <ImageView
             android:id="@+id/document.overview.item.delete"
             android:src="@drawable/ic_delete"
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp"/>
+            android:layout_width="40dp"
+            android:layout_centerVertical="true"
+            android:layout_height="40dp"/>
+
+        <ImageView
+            android:id="@+id/document.overview.item.edit"
+            android:src="@drawable/ic_edit"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/document.overview.item.delete"
+            android:layout_marginRight="50dp"
+            android:layout_width="40dp"
+            android:layout_centerVertical="true"
+            android:layout_height="40dp"/>
 
     </RelativeLayout>
 
