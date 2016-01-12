@@ -80,28 +80,20 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
           if (follows(user)) {
 
             ParseUser.getCurrentUser().removeAll(CONTACTS, newArrayList(user));
-            ParseUser.getCurrentUser().saveEventually(t -> {
+            ParseUser.getCurrentUser().saveEventually();
 
-              if (t == null) {
+            holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person_add));
+            contactsList.remove(user);
 
-                holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person_add));
-                contactsList.remove(user);
-
-                socialActionBus.onNext(new SocialAction(user, UNFOLLOW));
-              }
-            });
+            socialActionBus.onNext(new SocialAction(user, UNFOLLOW));
           } else {
 
             ParseUser.getCurrentUser().addUnique(CONTACTS, user);
-            ParseUser.getCurrentUser().saveEventually(t -> {
+            ParseUser.getCurrentUser().saveEventually();
 
-              if (t == null) {
-
-                holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person));
-                contactsList.add(user);
-                socialActionBus.onNext(new SocialAction(user, FOLLOW));
-              }
-            });
+            holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person));
+            contactsList.add(user);
+            socialActionBus.onNext(new SocialAction(user, FOLLOW));
           }
         });
       }

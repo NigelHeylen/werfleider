@@ -5,6 +5,7 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import nigel.com.werfleider.util.MeasuringUnit;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static nigel.com.werfleider.util.ParseStringUtils.ART_NR;
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_ID;
@@ -40,12 +41,16 @@ import static nigel.com.werfleider.util.ParseStringUtils.TITLE;
 
   public MeasuringUnit getMeasuringUnit() {
 
+    if(isNullOrEmpty(getString(MEASURING_UNIT))){
+      return null;
+    }
+
     return MeasuringUnit.valueOf(getString(MEASURING_UNIT));
   }
 
   public ParseDocumentLocation setMeasuringUnit(final MeasuringUnit measuringUnit) {
 
-    if (getMeasuringUnit() != measuringUnit) {
+    if (getMeasuringUnit() == null || getMeasuringUnit() != measuringUnit) {
       put(MEASURING_UNIT, measuringUnit.name());
     }
     return this;

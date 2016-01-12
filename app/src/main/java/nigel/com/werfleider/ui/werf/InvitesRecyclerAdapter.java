@@ -92,28 +92,19 @@ public class InvitesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if (invited(user)) {
 
               yard.removeAll(ParseStringUtils.INVITES, newArrayList(user));
-              yard.saveEventually(t -> {
-
-                if (t == null) {
-
-                  viewHolder.follow.setImageDrawable(
-                      resources.getDrawable(R.drawable.ic_person_add));
-                  invites.remove(user);
-                  notifyDataSetChanged();
-                }
-              });
+              yard.saveEventually();
+              viewHolder.follow.setImageDrawable(
+                  resources.getDrawable(R.drawable.ic_person_add));
+              invites.remove(user);
+              notifyDataSetChanged();
             } else {
 
               yard.addUnique(ParseStringUtils.INVITES, user);
-              yard.saveEventually(t -> {
+              yard.saveEventually();
 
-                if (t == null) {
-
-                  viewHolder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person));
-                  invites.add(user);
-                  notifyDataSetChanged();
-                }
-              });
+              viewHolder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person));
+              invites.add(user);
+              notifyDataSetChanged();
             }
           });
         }

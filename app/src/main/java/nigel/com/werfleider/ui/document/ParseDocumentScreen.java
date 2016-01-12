@@ -10,7 +10,6 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
@@ -202,7 +201,7 @@ import static rx.schedulers.Schedulers.io;
       getView().locations.addItemDecoration(
           new DividerItemDecoration(getView().getContext(), R.drawable.divider));
       getView().locations.setAdapter(
-          adapter = new ParseDocumentLocationAdapter(getView().getContext()));
+          adapter = new ParseDocumentLocationAdapter(getView().getContext(), getView()));
 
       if (document.getDocumentType() == OPMETINGEN) {
         getView().addLocation.setTitle("Add post");
@@ -218,26 +217,24 @@ import static rx.schedulers.Schedulers.io;
 
     public void newImageCollection() {
 
-      Toast.makeText(context, "Creating document...", Toast.LENGTH_LONG).show();
+      Toast.makeText(context, "Creating location...", Toast.LENGTH_LONG).show();
 
       final ParseDocumentLocation location = new ParseDocumentLocation();
       location.setDocumentId(document)
           .setMeasuringUnit(MeasuringUnit.M)
           .setAuthor(ParseUser.getCurrentUser());
 
-      location.pinInBackground(new SaveCallback() {
-            @Override public void done(final ParseException e) {
+      location.pinInBackground(e -> {
 
-              if (e == null) {
-                locations.add(location);
-                adapter.notifyItemInserted(locations.size() - 1);
-
-                flow.goTo(new ParsePictureGridScreen(document, location, yard));
-              }
-            }
-          });
+        if (e == null) {
+          locations.add(location);
+          adapter.notifyItemInserted(locations.size() - 1);
+        }
+      });
 
       location.saveEventually();
+
+      flow.goTo(new ParsePictureGridScreen(document, location, yard));
     }
 
     public void write() {

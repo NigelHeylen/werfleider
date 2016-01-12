@@ -106,12 +106,8 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 
       yard.pinInBackground();
 
-      yard.saveEventually(e -> {
-
-        if (e == null) {
-          flow.goTo(new YardsOverviewScreen());
-        }
-      });
+      yard.saveEventually();
+      flow.goTo(new YardsOverviewScreen());
     }
   }
 }

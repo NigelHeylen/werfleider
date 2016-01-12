@@ -77,12 +77,12 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
         "Are you sure you want to delete this document?")
         .withActionMessage("Delete")
         .withTextColorId(R.color.green)
-        .withOnClickListener(token -> document.deleteEventually(e -> {
-          if (e == null) {
-            documents.remove(position);
-            notifyItemRemoved(position);
-          }
-        }))
+        .withOnClickListener(token -> {
+          document.deleteEventually();
+
+          documents.remove(position);
+          notifyItemRemoved(position);
+        })
         .show());
   }
 

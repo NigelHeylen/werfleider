@@ -65,15 +65,10 @@ public class LocationDetailAudioPresenter extends ReactiveViewPresenter<Location
   protected void saveAudio() {
 
     documentImage.setAudio(AudioUtils.getByteArrayFromPath(getView().getFileName()));
-    documentImage.saveEventually(e -> {
+    documentImage.saveEventually();
 
-      if (e != null) {
-
-        e.printStackTrace();
-        getView().showPlayAudio(true);
-        getView().showResetButton(true);
-      }
-    });
+    getView().showPlayAudio(true);
+    getView().showResetButton(true);
   }
 
   public void startRecording() {

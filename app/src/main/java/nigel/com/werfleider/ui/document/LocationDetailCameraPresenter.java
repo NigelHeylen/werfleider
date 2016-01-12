@@ -85,14 +85,7 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
         .setImageBytes(ImageUtils.getBytesFromFilePath(path))
         .setLocationId(location);
 
-    image.pinInBackground(e -> {
-
-      if (e == null) {
-        adapterData.add(image);
-      } else {
-        e.printStackTrace();
-      }
-    });
+    image.pinInBackground();
 
     image.saveEventually(e -> {
       if (e == null) {
@@ -106,6 +99,8 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
         });
       }
     });
+
+    adapterData.add(image);
   }
 
   @Override protected void onExitScope() {

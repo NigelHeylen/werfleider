@@ -1,6 +1,7 @@
 package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerViewEx;
 import android.view.LayoutInflater;
@@ -58,11 +59,16 @@ public class DocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
 
     final ParseDocumentImage image = adapterData.get(position);
 
-    pablo.load(
-        image.hasImage() ? image.getImage().getUrl() : ImageUtils.getOnDiskUrl(image.getImageURL()))
-        .fit()
-        .centerInside()
-        .into(holder.image);
+    if(image.hasImage() && !image.hasImageBytes()) {
+      pablo.load(image.hasImage() ? image.getImage().getUrl() : ImageUtils.getOnDiskUrl(image.getImageURL())).fit().centerInside().into(
+          holder.image);
+    } else {
+
+      if(image.hasImageBytes()){
+
+        holder.image.setImageBitmap(BitmapFactory.decodeByteArray(image.getImageBytes(), 0, image.getImageBytes().length));
+      }
+    }
 
     holder.delete.setVisibility(image.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);
 

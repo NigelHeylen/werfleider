@@ -6,10 +6,8 @@ package nigel.com.werfleider.pdf;
 
 import android.content.Context;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
@@ -39,12 +37,11 @@ import javax.inject.Inject;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
-import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.model.WerfInt;
+import nigel.com.werfleider.model.Yard;
 import org.joda.time.DateTime;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.getLast;
 import static com.itextpdf.text.Element.ALIGN_CENTER;
 import static com.itextpdf.text.Element.ALIGN_LEFT;
@@ -203,9 +200,8 @@ public class ParseFileOperations {
 
         int index = 0;
 
-        for (ParseDocumentImage documentImage : filter(imageList, hasImage())) {
+        for (ParseDocumentImage documentImage : imageList) {
 
-          System.out.println("index = " + index);
           // demonstrate some table features
           PdfPTable table = new PdfPTable(2);
           // table spacing before starts from top
@@ -214,7 +210,16 @@ public class ParseFileOperations {
           table.getDefaultCell().setPadding(5);
           table.setWidthPercentage(100);
 
-          final Image image = Image.getInstance(documentImage.getImage().getData());
+          final Image image;
+          if(documentImage.hasImage()) {
+            image = Image.getInstance(documentImage.getImage().getData());
+          } else if(documentImage.hasImageBytes()){
+
+            image = Image.getInstance(documentImage.getImageBytes());
+          } else {
+
+            image = Image.getInstance(documentImage.getImageURL());
+          }
 
           table.addCell(image);
 
@@ -259,15 +264,5 @@ public class ParseFileOperations {
       e.printStackTrace();
       return false;
     }
-  }
-
-  @NonNull private Predicate<ParseDocumentImage> hasImage() {
-
-    return new Predicate<ParseDocumentImage>() {
-      @Override public boolean apply(final ParseDocumentImage input) {
-
-        return input.hasImage();
-      }
-    };
   }
 }

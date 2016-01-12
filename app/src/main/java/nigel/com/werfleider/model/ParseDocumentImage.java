@@ -252,4 +252,8 @@ import static nigel.com.werfleider.util.ParseStringUtils.WIDTH;
 
     return getBytes(AUDIO_BYTES);
   }
+
+  public boolean hasImageBytes() {
+    return containsKey(IMAGE_BYTES) && getImageBytes().length > 0;
+  }
 }

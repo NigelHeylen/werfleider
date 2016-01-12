@@ -190,9 +190,11 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
         public void onScrollStateChanged(final RecyclerViewEx recyclerViewEx, final int i) {
 
           if (i == RecyclerViewEx.SCROLL_STATE_IDLE) {
-            if (position != layoutManager.findFirstCompletelyVisibleItemPosition() && position != -1) {
+            if (position != layoutManager.findFirstCompletelyVisibleItemPosition()) {
               position = layoutManager.findFirstCompletelyVisibleItemPosition();
-              documentImageBus.onNext(adapterData.get(position));
+              if (position != -1) {
+                documentImageBus.onNext(adapterData.get(position));
+              }
             }
           }
         }
@@ -242,7 +244,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
         if (e == null) {
 
-          adapterData.clear();
+          if (!list.isEmpty()) {
+            adapterData.clear();
+          }
           adapterData.addAll(list);
           if (!list.isEmpty()) {
             documentImageBus.onNext(list.get(0));
@@ -307,7 +311,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
     }
 
     @NonNull private PagerAdapter getPagerAdapter() {
-      if(document.getDocumentType() == DocumentType.OPMETINGEN) {
+      if (document.getDocumentType() == DocumentType.OPMETINGEN) {
         return new LocationDetailCurrentUserOpmetingAdapter(getView().getContext());
       } else {
 

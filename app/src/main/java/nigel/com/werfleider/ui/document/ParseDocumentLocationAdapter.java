@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 import flow.Flow;
@@ -20,6 +21,7 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentLocation;
 import nigel.com.werfleider.model.Yard;
+import nigel.com.werfleider.ui.location.LocationEditScreen;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -29,6 +31,9 @@ import static android.view.View.VISIBLE;
  */
 public class ParseDocumentLocationAdapter
     extends RecyclerView.Adapter<ParseDocumentLocationAdapter.ViewHolder> {
+
+  private final Context context;
+  private final View parent;
 
   @Inject ParseDocument document;
 
@@ -40,7 +45,9 @@ public class ParseDocumentLocationAdapter
 
   @Inject List<ParseDocumentLocation> locations;
 
-  public ParseDocumentLocationAdapter(final Context context) {
+  public ParseDocumentLocationAdapter(final Context context, View parent) {
+    this.context = context;
+    this.parent = parent;
 
     Mortar.inject(context, this);
   }
@@ -67,19 +74,22 @@ public class ParseDocumentLocationAdapter
     holder.delete.setVisibility(
         location.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);
 
-    holder.delete.setOnClickListener(v -> {
-      location.deleteEventually(e -> {
+    holder.edit.setVisibility(location.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);
 
-        if (e == null) {
-          System.out.println("ParseDocumentLocationAdapter.done");
-        } else {
-          e.printStackTrace();
-        }
-      });
+    holder.edit.setOnClickListener(
+        v -> flow.goTo(new LocationEditScreen(location, document, yard)));
 
-      locations.remove(position);
-      notifyItemRemoved(position);
-    });
+    holder.delete.setOnClickListener(v -> new SnackBar.Builder(context, parent).withMessage(
+        "Are you sure you want to delete this location?")
+        .withActionMessage("Delete")
+        .withTextColorId(R.color.green)
+        .withOnClickListener(token -> {
+          location.deleteEventually();
+
+          locations.remove(position);
+          notifyItemRemoved(position);
+        })
+        .show());
   }
 
   @Override public int getItemCount() {
@@ -96,6 +106,7 @@ public class ParseDocumentLocationAdapter
     @Bind(R.id.document_location_item_container) RelativeLayout mContainer;
 
     @Bind(R.id.document_location_item_delete) ImageView delete;
+    @Bind(R.id.document_location_item_edit) ImageView edit;
 
     public ViewHolder(final View itemView) {
 

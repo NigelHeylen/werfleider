@@ -118,13 +118,8 @@ import nigel.com.werfleider.model.Yard;
 
       document.pinInBackground();
 
-      document.saveEventually(e -> {
-
-        if(e == null){
-
-          flow.goBack();
-        }
-      });
+      document.saveEventually();
+      flow.goBack();
     }
   }
 }
