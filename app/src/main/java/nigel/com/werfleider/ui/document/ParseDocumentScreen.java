@@ -134,7 +134,7 @@ import static rx.schedulers.Schedulers.io;
 
     @Inject Context context;
 
-    @Inject List<ParseDocumentLocation> locations;
+    @Inject List<ParseDocumentLocation> adapterData;
 
     private ParseDocumentLocationAdapter adapter;
 
@@ -166,9 +166,9 @@ import static rx.schedulers.Schedulers.io;
 
           for (ParseDocumentLocation location : list) {
 
-            if (!locations.contains(location)) {
+            if (!adapterData.contains(location)) {
 
-              locations.add(location);
+              adapterData.add(location);
             }
 
           }
@@ -185,7 +185,14 @@ import static rx.schedulers.Schedulers.io;
         }
 
         if (getView() != null) {
-          getView().showLoader(false);
+
+          if(adapterData.isEmpty()){
+
+            getView().showEmptyView();
+          } else {
+
+            getView().showContentView();
+          }
         }
       });
     }
@@ -197,15 +204,11 @@ import static rx.schedulers.Schedulers.io;
       getView().locations.setAdapter(
           adapter = new ParseDocumentLocationAdapter(getView().getContext(), getView()));
 
-      if (document.getDocumentType() == OPMETINGEN) {
-        getView().addLocation.setTitle("Add post");
-      } else if (document.getDocumentType() == OPMERKINGEN) {
-        getView().addLocation.setTitle("Add opmerking");
-      }
+      getView().initEmptyView(document.getDocumentType());
 
       if (yard.getAuthor() != ParseUser.getCurrentUser()) {
 
-        getView().addLocation.setVisibility(GONE);
+        getView().loadingView.setVisibility(GONE);
       }
     }
 
@@ -221,8 +224,8 @@ import static rx.schedulers.Schedulers.io;
       location.pinInBackground(e -> {
 
         if (e == null) {
-          locations.add(location);
-          adapter.notifyItemInserted(locations.size() - 1);
+          adapterData.add(location);
+          adapter.notifyItemInserted(adapterData.size() - 1);
         }
       });
 
@@ -242,7 +245,7 @@ import static rx.schedulers.Schedulers.io;
           ParseQuery.getQuery(ParseDocumentImage.class)
               .fromLocalDatastore()
               .orderByAscending(CREATED_AT)
-              .whereContainedIn(LOCATION_ID, locations)
+              .whereContainedIn(LOCATION_ID, adapterData)
               .findInBackground((list, e) -> {
 
                 if (e == null) {
@@ -308,7 +311,7 @@ import static rx.schedulers.Schedulers.io;
         @Override public void call(final Subscriber<? super Boolean> subscriber) {
 
           ParseQuery.getQuery(ParseDocumentImage.class)
-              .whereContainedIn(LOCATION_ID, locations)
+              .whereContainedIn(LOCATION_ID, adapterData)
               .fromLocalDatastore().orderByAscending(CREATED_AT)
               .findInBackground(new FindCallback<ParseDocumentImage>() {
                 @Override

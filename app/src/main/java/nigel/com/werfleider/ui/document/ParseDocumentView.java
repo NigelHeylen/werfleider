@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
+import nigel.com.werfleider.model.DocumentType;
 
 /**
  * Created by nigel on 25/11/14.
@@ -24,13 +26,15 @@ public class ParseDocumentView extends FrameLayout {
 
   @Bind(R.id.document_locations) RecyclerView locations;
 
-  @Bind(R.id.document_loader) ProgressBarCircularIndeterminate loader;
+  @Bind(R.id.loading_view) ProgressBarCircularIndeterminate loadingView;
 
-  @Bind(R.id.document_add_location) AddFloatingActionButton addLocation;
+  @Bind(R.id.create_view) AddFloatingActionButton createView;
+
+  @Bind(R.id.empty_view) TextView emptyView;
 
   @Inject ActionBarOwner actionBarOwner;
 
-  @OnClick(R.id.document_add_location) public void newImageCollection() {
+  @OnClick(R.id.create_view) public void newImageCollection() {
 
     presenter.newImageCollection();
   }
@@ -65,6 +69,27 @@ public class ParseDocumentView extends FrameLayout {
   }
 
   public void showLoader(boolean show) {
-    loader.setVisibility(show ? VISIBLE : GONE);
+    loadingView.setVisibility(show ? VISIBLE : GONE);
+  }
+
+  public void showContentView() {
+
+    loadingView.setVisibility(GONE);
+    emptyView.setVisibility(GONE);
+    locations.setVisibility(VISIBLE);
+  }
+
+  public void showEmptyView() {
+
+    loadingView.setVisibility(GONE);
+    locations.setVisibility(GONE);
+    emptyView.setVisibility(VISIBLE);
+  }
+
+  public void initEmptyView(DocumentType documentType) {
+
+    emptyView.setText(documentType.getTextRes());
+    emptyView.setCompoundDrawablesWithIntrinsicBounds(null,
+        getContext().getDrawable(documentType.getDrawableRes()), null, null);
   }
 }

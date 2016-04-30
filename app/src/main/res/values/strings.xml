@@ -1,31 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Werfleider</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="tPlaatsbeschrijf">Plaatsbeschrijf</string>
-    <string name="tPlannen">Plannen</string>
-    <string name="tOpmetingen">Opmetingen</string>
-    <string name="tAfspraken">Afspraken</string>
-    <string name="tToDo">To do</string>
-    <string name="tTechnischeFiches">Technische Fiches</string>
-    <string name="tMails">Emails</string>
-    <string name="tBemerkingen">Bemerkingen</string>
-    <string name="tInvites">Invites</string>
-    <string name="tContacts">Contacts</string>
-    <string name="tInvitedYards">Invited Yards</string>
-    <string name="tMyYards">My Yards</string>
-    <string name="tOpenCamera">Click here to open your camera app.</string>
-    <string name="tSaved">Saved</string>
-    <string name="tNew">New</string>
-    <string name="tSave">Save</string>
-    <string name="tNoImagesYetPleaseAdd">This location doesn\'t have any images yet. Please click the button on the bottom right to add images.</string>
-    <string name="tGeneratePdf">Generate Pdf</string>
-    <string name="tLogOut">Log out</string>
-    <string name="tNoYardsFound">No yards where found. Create one by clicking the button on the
-        bottom right.
-    </string>
-    <string name="tNoInvitedYards">You haven\'t been invited to a yard.</string>
+  <string name="app_name">Werfleider</string>
+  <string name="hello_world">Hello world!</string>
+  <string name="action_settings">Settings</string>
+  <string name="tPlaatsbeschrijf">Plaatsbeschrijf</string>
+  <string name="tPlannen">Plannen</string>
+  <string name="tOpmetingen">Opmetingen</string>
+  <string name="tAfspraken">Afspraken</string>
+  <string name="tToDo">To do</string>
+  <string name="tTechnischeFiches">Technische Fiches</string>
+  <string name="tMails">Emails</string>
+  <string name="tBemerkingen">Bemerkingen</string>
+  <string name="tInvites">Invites</string>
+  <string name="tContacts">Contacts</string>
+  <string name="tInvitedYards">Invited Yards</string>
+  <string name="tMyYards">My Yards</string>
+  <string name="tOpenCamera">Click here to open your camera app.</string>
+  <string name="tSaved">Saved</string>
+  <string name="tNew">New</string>
+  <string name="tSave">Save</string>
+  <string name="tNoImagesYetPleaseAdd">This location doesn\'t have any images yet. Please click the
+    button on the bottom right to add images.
+  </string>
+  <string name="tGeneratePdf">Generate Pdf</string>
+  <string name="tLogOut">Log out</string>
+  <string name="tNoYardsFound">No yards were found. Create one by clicking the button on the
+    bottom right.
+  </string>
+  <string name="tNoInvitedYards">You haven\'t been invited to a yard.</string>
+  <string name="tNoDocumentsFound">No documents were found. Create one by clicking the button on the
+    bottom right.
+  </string>
+  <string name="tNoContactsFound">No contacts were found. Please add contacts through the home
+    screen.
+  </string>
+  <string name="tNoLocationsFound">No locations were found. Create one by clicking the button on the
+    bottom right.</string>
+  <string name="tNoRemarksFound">No remarks were found. Create one by clicking the button on the
+    bottom right.</string>
+  <string name="tNoPostsFound">No posts were found. Create one by clicking the button on the
+    bottom right.</string>
 
 </resources>

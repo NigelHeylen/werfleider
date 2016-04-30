@@ -1,5 +1,6 @@
 package nigel.com.werfleider.ui.werf;
 
+import android.os.Bundle;
 import com.parse.ParseUser;
 import dagger.Provides;
 import flow.Layout;
@@ -81,11 +82,20 @@ import static com.google.common.collect.Lists.newArrayList;
 
   @Singleton static class InviteContactsPresenter extends ReactiveViewPresenter<InviteContactsView> {
 
-    @Inject public InviteContactsPresenter() {
-    }
+    @Inject @Named(CONTACTS) List<ParseUser> contacts;
 
-    public void handleRefresh() {
+    @Override protected void onLoad(Bundle savedInstanceState) {
+      super.onLoad(savedInstanceState);
 
+      if(getView() == null) return;
+
+      if(contacts.isEmpty()){
+
+        getView().showEmptyView();
+      } else {
+
+        getView().showContentView();
+      }
     }
   }
 }

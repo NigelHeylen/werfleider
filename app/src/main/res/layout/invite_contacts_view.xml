@@ -4,16 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/invite.contacts.swipe.to.refresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/invite.contacts.recycler.view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-    </android.support.v4.widget.SwipeRefreshLayout>
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/invite.contacts.recycler.view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+  />
+
+  <include layout="@layout/loading_view"/>
+
+  <TextView android:id="@+id/empty.view"
+      android:drawableTop="@drawable/ic_contacts_large"
+      android:text="@string/tNoContactsFound" style="@style/Empty.View"/>
 
 </nigel.com.werfleider.ui.werf.InviteContactsView>

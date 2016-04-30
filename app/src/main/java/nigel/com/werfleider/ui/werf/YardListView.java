@@ -23,7 +23,7 @@ public class YardListView extends FrameLayout {
 
   @Bind(R.id.yard_list) RecyclerView werfList;
 
-  @Bind(R.id.yard_create) AddFloatingActionButton create;
+  @Bind(R.id.create_view) AddFloatingActionButton create;
 
   @Bind(R.id.loading_view) ProgressBarCircularIndeterminate loadingView;
 
@@ -56,7 +56,7 @@ public class YardListView extends FrameLayout {
     ButterKnife.unbind(this);
   }
 
-  @OnClick(R.id.yard_create) public void createWerf() {
+  @OnClick(R.id.create_view) public void createWerf() {
 
     presenter.handleCreate();
   }

@@ -4,7 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -18,50 +19,63 @@ import nigel.com.werfleider.model.DocumentType;
 /**
  * Created by nigel on 17/04/15.
  */
-public class ParseDocumentOverviewView extends RelativeLayout {
+public class ParseDocumentOverviewView extends FrameLayout {
 
-    @Inject ParseDocumentOverviewPresenter presenter;
+  @Inject ParseDocumentOverviewPresenter presenter;
 
-    @Bind(R.id.document_overview_list) RecyclerView documentList;
+  @Bind(R.id.document_overview_list) RecyclerView documentList;
 
-    @Bind(R.id.document_overview_loader) ProgressBarCircularIndeterminate loader;
+  @Bind(R.id.loading_view) ProgressBarCircularIndeterminate loadingView;
 
-    @Bind(R.id.document_overview_create_button) AddFloatingActionButton create;
+  @Bind(R.id.empty_view) TextView emptyView;
 
-    @OnClick(R.id.document_overview_create_button)
-    public void onClick(){
-        presenter.handleCreateClick();
+  @Bind(R.id.create_view) AddFloatingActionButton create;
+
+  @OnClick(R.id.create_view) public void onClick() {
+    presenter.handleCreateClick();
+  }
+
+  public ParseDocumentOverviewView(final Context context, final AttributeSet attrs) {
+    super(context, attrs);
+    if (!isInEditMode()) Mortar.inject(context, this);
+  }
+
+  @Override protected void onFinishInflate() {
+    super.onFinishInflate();
+    if(!isInEditMode()) {
+      ButterKnife.bind(this);
+      presenter.takeView(this);
+
+      documentList.setLayoutManager(new LinearLayoutManager(getContext()));
     }
+  }
 
-    public ParseDocumentOverviewView(final Context context, final AttributeSet attrs) {
-        super(
-                context,
-                attrs);
-        Mortar.inject(
-                context,
-                this);
-    }
+  @Override protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    presenter.dropView(this);
+    ButterKnife.unbind(this);
+  }
 
-    @Override protected void onFinishInflate() {
-        super.onFinishInflate();
-        ButterKnife.bind(this);
-        presenter.takeView(this);
+  public void setAdapter(final RecyclerView.Adapter adapter) {
+    documentList.setAdapter(adapter);
+  }
 
-        documentList.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
+  public void setDocumentType(final DocumentType documentType) {
 
-    @Override protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        presenter.dropView(this);
-        ButterKnife.unbind(this);
-    }
+    presenter.setDocumentType(documentType);
+  }
 
-    public void setAdapter(final RecyclerView.Adapter adapter) {
-        documentList.setAdapter(adapter);
-    }
+  public void showContentView() {
 
-    public void setDocumentType(final DocumentType documentType) {
+    loadingView.setVisibility(GONE);
+    emptyView.setVisibility(GONE);
+    documentList.setVisibility(VISIBLE);
+  }
 
-        presenter.setDocumentType(documentType);
-    }
+  public void showEmptyView() {
+
+    loadingView.setVisibility(GONE);
+    emptyView.setVisibility(VISIBLE);
+    documentList.setVisibility(GONE);
+  }
 }

@@ -120,15 +120,19 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
           if (load == LOCAL) {
             loadData(NETWORK);
           }
+        } else {
+          e.printStackTrace();
+        }
 
-          if (adapterData.isEmpty()) {
+        if (getView() != null) {
+
+          if(adapterData.isEmpty()){
+
             getView().showEmptyView();
           } else {
 
             getView().showContentView();
           }
-        } else {
-          e.printStackTrace();
         }
       });
     }

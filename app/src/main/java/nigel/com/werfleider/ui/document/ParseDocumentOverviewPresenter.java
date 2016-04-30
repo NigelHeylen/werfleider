@@ -34,14 +34,14 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   @Inject Flow flow;
 
-  final List<ParseDocument> parseDocuments = newArrayList();
+  final List<ParseDocument> adapterData = newArrayList();
 
   private ParseDocumentOverviewAdapter adapter;
 
   private void loadData() {
 
     getView().setAdapter(adapter =
-        new ParseDocumentOverviewAdapter(getView().getContext(), parseDocuments, getView()));
+        new ParseDocumentOverviewAdapter(getView().getContext(), adapterData, getView()));
 
     if (yard.getAuthor() != ParseUser.getCurrentUser()) {
 
@@ -68,9 +68,9 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
             for (ParseDocument doc : list) {
 
-              if (!parseDocuments.contains(doc)) {
+              if (!adapterData.contains(doc)) {
 
-                parseDocuments.add(doc);
+                adapterData.add(doc);
               }
             }
 
@@ -87,7 +87,14 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
           }
 
           if (getView() != null) {
-            getView().loader.setVisibility(GONE);
+
+            if(adapterData.isEmpty()){
+
+              getView().showEmptyView();
+            } else {
+
+              getView().showContentView();
+            }
           }
         });
   }
