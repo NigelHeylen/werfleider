@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManagerEx;
 import android.support.v7.widget.OrientationHelperEx;
 import android.support.v7.widget.RecyclerViewEx;
 import android.view.View;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -36,6 +37,7 @@ import static java.lang.String.format;
 import static nigel.com.werfleider.commons.load.Load.LOCAL;
 import static nigel.com.werfleider.commons.load.Load.NETWORK;
 import static nigel.com.werfleider.commons.recyclerview.Action.INSERT;
+import static nigel.com.werfleider.util.ParseStringUtils.CREATED_AT;
 import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
 /**
@@ -160,9 +162,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
       initSubscriptions();
 
-      if (adapterData.isEmpty()) {
-        getImages(LOCAL);
-      }
+      loadData(LOCAL);
 
       if (location.getAuthor() != ParseUser.getCurrentUser()) {
         disableViews();
@@ -211,7 +211,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
     private void disableViews() {
 
-      getView().actionsMenu.setVisibility(GONE);
+      getView().addImages.setVisibility(GONE);
 
       //for (MaterialEditText editText : getView().editTexts) {
       //
@@ -231,7 +231,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
       //editText.setInputType(TYPE_NULL);
     }
 
-    private void getImages(final Load load) {
+    private void loadData(final Load load) {
 
       final ParseQuery<ParseDocumentImage> query = ParseQuery.getQuery(ParseDocumentImage.class);
 
@@ -240,29 +240,43 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
         query.fromLocalDatastore();
       }
 
-      query.whereEqualTo(LOCATION_ID, location).findInBackground((list, e) -> {
+      query.orderByAscending(CREATED_AT).whereEqualTo(LOCATION_ID, location).findInBackground((list, e) -> {
 
         if (e == null) {
 
-          if (!list.isEmpty()) {
-            adapterData.clear();
+          for (ParseDocumentImage image : list) {
+
+            if (!adapterData.contains(image)) {
+
+              adapterData.add(image);
+            }
           }
-          adapterData.addAll(list);
-          if (!list.isEmpty()) {
-            documentImageBus.onNext(list.get(0));
+          ParseObject.pinAllInBackground(list);
+          adapter.notifyDataSetChanged();
+
+          if (!adapterData.isEmpty()) {
+            documentImageBus.onNext(adapterData.get(0));
+
+            getView().showContentView();
+          } else {
+
+            if (getView() != null) {
+
+              getView().showEmptyView();
+            }
           }
 
           if (load == LOCAL) {
 
-            getImages(NETWORK);
+            loadData(NETWORK);
           }
 
-          adapter.notifyDataSetChanged();
+          if(getView() != null){
+
+            getView().imageList.scrollToPosition(0);
+          }
         } else {
           e.printStackTrace();
-        }
-        if (getView() != null) {
-          getView().progressBar.setVisibility(GONE);
         }
       });
     }
@@ -273,19 +287,10 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
           isNullOrEmpty(location.getTitle()) ? "Location" : location.getTitle(), null));
     }
 
-    public void handleSave() {
-
-      for (ParseDocumentImage parseDocumentImage : adapterData.getList()) {
-        parseDocumentImage.saveEventually();
-      }
-
-      getView().progressBar.setVisibility(GONE);
-    }
-
     public void initAdapter() {
 
-      getView().imageList.setAdapter(adapter =
-          new DocumentImageListItemAdapter(getView().getContext(), getView().progressBar));
+      getView().imageList.setAdapter(
+          adapter = new DocumentImageListItemAdapter(getView().getContext()));
       getView().detailViews.setAdapter(getPagerAdapter());
       getView().detailViews.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
         @Override
@@ -297,10 +302,10 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
           if (document.getDocumentType() == DocumentType.OPMETINGEN) {
 
-            getView().actionsMenu.setVisibility(position == 3 ? GONE : View.VISIBLE);
+            getView().addImages.setVisibility(position == 3 ? GONE : View.VISIBLE);
           } else {
 
-            getView().actionsMenu.setVisibility(position == 2 ? GONE : View.VISIBLE);
+            getView().addImages.setVisibility(position == 2 ? GONE : View.VISIBLE);
           }
         }
 
@@ -322,6 +327,15 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
     public void handleEdit() {
 
       flow.goTo(new ParsePictureGridScreen(document, location, yard));
+    }
+
+    @Override protected void onExitScope() {
+      super.onExitScope();
+
+      for (ParseDocumentImage parseDocumentImage : adapterData.getList()) {
+
+        parseDocumentImage.saveEventually();
+      }
     }
   }
 }

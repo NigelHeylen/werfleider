@@ -26,15 +26,4 @@
         app:fab_icon="@drawable/ic_save"
         app:fab_title="Save locatie"/>
 
-
-    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
-        android:id="@+id/picture.grid.progress"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:visibility="gone"
-        android:background="#1E88E5" />
-
 </nigel.com.werfleider.ui.document.ParsePictureGridView>

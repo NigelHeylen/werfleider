@@ -18,6 +18,7 @@ package nigel.com.werfleider.android;
 import android.content.Context;
 import android.os.Bundle;
 
+import android.support.annotation.DrawableRes;
 import mortar.Mortar;
 import mortar.MortarScope;
 import mortar.Presenter;
@@ -59,10 +60,12 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
   public static class MenuAction {
     public final CharSequence title;
     public final Action0 action;
+    @DrawableRes public final int drawableRes;
 
-    public MenuAction(CharSequence title, Action0 action) {
+    public MenuAction(CharSequence title, Action0 action, int drawableRes) {
       this.title = title;
       this.action = action;
+      this.drawableRes = drawableRes;
     }
   }
 

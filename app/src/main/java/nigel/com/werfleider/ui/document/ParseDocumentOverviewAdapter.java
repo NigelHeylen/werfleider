@@ -79,9 +79,11 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
         .withTextColorId(R.color.green)
         .withOnClickListener(token -> {
           document.deleteEventually();
+          document.unpinInBackground();
 
           documents.remove(position);
           notifyItemRemoved(position);
+          notifyDataSetChanged();
         })
         .show());
   }

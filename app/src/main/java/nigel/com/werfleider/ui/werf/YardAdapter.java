@@ -68,9 +68,11 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
             .withOnClickListener(token -> {
 
               werf.deleteEventually();
+              werf.unpinInBackground();
               yards.remove(werf);
 
               notifyItemRemoved(position);
+              notifyDataSetChanged();
             })
             .show());
   }

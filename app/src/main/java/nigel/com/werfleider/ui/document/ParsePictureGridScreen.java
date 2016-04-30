@@ -10,7 +10,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import butterknife.ButterKnife;
-import com.parse.ParseObject;
+import com.google.common.collect.Iterables;
 import com.parse.ParseUser;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import dagger.Provides;
@@ -39,7 +39,6 @@ import rx.Observable;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
-import static rx.schedulers.Schedulers.computation;
 import static rx.schedulers.Schedulers.io;
 
 /**
@@ -243,23 +242,17 @@ import static rx.schedulers.Schedulers.io;
 
     private void saveImages() {
 
-      subscribe(Observable.from(indices)
-          .map(index -> new ParseDocumentImage().setAuthor(ParseUser.getCurrentUser())
+      final Iterable<ParseDocumentImage> documentImages = Iterables.transform(indices,
+          index -> new ParseDocumentImage().setAuthor(ParseUser.getCurrentUser())
               .setLocationId(location)
               .setImageURL(images.get(index).getImageURL())
               .setImageBytes(ImageUtils.getBytesFromFilePath(images.get(index).getImageURL()))
-              .setImageTakenDate(images.get(index).getCreatedDate()))
-          .toList()
-          .doOnNext(ParseObject::pinAllInBackground)
-          .flatMap(Observable::from)
-          .doOnNext(ParseObject::saveEventually)
-          .toList()
-          .subscribeOn(computation())
-          .observeOn(mainThread())
-          .subscribe(list -> {
-            flow.goTo(new LocationDetailScreen(document, yard, location));
-            getView().progress.setVisibility(View.GONE);
-          }));
+              .setImageTakenDate(images.get(index).getCreatedDate()));
+      for (ParseDocumentImage documentImage : documentImages) {
+
+        documentImage.saveEventually();
+        documentImage.pinInBackground();
+      }
     }
 
     private void initTextFields() {
@@ -319,11 +312,9 @@ import static rx.schedulers.Schedulers.io;
 
     public void handleSave() {
 
+      location.saveEventually();
       saveImages();
-      location.pinInBackground(e -> {
-
-        location.saveEventually();
-      });
+      flow.goTo(new LocationDetailScreen(document, yard, location));
     }
   }
 }

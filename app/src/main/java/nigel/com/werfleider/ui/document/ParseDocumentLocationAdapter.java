@@ -85,9 +85,11 @@ public class ParseDocumentLocationAdapter
         .withTextColorId(R.color.green)
         .withOnClickListener(token -> {
           location.deleteEventually();
+          location.unpinInBackground();
 
           locations.remove(position);
           notifyItemRemoved(position);
+          notifyDataSetChanged();
         })
         .show());
   }

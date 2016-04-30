@@ -5,77 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+  <LinearLayout
+      android:id="@+id/content.view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+
+    <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
+        android:id="@+id/document.image.list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
-            android:id="@+id/document.image.list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.5"
-            />
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+    />
 
 
-        <com.astuetz.PagerSlidingTabStrip
-            android:id="@+id/document.image.detail.tabs"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"/>
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/document.image.detail.tabs"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"/>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/document.image.detail.views"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.5"
-            />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/document.image.detail.views"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+    />
 
-    </LinearLayout>
+  </LinearLayout>
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/document.menu.button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        fab:fab_colorNormal="@color/accent"
-        fab:fab_labelStyle="@style/menu_labels_style"
-        fab:fab_labelsPosition="left">
+  <com.getbase.floatingactionbutton.AddFloatingActionButton
+      android:id="@+id/document.add.images"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom|end"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginRight="16dp"
+      fab:fab_colorNormal="@color/primary"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/document.edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_edit"
-            fab:fab_title="Add pictures"/>
-
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/document.save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/accent"
-            fab:fab_icon="@drawable/ic_save"
-            fab:fab_title="Save location"/>
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
-
-    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
-        android:id="@+id/location.saver"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:visibility="visible"
-        android:background="#1E88E5" />
+  <TextView
+      android:id="@+id/empty.view"
+      android:drawableTop="@drawable/ic_camera_black"
+      style="@style/Empty.View"
+      android:text="@string/tNoImagesYetPleaseAdd"
+  />
 
 </nigel.com.werfleider.ui.document.LocationDetailView>

@@ -1,7 +1,6 @@
 package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
-import android.widget.Toast;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -18,6 +17,7 @@ import static android.view.View.GONE;
 import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.commons.load.Load.LOCAL;
 import static nigel.com.werfleider.commons.load.Load.NETWORK;
+import static nigel.com.werfleider.util.ParseStringUtils.CREATED_AT;
 import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_TYPE;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_ID;
 
@@ -60,7 +60,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
       query.fromLocalDatastore();
     }
 
-    query.whereEqualTo(YARD_ID, yard)
+    query.whereEqualTo(YARD_ID, yard).orderByAscending(CREATED_AT)
         .whereEqualTo(DOCUMENT_TYPE, documentType.name())
         .findInBackground((list, e) -> {
 
@@ -74,8 +74,9 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
               }
             }
 
-            ParseObject.pinAllInBackground(parseDocuments);
             adapter.notifyDataSetChanged();
+
+            ParseObject.pinAllInBackground(list);
 
             if (load == LOCAL) {
 

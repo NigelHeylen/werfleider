@@ -20,5 +20,12 @@
     <string name="tSaved">Saved</string>
     <string name="tNew">New</string>
     <string name="tSave">Save</string>
+    <string name="tNoImagesYetPleaseAdd">This location doesn\'t have any images yet. Please click the button on the bottom right to add images.</string>
+    <string name="tGeneratePdf">Generate Pdf</string>
+    <string name="tLogOut">Log out</string>
+    <string name="tNoYardsFound">No yards where found. Create one by clicking the button on the
+        bottom right.
+    </string>
+    <string name="tNoInvitedYards">You haven\'t been invited to a yard.</string>
 
 </resources>

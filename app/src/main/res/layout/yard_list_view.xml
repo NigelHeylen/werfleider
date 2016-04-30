@@ -6,22 +6,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/yard.list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/yard.list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
 
-    <com.getbase.floatingactionbutton.AddFloatingActionButton
-        android:id="@+id/yard.create"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        fab:fab_colorNormal="@color/primary"/>
+  <com.getbase.floatingactionbutton.AddFloatingActionButton
+      android:id="@+id/yard.create"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginRight="16dp"
+      android:layout_gravity="bottom|right"
+      fab:fab_colorNormal="@color/primary"/>
+
+
+  <include layout="@layout/loading_view"/>
+
+  <TextView android:id="@id/empty.view"
+      android:drawableTop="@drawable/ic_yard"
+      android:text="@string/tNoYardsFound" style="@style/Empty.View"/>
 
 </nigel.com.werfleider.ui.werf.YardListView>

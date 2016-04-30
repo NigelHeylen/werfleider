@@ -1,14 +1,14 @@
 package nigel.com.werfleider.ui.document;
 
+import android.Manifest;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.squareup.picasso.Picasso;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -18,41 +18,37 @@ import nigel.com.werfleider.R;
  */
 public class ParsePictureGridView extends RelativeLayout {
 
-    @Inject ParsePictureGridScreen.Presenter presenter;
+  @Inject ParsePictureGridScreen.Presenter presenter;
 
-    @Inject Picasso pablo;
+  @Bind(R.id.picture_grid) RecyclerView grid;
 
-    @Bind(R.id.picture_grid) RecyclerView grid;
+  @OnClick(R.id.picture_grid_save) public void save() {
 
-    @Bind(R.id.picture_grid_progress) ProgressBarCircularIndeterminate progress;
+    presenter.handleSave();
+  }
 
-    @OnClick(R.id.picture_grid_save)
-    public void save() {
+  public ParsePictureGridView(final Context context, final AttributeSet attrs) {
 
-        progress.setVisibility(VISIBLE);
-        presenter.handleSave();
-    }
+    super(context, attrs);
+    Mortar.inject(context, this);
+  }
 
-    public ParsePictureGridView(final Context context, final AttributeSet attrs) {
+  @Override protected void onFinishInflate() {
 
-        super(
-                context,
-                attrs);
-        Mortar.inject(
-                context,
-                this);
-    }
+    super.onFinishInflate();
+    ButterKnife.bind(this);
+    RxPermissions.getInstance(getContext())
+        .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+        .filter(aBoolean -> aBoolean)
+        .subscribe(aBoolean -> {
+          presenter.takeView(ParsePictureGridView.this);
+        });
 
-    @Override protected void onFinishInflate() {
+  }
 
-        super.onFinishInflate();
-        ButterKnife.bind(this);
-        presenter.takeView(this);
-    }
-
-    @Override protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        presenter.dropView(this);
-        ButterKnife.unbind(this);
-    }
+  @Override protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    presenter.dropView(this);
+    ButterKnife.unbind(this);
+  }
 }

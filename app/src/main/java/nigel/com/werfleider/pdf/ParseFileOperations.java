@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import javax.inject.Inject;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
@@ -211,9 +212,9 @@ public class ParseFileOperations {
           table.setWidthPercentage(100);
 
           final Image image;
-          if(documentImage.hasImage()) {
+          if (documentImage.hasImage()) {
             image = Image.getInstance(documentImage.getImage().getData());
-          } else if(documentImage.hasImageBytes()){
+          } else if (documentImage.hasImageBytes()) {
 
             image = Image.getInstance(documentImage.getImageBytes());
           } else {
@@ -226,13 +227,13 @@ public class ParseFileOperations {
           final PdfPCell descriptionCell = new PdfPCell();
 
           descriptionCell.addElement(new Phrase(
-                  format("%s\n%s\n\n", documentImage.getFloor(), documentImage.getLocation())));
+              format("%s\n%s\n\n", documentImage.getFloor(), documentImage.getLocation())));
           descriptionCell.addElement(new Phrase(
-                  isNullOrEmpty(documentImage.getTitle()) ? documentImage.getTitle()
-                      : format("%s\n", documentImage.getTitle())));
+              isNullOrEmpty(documentImage.getTitle()) ? documentImage.getTitle()
+                  : format("%s\n", documentImage.getTitle())));
           descriptionCell.addElement(new Phrase(documentImage.getDescription()));
-          descriptionCell.addElement(new Phrase(format("\n\nGenomen op %s\nImage %d",
-                  new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT), index)));
+          descriptionCell.addElement(new Phrase(format(Locale.ENGLISH, "\n\nGenomen op %s\nImage %d",
+              new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT), index)));
 
           table.addCell(descriptionCell);
 

@@ -124,12 +124,11 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
     if (actionBarMenuAction != null) {
       menu.add(actionBarMenuAction.title)
           .setShowAsActionFlags(SHOW_AS_ACTION_ALWAYS)
-          .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override public boolean onMenuItemClick(MenuItem menuItem) {
-                  actionBarMenuAction.action.call();
-                  return true;
-                }
-              });
+          .setIcon(actionBarMenuAction.drawableRes)
+          .setOnMenuItemClickListener(menuItem -> {
+            actionBarMenuAction.action.call();
+            return true;
+          });
     }
     return true;
   }

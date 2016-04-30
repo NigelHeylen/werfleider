@@ -2,7 +2,6 @@ package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerViewEx;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
@@ -21,23 +19,17 @@ import nigel.com.werfleider.util.ImageUtils;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Created by nigel on 24/01/15.
  */
 public class DocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
 
-  private final ProgressBarCircularIndeterminate progressBar;
-
   @Inject Picasso pablo;
 
   @Inject DocumentImageAdapterData adapterData;
 
-  public DocumentImageListItemAdapter(final Context context,
-      final ProgressBarCircularIndeterminate progressBar) {
-
-    this.progressBar = progressBar;
+  public DocumentImageListItemAdapter(final Context context) {
 
     Mortar.inject(context, this);
   }
@@ -74,25 +66,12 @@ public class DocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
 
     holder.delete.setOnClickListener(v -> {
 
-      progressBar.setVisibility(VISIBLE);
-      if (isNullOrEmpty(image.getObjectId())) {
+      image.deleteEventually();
+      image.unpinInBackground();
+      adapterData.remove(image);
 
-        adapterData.remove(image);
-        notifyItemRemoved(position);
-        progressBar.setVisibility(GONE);
-      } else {
-        image.deleteInBackground(e -> {
-
-          if (e != null) {
-            e.printStackTrace();
-          } else {
-            adapterData.remove(image);
-            notifyItemRemoved(position);
-          }
-
-          progressBar.setVisibility(GONE);
-        });
-      }
+      notifyItemRemoved(position);
+      notifyDataSetChanged();
     });
   }
 
@@ -102,13 +81,9 @@ public class DocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
 
   static class ViewHolder extends RecyclerViewEx.ViewHolder {
 
-    @Bind(R.id.document_image_list_container) CardView container;
-
     @Bind(R.id.document_image_list_image) ImageView image;
 
     @Bind(R.id.document_image_list_image_delete) ImageView delete;
-
-    @Bind(R.id.document_image_list_image_active) ImageView active;
 
     public ViewHolder(final View itemView) {
       super(itemView);

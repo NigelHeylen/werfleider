@@ -29,7 +29,6 @@ public class AudioUtils {
       e.printStackTrace();
     }
 
-    System.out.println("bytes.length = " + bytes.length);
     return bytes;
   }
 

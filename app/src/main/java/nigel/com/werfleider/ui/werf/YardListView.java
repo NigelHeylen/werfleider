@@ -4,10 +4,13 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -16,25 +19,34 @@ import nigel.com.werfleider.R;
 /**
  * Created by nigel on 31/01/15.
  */
-public class YardListView extends RelativeLayout {
+public class YardListView extends FrameLayout {
 
   @Bind(R.id.yard_list) RecyclerView werfList;
 
   @Bind(R.id.yard_create) AddFloatingActionButton create;
+
+  @Bind(R.id.loading_view) ProgressBarCircularIndeterminate loadingView;
+
+  @Bind(R.id.empty_view) TextView emptyView;
+
+  @BindString(R.string.tNoInvitedYards) String tNoInvitedYards;
 
   @Inject YardListScreen.Presenter presenter;
 
   public YardListView(final Context context, final AttributeSet attrs) {
 
     super(context, attrs);
-    Mortar.inject(context, this);
+    if (!isInEditMode()) Mortar.inject(context, this);
   }
 
   @Override protected void onFinishInflate() {
 
     super.onFinishInflate();
-    ButterKnife.bind(this);
-    presenter.takeView(this);
+    if(!isInEditMode()) {
+      ButterKnife.bind(this);
+      presenter.takeView(this);
+
+    }
   }
 
   @Override protected void onDetachedFromWindow() {
@@ -59,5 +71,24 @@ public class YardListView extends RelativeLayout {
 
   public void setYardType(YardType yardType) {
     presenter.setYardType(yardType);
+
+    if(yardType == YardType.INVITED){
+
+      emptyView.setText(tNoInvitedYards);
+    }
+  }
+
+  public void showContentView() {
+
+    loadingView.setVisibility(GONE);
+    emptyView.setVisibility(GONE);
+    werfList.setVisibility(VISIBLE);
+  }
+
+  public void showEmptyView() {
+
+    loadingView.setVisibility(GONE);
+    emptyView.setVisibility(VISIBLE);
+    werfList.setVisibility(GONE);
   }
 }

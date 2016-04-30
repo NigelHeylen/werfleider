@@ -21,7 +21,6 @@ import javax.inject.Singleton;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.commons.recyclerview.DividerItemDecoration;
 import nigel.com.werfleider.core.CorePresenter;
@@ -44,6 +43,7 @@ import static nigel.com.werfleider.commons.load.Load.LOCAL;
 import static nigel.com.werfleider.commons.load.Load.NETWORK;
 import static nigel.com.werfleider.model.DocumentType.OPMERKINGEN;
 import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
+import static nigel.com.werfleider.util.ParseStringUtils.CREATED_AT;
 import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_ID;
 import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
@@ -128,8 +128,6 @@ import static rx.schedulers.Schedulers.io;
 
     @Inject ParseDocument document;
 
-    @Inject ActionBarOwner actionBarOwner;
-
     @Inject @MainScope Flow flow;
 
     @Inject Yard yard;
@@ -147,9 +145,6 @@ import static rx.schedulers.Schedulers.io;
         return;
       }
 
-      actionBarOwner.setConfig(
-          new ActionBarOwner.Config(false, true, document.getDocumentType().toString(), null));
-
       initView();
 
       loadData(LOCAL);
@@ -165,35 +160,34 @@ import static rx.schedulers.Schedulers.io;
         query.fromLocalDatastore();
       }
 
-      query.whereEqualTo(DOCUMENT_ID, document)
-          .findInBackground(new FindCallback<ParseDocumentLocation>() {
-                @Override
-                public void done(final List<ParseDocumentLocation> list, final ParseException e) {
+      query.orderByAscending(CREATED_AT).whereEqualTo(DOCUMENT_ID, document).findInBackground((list, e) -> {
 
-                  if (e == null) {
+        if (e == null) {
 
-                    for (ParseDocumentLocation location : list) {
+          for (ParseDocumentLocation location : list) {
 
-                      if (!locations.contains(location)) {
+            if (!locations.contains(location)) {
 
-                        locations.add(location);
-                      }
-                    }
-                    ParseObject.pinAllInBackground(list);
-                    adapter.notifyDataSetChanged();
+              locations.add(location);
+            }
 
-                    if (load == LOCAL) {
+          }
 
-                      loadData(NETWORK);
-                    }
-                  } else {
-                    e.printStackTrace();
-                  }
-                  if (getView() != null) {
-                    getView().showLoader(false);
-                  }
-                }
-              });
+          ParseObject.pinAllInBackground(list);
+          adapter.notifyDataSetChanged();
+
+          if (load == LOCAL) {
+
+            loadData(NETWORK);
+          }
+        } else {
+          e.printStackTrace();
+        }
+
+        if (getView() != null) {
+          getView().showLoader(false);
+        }
+      });
     }
 
     private void initView() {
@@ -237,144 +231,141 @@ import static rx.schedulers.Schedulers.io;
       flow.goTo(new ParsePictureGridScreen(document, location, yard));
     }
 
-    public void write() {
+    public void generatePdf() {
 
       getView().showLoader(true);
 
       Observable.create(new Observable.OnSubscribe<Boolean>() {
 
-            @Override public void call(final Subscriber<? super Boolean> subscriber) {
+        @Override public void call(final Subscriber<? super Boolean> subscriber) {
 
-              ParseQuery.getQuery(ParseDocumentImage.class)
-                  .whereContainedIn(LOCATION_ID, locations)
-                  .fromLocalDatastore()
-                  .findInBackground(new FindCallback<ParseDocumentImage>() {
-                        @Override public void done(final List<ParseDocumentImage> list,
-                            final ParseException e) {
+          ParseQuery.getQuery(ParseDocumentImage.class)
+              .fromLocalDatastore()
+              .orderByAscending(CREATED_AT)
+              .whereContainedIn(LOCATION_ID, locations)
+              .findInBackground((list, e) -> {
 
-                          if (e == null) {
+                if (e == null) {
 
-                            final Multimap<ParseDocumentLocation, ParseDocumentImage>
-                                documentImageMultiMap = ArrayListMultimap.create();
+                  final Multimap<ParseDocumentLocation, ParseDocumentImage> documentImageMultiMap =
+                      ArrayListMultimap.create();
 
-                            for (ParseDocumentImage parseDocumentImage : list) {
+                  for (ParseDocumentImage parseDocumentImage : list) {
 
-                              documentImageMultiMap.put(
-                                  (ParseDocumentLocation) parseDocumentImage.getLocationId(),
-                                  parseDocumentImage);
-                            }
+                    documentImageMultiMap.put(
+                        (ParseDocumentLocation) parseDocumentImage.getLocationId(),
+                        parseDocumentImage);
+                  }
 
-                            final boolean finished =
-                                fop.write(document, yard, documentImageMultiMap);
-                            if (finished) {
-                              subscriber.onNext(true);
-                            } else {
-                              subscriber.onError(new IOException("Writing to pdf failed"));
-                            }
-                            subscriber.onCompleted();
-                          } else {
-                            e.printStackTrace();
-                            subscriber.onError(e);
-                          }
-
-                          subscriber.onNext(true);
-                        }
-                      });
-            }
-          }).subscribeOn(io()).observeOn(mainThread()).subscribe(new Observer<Boolean>() {
-            @Override public void onCompleted() {
-
-              showToast(document.getDocumentType().toString() + ".pdf created");
-
-              if (document.getDocumentType() == OPMETINGEN) {
-                writeMeasurementsDocument();
-              } else {
-                if (getView() != null) {
-                  getView().showLoader(false);
+                  final boolean finished = fop.write(document, yard, documentImageMultiMap);
+                  if (finished) {
+                    subscriber.onNext(true);
+                  } else {
+                    subscriber.onError(new IOException("Writing to pdf failed"));
+                  }
+                  subscriber.onCompleted();
+                } else {
+                  e.printStackTrace();
+                  subscriber.onError(e);
                 }
-              }
+
+                subscriber.onNext(true);
+              });
+        }
+      }).subscribeOn(io()).observeOn(mainThread()).subscribe(new Observer<Boolean>() {
+        @Override public void onCompleted() {
+
+          showToast(document.getDocumentType().toString() + ".pdf created");
+
+          if (document.getDocumentType() == OPMETINGEN) {
+            writeMeasurementsDocument();
+          } else {
+            if (getView() != null) {
+              getView().showLoader(false);
             }
+          }
+        }
 
-            @Override public void onError(final Throwable e) {
+        @Override public void onError(final Throwable e) {
 
-              e.printStackTrace();
-              showToast("Something went wrong");
-              if (getView() != null) {
-                getView().showLoader(false);
-              }
-            }
+          e.printStackTrace();
+          showToast("Something went wrong");
+          if (getView() != null) {
+            getView().showLoader(false);
+          }
+        }
 
-            @Override public void onNext(final Boolean aBoolean) {
+        @Override public void onNext(final Boolean aBoolean) {
 
-            }
-          });
+        }
+      });
     }
 
     private void writeMeasurementsDocument() {
 
       Observable.create(new Observable.OnSubscribe<Boolean>() {
 
-            @Override public void call(final Subscriber<? super Boolean> subscriber) {
+        @Override public void call(final Subscriber<? super Boolean> subscriber) {
 
-              ParseQuery.getQuery(ParseDocumentImage.class)
-                  .whereContainedIn(LOCATION_ID, locations)
-                  .fromLocalDatastore()
-                  .findInBackground(new FindCallback<ParseDocumentImage>() {
-                        @Override public void done(final List<ParseDocumentImage> list,
-                            final ParseException e) {
+          ParseQuery.getQuery(ParseDocumentImage.class)
+              .whereContainedIn(LOCATION_ID, locations)
+              .fromLocalDatastore().orderByAscending(CREATED_AT)
+              .findInBackground(new FindCallback<ParseDocumentImage>() {
+                @Override
+                public void done(final List<ParseDocumentImage> list, final ParseException e) {
 
-                          if (e == null) {
+                  if (e == null) {
 
-                            final Multimap<ParseDocumentLocation, ParseDocumentImage>
-                                documentImageMultiMap = ArrayListMultimap.create();
+                    final Multimap<ParseDocumentLocation, ParseDocumentImage>
+                        documentImageMultiMap = ArrayListMultimap.create();
 
-                            for (ParseDocumentImage parseDocumentImage : list) {
+                    for (ParseDocumentImage parseDocumentImage : list) {
 
-                              documentImageMultiMap.put(
-                                  (ParseDocumentLocation) parseDocumentImage.getLocationId(),
-                                  parseDocumentImage);
-                            }
+                      documentImageMultiMap.put(
+                          (ParseDocumentLocation) parseDocumentImage.getLocationId(),
+                          parseDocumentImage);
+                    }
 
-                            final boolean finished =
-                                measurementsFileOperations.writeDocument(yard, document,
-                                    documentImageMultiMap);
-                            if (finished) {
-                              subscriber.onNext(true);
-                            } else {
-                              subscriber.onError(new IOException("Writing to pdf failed"));
-                            }
-                            subscriber.onCompleted();
-                          } else {
-                            e.printStackTrace();
-                            subscriber.onError(e);
-                          }
+                    final boolean finished =
+                        measurementsFileOperations.writeDocument(yard, document,
+                            documentImageMultiMap);
+                    if (finished) {
+                      subscriber.onNext(true);
+                    } else {
+                      subscriber.onError(new IOException("Writing to pdf failed"));
+                    }
+                    subscriber.onCompleted();
+                  } else {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                  }
 
-                          subscriber.onNext(true);
-                        }
-                      });
-            }
-          }).subscribeOn(io()).observeOn(mainThread()).subscribe(new Observer<Boolean>() {
-            @Override public void onCompleted() {
+                  subscriber.onNext(true);
+                }
+              });
+        }
+      }).subscribeOn(io()).observeOn(mainThread()).subscribe(new Observer<Boolean>() {
+        @Override public void onCompleted() {
 
-              showToast("measurements document created");
-              if (getView() != null) {
-                getView().showLoader(false);
-              }
-            }
+          showToast("measurements document created");
+          if (getView() != null) {
+            getView().showLoader(false);
+          }
+        }
 
-            @Override public void onError(final Throwable e) {
+        @Override public void onError(final Throwable e) {
 
-              e.printStackTrace();
-              showToast("Something went wrong");
-              if (getView() != null) {
-                getView().showLoader(false);
-              }
-            }
+          e.printStackTrace();
+          showToast("Something went wrong");
+          if (getView() != null) {
+            getView().showLoader(false);
+          }
+        }
 
-            @Override public void onNext(final Boolean aBoolean) {
+        @Override public void onNext(final Boolean aBoolean) {
 
-            }
-          });
+        }
+      });
     }
 
     public void showToast(final String message) {

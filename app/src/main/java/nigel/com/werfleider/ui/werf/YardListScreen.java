@@ -23,8 +23,10 @@ import static android.view.View.GONE;
 import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.commons.load.Load.LOCAL;
 import static nigel.com.werfleider.commons.load.Load.NETWORK;
-import static nigel.com.werfleider.ui.werf.YardType.*;
+import static nigel.com.werfleider.ui.werf.YardType.INVITED;
+import static nigel.com.werfleider.ui.werf.YardType.MINE;
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
+import static nigel.com.werfleider.util.ParseStringUtils.CREATED_AT;
 import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
 /**
@@ -102,18 +104,28 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
         query.whereContainedIn(INVITES, newArrayList(ParseUser.getCurrentUser()));
       }
 
-      query.findInBackground((list, e) -> {
+      query.orderByAscending(CREATED_AT).findInBackground((list, e) -> {
 
         if (e == null) {
 
-          adapterData.clear();
-          adapterData.addAll(list);
-          adapter.notifyDataSetChanged();
+          for (Yard yard : list) {
 
+            if (!adapterData.contains(yard)) {
+              adapterData.add(yard);
+            }
+          }
+          adapter.notifyDataSetChanged();
           ParseObject.pinAllInBackground(list);
 
           if (load == LOCAL) {
             loadData(NETWORK);
+          }
+
+          if (adapterData.isEmpty()) {
+            getView().showEmptyView();
+          } else {
+
+            getView().showContentView();
           }
         } else {
           e.printStackTrace();
@@ -125,9 +137,10 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
       getView().setLayoutManager(new LinearLayoutManager(getView().getContext()));
 
-      getView().setAdapter(adapter = new YardAdapter(adapterData, getView().getContext(), yardType, getView()));
+      getView().setAdapter(
+          adapter = new YardAdapter(adapterData, getView().getContext(), yardType, getView()));
 
-      if(yardType == INVITED){
+      if (yardType == INVITED) {
 
         getView().create.setVisibility(GONE);
       }
