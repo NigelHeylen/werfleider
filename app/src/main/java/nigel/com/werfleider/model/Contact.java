@@ -1,79 +1,63 @@
 package nigel.com.werfleider.model;
 
-import org.joda.time.DateTime;
+import com.google.common.base.Strings;
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+import nigel.com.werfleider.util.ParseStringUtils;
+
+import static nigel.com.werfleider.util.ParseStringUtils.COMPANY;
+import static nigel.com.werfleider.util.ParseStringUtils.EMAIL;
+import static nigel.com.werfleider.util.ParseStringUtils.ID;
+import static nigel.com.werfleider.util.ParseStringUtils.NAME;
+import static nigel.com.werfleider.util.ParseStringUtils.PROFESSION;
 
 /**
  * Created by nigel on 11/02/15.
  */
-public class Contact {
-    private String naam;
-    private String email;
-    private String bedrijf;
-    private Profession profession;
-    private DateTime createdAt;
-    private int id;
-
-    public Contact() {
-    }
-
-    public Contact(final String naam, final String email, final String bedrijf, final Profession profession) {
-        this.naam = naam;
-        this.email = email;
-        this.bedrijf = bedrijf;
-        this.profession = profession;
-    }
+@ParseClassName("Contact")
+public class Contact extends ParseObject {
 
     public String getNaam() {
-        return naam;
+        return getString(NAME);
     }
 
     public Contact setNaam(final String naam) {
-        this.naam = naam;
+        put(NAME, naam);
         return this;
     }
 
     public String getEmail() {
-        return email;
+        return getString(EMAIL);
     }
 
     public Contact setEmail(final String email) {
-        this.email = email;
+        put(ParseStringUtils.EMAIL, email);
         return this;
     }
 
     public String getBedrijf() {
-        return bedrijf;
+        return getString(COMPANY);
     }
 
     public Contact setBedrijf(final String bedrijf) {
-        this.bedrijf = bedrijf;
+        put(COMPANY, Strings.nullToEmpty(bedrijf));
+        return this;
+    }
+    public String getId() {
+        return getString(ID);
+    }
+
+    public Contact setId(final String id) {
+        put(ID, id);
         return this;
     }
 
-    public Profession getProfession() {
-        return profession;
-    }
-
-    public Contact setProfession(final Profession profession) {
-        this.profession = profession;
+    public Contact setProfession(final String profession){
+        put(PROFESSION, profession);
         return this;
     }
 
-    public DateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Contact setCreatedAt(final DateTime createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public Contact setId(final int id) {
-        this.id = id;
-        return this;
+    public String getProfession() {
+        return getString(PROFESSION);
     }
 }

@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
+import nigel.com.werfleider.model.Contact;
 import nigel.com.werfleider.service.contacts.GetContacts;
 import nigel.com.werfleider.service.contacts.GetContactsRx;
 import nigel.com.werfleider.ui.home.HomeScreen;
@@ -65,9 +66,9 @@ import static nigel.com.werfleider.ui.contact.ContactsScreen.Module.USER_DATA;
       return newArrayList();
     }
 
-    @Provides @Singleton @Named(USER_CONTACTS) List<ParseUser> provideContacts() {
+    @Provides @Singleton @Named(USER_CONTACTS) List<Contact> provideContacts() {
 
-      final List<ParseUser> contacts =
+      final List<Contact> contacts =
           ParseUser.getCurrentUser().getList(ParseStringUtils.CONTACTS);
 
       return contacts != null ? contacts : newArrayList();

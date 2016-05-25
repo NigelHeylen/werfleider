@@ -60,10 +60,10 @@ public class GsonParcer<T> implements Parcer<T> {
 
     try {
       Class<?> type = instance.getClass();
-
       writer.beginObject();
       writer.name(type.getName());
       gson.toJson(instance, type, writer);
+
       writer.endObject();
 
       return stringWriter.toString();

@@ -10,12 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.parse.ParseUser;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.model.Contact;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.ParseStringUtils;
 
@@ -32,9 +32,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.PROFESSION;
  */
 public class InvitesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-  @Inject @Named(CONTACTS) List<ParseUser> contacts;
+  @Inject @Named(CONTACTS) List<Contact> contacts;
 
-  @Inject @Named(INVITES) List<ParseUser> invites;
+  @Inject @Named(INVITES) List<Contact> invites;
 
   @Inject Resources resources;
 
@@ -73,7 +73,7 @@ public class InvitesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
     if(holder instanceof InvitesViewHolder){
-      final ParseUser user = getUser(position);
+      final Contact user = getUser(position);
 
       final InvitesViewHolder viewHolder = (InvitesViewHolder) holder;
 
@@ -117,11 +117,11 @@ public class InvitesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
   }
 
-  private boolean invited(ParseUser user) {
+  private boolean invited(Contact user) {
     return invites.contains(user);
   }
 
-  private ParseUser getUser(int position) {
+  private Contact getUser(int position) {
 
     if(position < invites.size() + 1){
 

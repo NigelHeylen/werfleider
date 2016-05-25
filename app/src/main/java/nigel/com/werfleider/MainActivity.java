@@ -24,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import butterknife.ButterKnife;
-import com.squareup.otto.Bus;
 import flow.Flow;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -41,7 +40,6 @@ import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
 
 public class MainActivity extends AppCompatActivity implements ActionBarOwner.View,
     StartActivityForResultPresenter.Activity {
-  @Inject Bus bus;
 
   private MortarActivityScope activityScope;
   private ActionBarOwner.MenuAction actionBarMenuAction;
@@ -80,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
     actionBarOwner.takeView(this);
 
     startActivityForResultPresenter.takeView(this);
-
-    bus.register(this);
   }
 
   @Override public Object getSystemService(String name) {

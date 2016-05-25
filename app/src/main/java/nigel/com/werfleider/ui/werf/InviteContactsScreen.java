@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
+import nigel.com.werfleider.model.Contact;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.ParseStringUtils;
@@ -57,17 +58,17 @@ import static com.google.common.collect.Lists.newArrayList;
       this.yard = yard;
     }
 
-    @Provides @Singleton @Named(CONTACTS) List<ParseUser> provideContacts(){
+    @Provides @Singleton @Named(CONTACTS) List<Contact> provideContacts(){
 
-      final List<ParseUser> contacts =
+      final List<Contact> contacts =
           ParseUser.getCurrentUser().getList(ParseStringUtils.CONTACTS);
 
       return contacts != null ? contacts : newArrayList();
     }
 
 
-    @Provides @Singleton @Named(INVITES) List<ParseUser> provideInvites(){
-      final List<ParseUser> invites =
+    @Provides @Singleton @Named(INVITES) List<Contact> provideInvites(){
+      final List<Contact> invites =
           yard.getList(ParseStringUtils.INVITES);
 
       return invites != null ? invites : newArrayList();
@@ -82,7 +83,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
   @Singleton static class InviteContactsPresenter extends ReactiveViewPresenter<InviteContactsView> {
 
-    @Inject @Named(CONTACTS) List<ParseUser> contacts;
+    @Inject @Named(CONTACTS) List<Contact> contacts;
 
     @Override protected void onLoad(Bundle savedInstanceState) {
       super.onLoad(savedInstanceState);

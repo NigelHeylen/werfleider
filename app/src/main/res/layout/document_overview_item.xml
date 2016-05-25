@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
 
         <ImageView
             android:id="@+id/document.overview.item.delete"
-            android:src="@drawable/ic_delete"
+            app:srcCompat="@drawable/ic_delete"
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
             android:layout_width="40dp"
@@ -43,7 +43,7 @@
 
         <ImageView
             android:id="@+id/document.overview.item.edit"
-            android:src="@drawable/ic_edit"
+            app:srcCompat="@drawable/ic_edit"
             android:layout_alignParentRight="true"
             android:layout_toLeftOf="@id/document.overview.item.delete"
             android:layout_marginRight="50dp"

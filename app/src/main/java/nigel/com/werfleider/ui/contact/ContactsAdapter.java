@@ -10,16 +10,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.model.Contact;
 import rx.subjects.PublishSubject;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.ui.contact.Contacts.ALL_USERS;
+import static nigel.com.werfleider.ui.contact.Contacts.MY_CONTACTS;
 import static nigel.com.werfleider.ui.contact.ContactsScreen.Module.USER_CONTACTS;
 import static nigel.com.werfleider.ui.contact.ContactsScreen.Module.USER_DATA;
 import static nigel.com.werfleider.ui.contact.SocialAction.Action.FOLLOW;
@@ -37,7 +40,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
   private final Contacts contacts;
 
   @Inject @Named(USER_DATA) List<ParseUser> adapterData;
-  @Inject @Named(USER_CONTACTS) List<ParseUser> contactsList;
+  @Inject @Named(USER_CONTACTS) List<Contact> contactsList;
 
   @Inject Resources resources;
 
@@ -63,47 +66,104 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
   @Override public void onBindViewHolder(ContactsViewHolder holder, int position) {
 
-    final ParseUser user =
-        contacts.equals(ALL_USERS) ? adapterData.get(position) : contactsList.get(position);
+    final ParseUser user = contacts.equals(ALL_USERS) ? adapterData.get(position) : null;
 
-    user.fetchIfNeededInBackground((object, e) -> {
+    final Contact contact = contacts.equals(MY_CONTACTS) ? contactsList.get(position) : null;
 
-      if(e == null) {
-        holder.name.setText(user.getString(NAME));
-        holder.company.setText(user.getString(COMPANY));
-        holder.profession.setText(user.getString(PROFESSION));
+    if (user != null) {
+      user.fetchIfNeededInBackground((object, e) -> {
 
-        holder.follow.setImageDrawable(resources.getDrawable(follows(user) ? R.drawable.ic_person : R.drawable.ic_person_add));
+        if (e == null) {
+          holder.name.setText(user.getString(NAME));
+          holder.company.setText(user.getString(COMPANY));
+          holder.profession.setText(user.getString(PROFESSION));
 
-        holder.follow.setOnClickListener(v -> {
+          holder.follow.setImageDrawable(resources.getDrawable(
+              follows(user) ? R.drawable.ic_person : R.drawable.ic_person_add));
 
-          if (follows(user)) {
+          holder.follow.setOnClickListener(v -> {
 
-            ParseUser.getCurrentUser().removeAll(CONTACTS, newArrayList(user));
+            if (follows(user)) {
+              final Contact contact1 = getContact(user);
+              ParseUser.getCurrentUser().removeAll(CONTACTS, newArrayList(contact));
+              ParseUser.getCurrentUser().saveEventually();
+
+              contact1.deleteEventually();
+
+              holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person_add));
+              contactsList.remove(contact1);
+
+              socialActionBus.onNext(new SocialAction(user, UNFOLLOW));
+            } else {
+
+              final Contact newContact = ParseObject.create(Contact.class);
+              newContact.setId(user.getObjectId())
+                  .setNaam(user.getString(NAME))
+                  .setBedrijf(user.getString(COMPANY))
+                  .setEmail(user.getEmail())
+                  .setProfession(user.getString(PROFESSION));
+
+              newContact.pinInBackground();
+              newContact.saveEventually();
+
+              ParseUser.getCurrentUser().addUnique(CONTACTS, newContact);
+              ParseUser.getCurrentUser().saveEventually();
+
+              holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person));
+              contactsList.add(newContact);
+              socialActionBus.onNext(new SocialAction(user, FOLLOW));
+            }
+          });
+        }
+      });
+    }
+
+    if (contact != null) {
+
+      contact.fetchIfNeededInBackground(((object, e) -> {
+
+        if (e == null) {
+          holder.name.setText(contact.getNaam());
+          holder.company.setText(contact.getBedrijf());
+          holder.profession.setText(contact.getProfession());
+
+          holder.follow.setImageResource(R.drawable.ic_person);
+
+          holder.follow.setOnClickListener(v -> {
+
+            ParseUser.getCurrentUser().removeAll(CONTACTS, newArrayList(contact));
             ParseUser.getCurrentUser().saveEventually();
 
             holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person_add));
-            contactsList.remove(user);
+            contactsList.remove(contact);
 
             socialActionBus.onNext(new SocialAction(user, UNFOLLOW));
-          } else {
+          });
+        }
+      }));
+    }
+  }
 
-            ParseUser.getCurrentUser().addUnique(CONTACTS, user);
-            ParseUser.getCurrentUser().saveEventually();
+  private Contact getContact(ParseUser user) {
+    final List<Contact> list = user.getList(CONTACTS);
 
-            holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person));
-            contactsList.add(user);
-            socialActionBus.onNext(new SocialAction(user, FOLLOW));
-          }
-        });
+    for (Contact contact : list) {
+
+      if (contact.getId().equals(user.getObjectId())) {
+        return contact;
       }
-    });
-
-
+    }
+    return null;
   }
 
   private boolean follows(ParseUser user) {
-    return contactsList.contains(user);
+    for (Contact contact : contactsList) {
+      if (contact.getId().equals(user.getObjectId())) {
+        return true;
+      }
+
+    }
+    return false;
   }
 
   public static class ContactsViewHolder extends RecyclerView.ViewHolder {

@@ -89,4 +89,6 @@ public class ParseStringUtils {
 
     public static final String CONTACTS = "contacts";
     public static final String INVITES = "invites";
+    public static final String EMAIL = "email";
+    public static final String ID = "id";
 }
