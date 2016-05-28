@@ -8,6 +8,7 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ProgressBarDeterminate;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -34,7 +36,6 @@ public class LocationDetailAudioView extends ScrollView {
   @Inject LocationDetailAudioPresenter presenter;
 
   @Bind(R.id.location_detail_play_audio) FloatingActionButton playButton;
-  @Bind(R.id.location_detail_play_reset) FloatingActionButton resetButton;
   @Bind(R.id.location_detail_play_seconds) TextView playSeconds;
   @Bind(R.id.location_detail_play_seconds_max) TextView playSecondsMax;
   @Bind(R.id.location_detail_play_container) ViewGroup playContainer;
@@ -99,6 +100,7 @@ public class LocationDetailAudioView extends ScrollView {
 
               recordButton.setIconDrawable(stop);
             } else {
+
               recordButton.setIconDrawable(record);
             }
             Log.i(VIEW_LOG_TAG, "record:" + startRecording);
@@ -106,7 +108,7 @@ public class LocationDetailAudioView extends ScrollView {
           } else {
 
             Toast.makeText(getContext(),
-                "Werfleider needs the audio and the write to external storage permission to record audio.",
+                "Zonder de toestemming om audio op te nemen kan Werfleider geen audio opslaan.",
                 Toast.LENGTH_LONG).show();
           }
         });
@@ -155,9 +157,9 @@ public class LocationDetailAudioView extends ScrollView {
       savedMediaPlayer.setOnCompletionListener(mp -> {
         play();
       });
-      playSecondsMax.setText(String.format("/%s", String.valueOf(savedMediaPlayer.getDuration() / 1000)));
+      playSecondsMax.setText(
+          String.format("/%s", String.valueOf(savedMediaPlayer.getDuration() / 1000)));
       playProgress.setMax(savedMediaPlayer.getDuration() / 1000);
-
     } catch (IOException e) {
       Log.e(LOG_TAG, "prepare() failed");
     }
@@ -220,18 +222,7 @@ public class LocationDetailAudioView extends ScrollView {
 
       playButton.setVisibility(GONE);
       playContainer.setVisibility(GONE);
-      resetButton.setVisibility(GONE);
     }
-  }
-
-  @OnClick(R.id.location_detail_play_reset) public void audioReset(){
-
-    presenter.resetAudio();
-  }
-
-  @OnClick(R.id.location_detail_record_save) public void audioSave() {
-
-    presenter.saveAudio();
   }
 
   public void reset() {
@@ -263,15 +254,24 @@ public class LocationDetailAudioView extends ScrollView {
     playProgress.setProgress(seconds);
   }
 
-  public void showResetButton(boolean show) {
-
-    resetButton.setVisibility(show ? VISIBLE : INVISIBLE);
-  }
-
   public void hideRecordViews() {
     recordButton.setVisibility(GONE);
     recordProgress.setVisibility(GONE);
     recordSeconds.setVisibility(GONE);
     recordContainer.setVisibility(GONE);
+  }
+
+  public void askToSaveAudio() {
+
+    new SnackBar.Builder(getContext(), (View) getParent().getParent().getParent()).withMessage(
+        "Wilt u de audio opslaan?")
+        .withActionMessage("Opslaan")
+        .withTextColorId(R.color.blue)
+        .withOnClickListener(token -> {
+          presenter.saveAudio();
+          prepareMediaPlayer();
+          showPlayAudio(true);
+        })
+        .show();
   }
 }

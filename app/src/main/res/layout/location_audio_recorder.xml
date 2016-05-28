@@ -42,35 +42,22 @@
           android:layout_height="wrap_content"
           android:layout_toRightOf="@+id/location.detail.record.audio"
           android:layout_marginTop="32dp"
-          android:layout_toLeftOf="@+id/location.detail.record.save"
           />
 
       <TextView
           android:id="@+id/location.detail.record.seconds"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_below="@id/location.detail.record.audio"
           android:layout_centerHorizontal="true"
           android:layout_marginLeft="32dp"
           android:text="0"
           />
       <TextView
           android:id="@+id/location.detail.record.seconds.max"
-          android:layout_below="@id/location.detail.record.audio"
           android:layout_toRightOf="@id/location.detail.record.seconds"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="/30"
-          />
-
-      <com.getbase.floatingactionbutton.FloatingActionButton
-          android:id="@+id/location.detail.record.save"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          fab:fab_icon="@drawable/ic_save"
-          fab:fab_size="mini"
-          android:layout_marginTop="8dp"
-          android:layout_alignParentRight="true"
           />
 
     </RelativeLayout>
@@ -103,36 +90,24 @@
           android:layout_height="wrap_content"
           android:layout_toRightOf="@+id/location.detail.play.audio"
           android:layout_marginTop="32dp"
-          android:layout_toLeftOf="@+id/location.detail.play.reset"
           />
 
       <TextView
           android:id="@+id/location.detail.play.seconds"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_below="@id/location.detail.play.audio"
           android:layout_centerHorizontal="true"
           android:layout_marginLeft="32dp"
           android:text="0"
           />
       <TextView
           android:id="@+id/location.detail.play.seconds.max"
-          android:layout_below="@id/location.detail.play.audio"
           android:layout_toRightOf="@id/location.detail.play.seconds"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="/30"
           />
 
-      <com.getbase.floatingactionbutton.FloatingActionButton
-          android:id="@+id/location.detail.play.reset"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          fab:fab_icon="@drawable/ic_reset"
-          fab:fab_size="mini"
-          android:layout_marginTop="8dp"
-          android:layout_alignParentRight="true"
-          />
     </RelativeLayout>
 
 
