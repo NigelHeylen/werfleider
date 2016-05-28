@@ -1,5 +1,6 @@
 package nigel.com.werfleider.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import com.parse.ParseFile;
@@ -7,6 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import nigel.com.werfleider.model.Yard;
 
 import static nigel.com.werfleider.util.StringUtils.substringAfterLast;
 
@@ -72,5 +76,16 @@ public class ImageUtils {
 
   public static String getOnDiskUrl(final String url) {
     return String.format("file://%s", url);
+  }
+
+  public static File getFileFromImageByteArray(Yard yard, Context context) throws IOException {
+
+    File f = new File(context.getCacheDir(), "werf_image");
+    f.createNewFile();
+    FileOutputStream fos = new FileOutputStream(f);
+    fos.write(yard.getImageByteArray());
+    fos.flush();
+    fos.close();
+    return f;
   }
 }

@@ -28,6 +28,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_ADDRESS;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_ADDRESS_NUMBER;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_AREA_CODE;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_CITY;
+import static nigel.com.werfleider.util.ParseStringUtils.YARD_IMAGE;
 
 /**
  * Created by nigel on 14/04/15.
@@ -135,6 +136,16 @@ public class Yard extends ParseObject {
     public Yard setTermijn(final String termijn) {
 
         put(DEADLINE, termijn);
+        return this;
+    }
+
+    public byte[] getImageByteArray(){
+
+        return getBytes(YARD_IMAGE);
+    }
+
+    public Yard setImageByteArray(final byte[] imageBytes){
+        put(YARD_IMAGE, imageBytes);
         return this;
     }
 
