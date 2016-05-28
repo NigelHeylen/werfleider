@@ -16,6 +16,7 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.core.CorePresenter;
+import nigel.com.werfleider.model.Contact;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.home.HomeScreen;
 
@@ -27,6 +28,7 @@ import static nigel.com.werfleider.ui.werf.YardType.INVITED;
 import static nigel.com.werfleider.ui.werf.YardType.MINE;
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.CREATED_AT;
+import static nigel.com.werfleider.util.ParseStringUtils.ID;
 import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
 /**
@@ -101,7 +103,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
       } else {
 
         //query.include(INVITES);
-        query.whereContainedIn(INVITES, newArrayList(ParseUser.getCurrentUser()));
+        final ParseQuery<Contact> contactParseQuery = ParseQuery.getQuery(Contact.class);
+        contactParseQuery.whereMatches(ID, ParseUser.getCurrentUser().getObjectId());
+        query.whereMatchesQuery(INVITES, contactParseQuery);
       }
 
       query.orderByAscending(CREATED_AT).findInBackground((list, e) -> {
