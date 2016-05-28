@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -25,6 +26,7 @@ import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.commons.recyclerview.DividerItemDecoration;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
+import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
@@ -76,7 +78,8 @@ import static rx.schedulers.Schedulers.io;
 
   @Override public YardDetailScreen getParent() {
 
-    return new YardDetailScreen(yard);
+    return new YardDetailScreen(yard, Iterables.indexOf(newArrayList(DocumentType.values()),
+        type -> type.equals(document.getDocumentType())));
   }
 
   @dagger.Module(injects = {
@@ -159,41 +162,42 @@ import static rx.schedulers.Schedulers.io;
         query.fromLocalDatastore();
       }
 
-      query.orderByAscending(CREATED_AT).whereEqualTo(DOCUMENT_ID, document).findInBackground((list, e) -> {
+      query.orderByAscending(CREATED_AT)
+          .whereEqualTo(DOCUMENT_ID, document)
+          .findInBackground((list, e) -> {
 
-        if (e == null) {
+            if (e == null) {
 
-          for (ParseDocumentLocation location : list) {
+              for (ParseDocumentLocation location : list) {
 
-            if (!adapterData.contains(location)) {
+                if (!adapterData.contains(location)) {
 
-              adapterData.add(location);
+                  adapterData.add(location);
+                }
+              }
+
+              ParseObject.pinAllInBackground(list);
+              adapter.notifyDataSetChanged();
+
+              if (load == LOCAL) {
+
+                loadData(NETWORK);
+              }
+            } else {
+              e.printStackTrace();
             }
 
-          }
+            if (getView() != null) {
 
-          ParseObject.pinAllInBackground(list);
-          adapter.notifyDataSetChanged();
+              if (adapterData.isEmpty()) {
 
-          if (load == LOCAL) {
+                getView().showEmptyView();
+              } else {
 
-            loadData(NETWORK);
-          }
-        } else {
-          e.printStackTrace();
-        }
-
-        if (getView() != null) {
-
-          if(adapterData.isEmpty()){
-
-            getView().showEmptyView();
-          } else {
-
-            getView().showContentView();
-          }
-        }
-      });
+                getView().showContentView();
+              }
+            }
+          });
     }
 
     private void initView() {
@@ -301,7 +305,8 @@ import static rx.schedulers.Schedulers.io;
 
           ParseQuery.getQuery(ParseDocumentImage.class)
               .whereContainedIn(LOCATION_ID, adapterData)
-              .fromLocalDatastore().orderByAscending(CREATED_AT)
+              .fromLocalDatastore()
+              .orderByAscending(CREATED_AT)
               .findInBackground(new FindCallback<ParseDocumentImage>() {
                 @Override
                 public void done(final List<ParseDocumentImage> list, final ParseException e) {

@@ -53,7 +53,7 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
     holder.naam.setText(werf.getNaam());
     holder.nr.setText(werf.getNummer());
 
-    holder.container.setOnClickListener(v -> flow.goTo(new YardDetailScreen(werf)));
+    holder.container.setOnClickListener(v -> flow.goTo(new YardDetailScreen(werf, yardType)));
 
     holder.edit.setOnClickListener(v -> flow.goTo(new WerfCreateScreen(werf)));
 

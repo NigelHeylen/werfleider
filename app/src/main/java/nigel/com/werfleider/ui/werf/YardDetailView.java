@@ -18,45 +18,40 @@ import nigel.com.werfleider.model.Yard;
  */
 public class YardDetailView extends LinearLayout {
 
-    @Inject ActionBarOwner actionBarOwner;
+  @Inject ActionBarOwner actionBarOwner;
 
-    @Inject Yard yard;
+  @Inject Yard yard;
 
-    @Bind(R.id.yard_document_pager) ViewPager documentPager;
-    @Bind(R.id.yard_document_tabs) PagerSlidingTabStrip documentTabs;
+  @Inject int tabIndex;
 
-    public YardDetailView(final Context context, final AttributeSet attrs) {
+  @Bind(R.id.yard_document_pager) ViewPager documentPager;
+  @Bind(R.id.yard_document_tabs) PagerSlidingTabStrip documentTabs;
 
-        super(
-                context,
-                attrs);
-        Mortar.inject(
-                context,
-                this);
-    }
+  public YardDetailView(final Context context, final AttributeSet attrs) {
 
-    @Override protected void onFinishInflate() {
+    super(context, attrs);
+    Mortar.inject(context, this);
+  }
 
-        super.onFinishInflate();
-        ButterKnife.bind(this);
-        initView();
-    }
+  @Override protected void onFinishInflate() {
 
-    protected void initView() {
+    super.onFinishInflate();
+    ButterKnife.bind(this);
+    initView();
+  }
 
+  protected void initView() {
 
-        actionBarOwner.setConfig(
-            new ActionBarOwner.Config(false, true, yard.getNaam(),
-                null));
+    actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, yard.getNaam(), null));
 
-        documentPager.setAdapter(new YardDetailDocumentAdapter(getContext()));
-        documentPager.setOffscreenPageLimit(1);
-        documentTabs.setViewPager(documentPager);
-    }
+    documentPager.setAdapter(new YardDetailDocumentAdapter(getContext()));
+    documentPager.setOffscreenPageLimit(1);
+    documentTabs.setViewPager(documentPager);
+    documentPager.setCurrentItem(tabIndex);
+  }
 
-    @Override protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        ButterKnife.unbind(this);
-    }
-
+  @Override protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    ButterKnife.unbind(this);
+  }
 }

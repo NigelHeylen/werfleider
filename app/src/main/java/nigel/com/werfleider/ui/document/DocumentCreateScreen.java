@@ -1,6 +1,7 @@
 package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
+import com.google.common.collect.Iterables;
 import com.parse.ParseUser;
 import dagger.Provides;
 import flow.Flow;
@@ -16,12 +17,14 @@ import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.werf.YardDetailScreen;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * Created by nigel on 09/01/16.
  */
 
-@Layout(R.layout.document_create_view) public class DocumentCreateScreen implements Blueprint,
-    HasParent<YardDetailScreen> {
+@Layout(R.layout.document_create_view) public class DocumentCreateScreen
+    implements Blueprint, HasParent<YardDetailScreen> {
 
   private final Yard yard;
   private final DocumentType documentType;
@@ -50,7 +53,8 @@ import nigel.com.werfleider.ui.werf.YardDetailScreen;
   }
 
   @Override public YardDetailScreen getParent() {
-    return new YardDetailScreen(yard);
+    return new YardDetailScreen(yard,
+        Iterables.indexOf(newArrayList(DocumentType.values()), type -> type.equals(documentType)));
   }
 
   @dagger.Module(
@@ -72,15 +76,16 @@ import nigel.com.werfleider.ui.werf.YardDetailScreen;
       this.document = document;
     }
 
-    @Provides Yard provideYard(){
+    @Provides Yard provideYard() {
 
       return yard;
     }
 
-    @Provides DocumentType documentType(){
+    @Provides DocumentType documentType() {
       return documentType;
     }
-    @Provides ParseDocument document(){
+
+    @Provides ParseDocument document() {
       return document;
     }
   }
@@ -100,7 +105,7 @@ import nigel.com.werfleider.ui.werf.YardDetailScreen;
       super.onLoad(savedInstanceState);
       if (getView() == null) return;
 
-      if(document != null){
+      if (document != null) {
 
         getView().name.setText(document.getName());
       }
@@ -110,7 +115,7 @@ import nigel.com.werfleider.ui.werf.YardDetailScreen;
 
       ParseDocument document;
 
-      if(this.document == null){
+      if (this.document == null) {
 
         document = new ParseDocument();
       } else {

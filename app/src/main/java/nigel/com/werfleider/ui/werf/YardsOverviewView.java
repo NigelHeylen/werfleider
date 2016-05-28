@@ -10,17 +10,20 @@ import com.astuetz.PagerSlidingTabStrip;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.android.ActionBarOwner;
 
 /**
  * Created by nigel on 14/12/15.
  */
 public class YardsOverviewView extends LinearLayout {
 
-  @Inject YardsOverviewScreen.YardsOverviewPresenter presenter;
-
   @Bind(R.id.yards_tabs) PagerSlidingTabStrip tabStrip;
 
   @Bind(R.id.yards_pager) ViewPager pager;
+
+  @Inject ActionBarOwner actionBarOwner;
+
+  @Inject int tab;
 
   public YardsOverviewView(final Context context, final AttributeSet attrs) {
 
@@ -36,17 +39,18 @@ public class YardsOverviewView extends LinearLayout {
 
     if (!isInEditMode()) {
       ButterKnife.bind(this);
-      presenter.takeView(this);
-
       pager.setAdapter(new YardsOverViewAdapter(getContext()));
       tabStrip.setViewPager(pager);
+      pager.setCurrentItem(tab);
+
+      actionBarOwner.setConfig(
+          new ActionBarOwner.Config(false, true, getContext().getString(R.string.tWerven), null));
     }
   }
 
   @Override protected void onDetachedFromWindow() {
 
     super.onDetachedFromWindow();
-    presenter.dropView(this);
     ButterKnife.unbind(this);
   }
 }

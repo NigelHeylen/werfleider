@@ -1,13 +1,10 @@
 package nigel.com.werfleider.ui.werf;
 
-import android.os.Bundle;
+import dagger.Provides;
 import flow.HasParent;
 import flow.Layout;
-import javax.inject.Inject;
 import mortar.Blueprint;
-import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.ui.home.HomeScreen;
 
@@ -20,6 +17,16 @@ import static com.google.common.collect.Lists.newArrayList;
 @Layout(R.layout.yards_overview_view) public class YardsOverviewScreen implements Blueprint,
     HasParent<HomeScreen> {
 
+  final int tab;
+
+  public YardsOverviewScreen() {
+    tab = 0;
+  }
+
+  public YardsOverviewScreen(int tab) {
+    this.tab = tab;
+  }
+
   @Override public String getMortarScopeName() {
 
     return getClass().getSimpleName();
@@ -27,7 +34,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
   @Override public Object getDaggerModule() {
 
-    return newArrayList(new Module(), new YardListScreen.Module());
+    return newArrayList(new Module(tab), new YardListScreen.Module());
   }
 
   @Override public HomeScreen getParent() {
@@ -42,25 +49,14 @@ import static com.google.common.collect.Lists.newArrayList;
       },
       addsTo = CorePresenter.Module.class) static class Module {
 
-  }
+    private final int tab;
 
-  static class YardsOverviewPresenter extends ViewPresenter<YardsOverviewView> {
-
-    @Inject ActionBarOwner actionBarOwner;
-
-    @Override protected void onLoad(final Bundle savedInstanceState) {
-
-      super.onLoad(savedInstanceState);
-      if (getView() == null) return;
-
-      initView();
+    public Module(int tab) {
+      this.tab = tab;
     }
 
-    private void initView() {
-
-      actionBarOwner.setConfig(
-          new ActionBarOwner.Config(false, true, getView().getContext().getString(R.string.tWerven),
-              null));
+    @Provides int tab(){
+      return tab;
     }
   }
 }

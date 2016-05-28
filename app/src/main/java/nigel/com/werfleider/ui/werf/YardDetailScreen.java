@@ -1,5 +1,6 @@
 package nigel.com.werfleider.ui.werf;
 
+import com.google.common.collect.Iterables;
 import dagger.Provides;
 import flow.HasParent;
 import flow.Layout;
@@ -20,10 +21,22 @@ import static com.google.common.collect.Lists.newArrayList;
     implements Blueprint, HasParent<YardsOverviewScreen> {
 
   final Yard yard;
+  final YardType yardType;
 
-  public YardDetailScreen(final Yard yard) {
+  final int tab;
+
+  public YardDetailScreen(final Yard yard, int tab) {
 
     this.yard = yard;
+    this.tab = tab;
+    this.yardType = null;
+  }
+
+  public YardDetailScreen(Yard werf, YardType yardType) {
+    yard = werf;
+    this.yardType = yardType;
+
+    tab = 0;
   }
 
   @Override public String getMortarScopeName() {
@@ -38,12 +51,12 @@ import static com.google.common.collect.Lists.newArrayList;
 
   @Override public Object getDaggerModule() {
 
-    return newArrayList(new Module(yard), new InviteContactsScreen.Module(yard));
+    return newArrayList(new Module(yard, tab), new InviteContactsScreen.Module(yard));
   }
 
   @Override public YardsOverviewScreen getParent() {
 
-    return new YardsOverviewScreen();
+    return new YardsOverviewScreen(Iterables.indexOf(newArrayList(YardType.values()), type -> type.equals(yardType)));
   }
 
   @dagger.Module(
@@ -53,15 +66,21 @@ import static com.google.common.collect.Lists.newArrayList;
       }, addsTo = CorePresenter.Module.class) static class Module {
 
     private final Yard werf;
+    private final int tab;
 
-    public Module(final Yard werf) {
+    public Module(final Yard werf, int tab) {
 
       this.werf = werf;
+      this.tab = tab;
     }
 
     @Provides @Singleton Yard provideWerf() {
 
       return werf;
+    }
+
+    @Provides int tabIndex(){
+      return tab;
     }
   }
 }
