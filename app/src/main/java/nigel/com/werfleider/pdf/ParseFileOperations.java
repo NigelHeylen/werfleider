@@ -38,7 +38,6 @@ import javax.inject.Inject;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.ParseDocumentLocation;
-import nigel.com.werfleider.model.WerfInt;
 import nigel.com.werfleider.model.Yard;
 import org.joda.time.DateTime;
 
@@ -98,7 +97,7 @@ public class ParseFileOperations {
     return new Paragraph("\n\n");
   }
 
-  private void createFirstPageDocuments(final WerfInt werf, final ParseDocument document,
+  private void createFirstPageDocuments(final Yard werf, final ParseDocument document,
       final Document iTextDocument,
       final Multimap<ParseDocumentLocation, ParseDocumentImage> locationsMap)
       throws IOException, DocumentException {
@@ -107,7 +106,7 @@ public class ParseFileOperations {
     iTextDocument.add(
         paragraph(format("%s:", werf.getNaam()), ALIGN_CENTER, 0, 10, titleFontBoldUnderline));
 
-    iTextDocument.add(paragraph(format("Adres: %s", werf.getOpdrachtAdres())));
+    iTextDocument.add(paragraph(format("Adres: %s", werf.getYardAddress())));
 
     iTextDocument.add(paragraph(document.getDocumentType().toString()));
 

@@ -19,18 +19,18 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 /**
  * Created by nigel on 07/02/15.
  */
-@Layout(R.layout.werf_create_view) public class WerfCreateScreen
+@Layout(R.layout.yard_create_view) public class YardCreateScreen
     implements Blueprint, HasParent<YardsOverviewScreen> {
 
-  private final Yard werf;
+  private final Yard yard;
 
-  public WerfCreateScreen(Yard werf) {
+  public YardCreateScreen(Yard yard) {
 
-    this.werf = werf;
+    this.yard = yard;
   }
 
-  public WerfCreateScreen() {
-    werf = null;
+  public YardCreateScreen() {
+    yard = null;
   }
 
   @Override public String getMortarScopeName() {
@@ -38,7 +38,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
   }
 
   @Override public Object getDaggerModule() {
-    return new Module(werf);
+    return new Module(yard);
   }
 
   @Override public YardsOverviewScreen getParent() {
@@ -46,7 +46,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
   }
 
   @dagger.Module(
-      injects = WerfCreateView.class,
+      injects = YardCreateView.class,
       addsTo = CorePresenter.Module.class
 
   ) static class Module {
@@ -62,7 +62,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
     }
   }
 
-  static class Presenter extends ViewPresenter<WerfCreateView> {
+  static class Presenter extends ViewPresenter<YardCreateView> {
 
     @Inject Flow flow;
 
@@ -70,20 +70,19 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 
     @Override protected void onLoad(Bundle savedInstanceState) {
       super.onLoad(savedInstanceState);
-      if(getView() != null){
+      if (getView() != null) {
 
         getView().setData(yard);
       }
     }
 
-    public void create(final String naam, final String nummer, final String opdrachtAdres,
-        final String opdrachtStad, final String ontwerper, final String ontwerperAdres,
-        final String ontwerperStad, final String opdrachtgever, final String opdrachtgeverAdres,
-        final String opdrachtgeverStad, final String omschrijving, final DateTime datumAanvang) {
-
+    public void create(String naam, String nummer, String adres, String huisNummer, String stad,
+        String postcode, String omschrijving, DateTime aanvang, String termijn, String architect, String architectTelefoon,
+        String architectEmail, String bouwheer, String bouwheerTelefoon, String bouwheerEmail, String ingenieur,
+        String ingenieurTelefoon, String ingenieurEmail) {
       Yard yard;
 
-      if(this.yard != null){
+      if (this.yard != null) {
         yard = this.yard;
       } else {
         yard = new Yard();
@@ -91,16 +90,22 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 
       yard.setNaam(naam)
           .setNummer(nummer)
-          .setOpdrachtAdres(opdrachtAdres)
-          .setOpdrachtStad(opdrachtStad)
-          .setOntwerper(ontwerper)
-          .setOntwerperAdres(ontwerperAdres)
-          .setOntwerperStad(ontwerperStad)
-          .setOpdrachtgever(opdrachtgever)
-          .setOpdrachtgeverAdres(opdrachtgeverAdres)
-          .setOpdrachtgeverStad(opdrachtgeverStad)
+          .setYardAdress(adres)
+          .setYardAddressNumber(huisNummer)
+          .setYardCity(stad)
+          .setYardAreaCode(postcode)
           .setOmschrijving(omschrijving)
-          .setDatumAanvang(datumAanvang)
+          .setDatumAanvang(aanvang)
+          .setTermijn(termijn)
+          .setArchitectNaam(architect)
+          .setArchitectTelefoon(architectTelefoon)
+          .setArchitectEmail(architectEmail)
+          .setBouwHeerNaam(bouwheer)
+          .setBouwheerTelefoon(bouwheerTelefoon)
+          .setBouwheerEmail(bouwheerEmail)
+          .setIngenieurNaam(ingenieur)
+          .setIngenieurTelefoon(ingenieurTelefoon)
+          .setIngenieurEmail(ingenieurEmail)
           .setCreator(ParseUser.getCurrentUser().getString(NAME))
           .setAuthor(ParseUser.getCurrentUser());
 

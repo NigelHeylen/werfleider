@@ -4,178 +4,255 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import java.util.List;
+import nigel.com.werfleider.util.ParseStringUtils;
 import org.joda.time.DateTime;
 
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR;
-import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_ADDRESS;
-import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_CITY;
+import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_PHONE;
+import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_EMAIL;
 import static nigel.com.werfleider.util.ParseStringUtils.CREATOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DATE_START_WORK;
+import static nigel.com.werfleider.util.ParseStringUtils.DEADLINE;
 import static nigel.com.werfleider.util.ParseStringUtils.DEFINITION;
 import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER;
-import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER_ADDRESS;
-import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER_CITY;
+import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER_EMAIL;
+import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER_PHONE;
+import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER;
+import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER_EMAIL;
+import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER_PHONE;
 import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 import static nigel.com.werfleider.util.ParseStringUtils.NUMBER;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_ADDRESS;
+import static nigel.com.werfleider.util.ParseStringUtils.YARD_ADDRESS_NUMBER;
+import static nigel.com.werfleider.util.ParseStringUtils.YARD_AREA_CODE;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_CITY;
 
 /**
  * Created by nigel on 14/04/15.
  */
 @ParseClassName("Werf")
-public class Yard extends ParseObject implements WerfInt{
+public class Yard extends ParseObject {
 
-    @Override public String getNaam() {
+    public String getNaam() {
 
         return getString(NAME);
     }
 
-    @Override public Yard setNaam(final String naam) {
+    public Yard setNaam(final String naam) {
 
         put(NAME, naam);
         return this;
     }
 
-    @Override public String getNummer() {
+    public String getNummer() {
 
         return getString(NUMBER);
     }
 
-    @Override public Yard setNummer(final String nummer) {
+    public Yard setNummer(final String nummer) {
 
         put(NUMBER, nummer);
         return this;
     }
 
-    @Override public String getOpdrachtAdres() {
+
+    public String getYardAddress() {
 
         return getString(YARD_ADDRESS);
     }
 
-    @Override public Yard setOpdrachtAdres(final String opdrachtAdres) {
+    public Yard setYardAdress(final String yardAdress) {
 
-        put(YARD_ADDRESS, opdrachtAdres);
+        put(YARD_ADDRESS, yardAdress);
         return this;
     }
 
-    @Override public String getOpdrachtStad() {
+    public String getYardAddressNumber() {
+
+        return getString(ParseStringUtils.YARD_ADDRESS_NUMBER);
+    }
+
+    public Yard setYardAddressNumber(final String yardAddressNumber) {
+
+        put(YARD_ADDRESS_NUMBER, yardAddressNumber);
+        return this;
+    }
+
+    public String getYardAreaCode() {
+
+        return getString(ParseStringUtils.YARD_AREA_CODE);
+    }
+
+    public Yard setYardAreaCode(final String areaCode) {
+
+        put(YARD_AREA_CODE, areaCode);
+        return this;
+    }
+
+    public String getYardCity() {
 
         return getString(YARD_CITY);
     }
 
-    @Override public Yard setOpdrachtStad(final String opdrachtStad) {
+    public Yard setYardCity(final String yardCity) {
 
-        put(YARD_CITY, opdrachtStad);
+        put(YARD_CITY, yardCity);
         return this;
     }
 
-    @Override public String getOntwerper() {
 
-        return getString(DESIGNER);
-    }
 
-    @Override public Yard setOntwerper(final String ontwerper) {
-
-        put(DESIGNER, ontwerper);
-        return this;
-    }
-
-    @Override public String getOntwerperStad() {
-
-        return getString(DESIGNER_CITY);
-    }
-
-    @Override public Yard setOntwerperStad(final String ontwerperStad) {
-
-        put(DESIGNER_CITY, ontwerperStad);
-        return this;
-    }
-
-    @Override public String getOntwerperAdres() {
-
-        return getString(DESIGNER_ADDRESS);
-    }
-
-    @Override public Yard setOntwerperAdres(final String ontwerperAdres) {
-
-        put(DESIGNER_ADDRESS, ontwerperAdres);
-        return this;
-    }
-
-    @Override public String getOpdrachtgever() {
-
-        return getString(CONTRACTOR);
-    }
-
-    @Override public Yard setOpdrachtgever(final String opdrachtgever) {
-
-        put(CONTRACTOR, opdrachtgever);
-        return this;
-    }
-
-    @Override public String getOpdrachtgeverAdres() {
-
-        return getString(CONTRACTOR_ADDRESS);
-    }
-
-    @Override public Yard setOpdrachtgeverAdres(final String opdrachtgeverAdres) {
-
-        put(CONTRACTOR_ADDRESS, opdrachtgeverAdres);
-        return this;
-    }
-
-    @Override public String getOpdrachtgeverStad() {
-
-        return getString(CONTRACTOR_CITY);
-    }
-
-    @Override public Yard setOpdrachtgeverStad(final String opdrachtgeverStad) {
-
-        put(CONTRACTOR_CITY, opdrachtgeverStad);
-        return this;
-    }
-
-    @Override public String getOmschrijving() {
+    public String getOmschrijving() {
 
         return getString(DEFINITION);
     }
 
-    @Override public Yard setOmschrijving(final String omschrijving) {
+    public Yard setOmschrijving(final String omschrijving) {
 
         put(DEFINITION, omschrijving);
         return this;
     }
 
-    @Override public DateTime getDatumAanvang() {
+    public DateTime getDatumAanvang() {
 
         return new DateTime(getString(DATE_START_WORK));
     }
 
-    @Override public Yard setDatumAanvang(final DateTime datumAanvang) {
+    public Yard setDatumAanvang(final DateTime datumAanvang) {
 
         put(DATE_START_WORK, datumAanvang.toString());
         return this;
     }
 
 
-    @Override public ParseUser getAuthor() {
+    public String getTermijn() {
+
+        return getString(ParseStringUtils.DEADLINE);
+    }
+
+    public Yard setTermijn(final String termijn) {
+
+        put(DEADLINE, termijn);
+        return this;
+    }
+
+
+    public String getArchitectNaam() {
+
+        return getString(DESIGNER);
+    }
+
+    public Yard setArchitectNaam(final String ontwerper) {
+
+        put(DESIGNER, ontwerper);
+        return this;
+    }
+
+    public String getArchitectTelefoon() {
+
+        return getString(DESIGNER_PHONE);
+    }
+
+    public Yard setArchitectTelefoon(final String telefoon) {
+
+        put(DESIGNER_PHONE, telefoon);
+        return this;
+    }
+
+    public String getArchitectEmail() {
+
+        return getString(DESIGNER_EMAIL);
+    }
+
+    public Yard setArchitectEmail(final String email) {
+
+        put(DESIGNER_EMAIL, email);
+        return this;
+    }
+
+    public String getBouwheerNaam() {
+
+        return getString(CONTRACTOR);
+    }
+
+    public Yard setBouwHeerNaam(final String bouwHeerNaam) {
+
+        put(CONTRACTOR, bouwHeerNaam);
+        return this;
+    }
+
+    public String getBouwheerTelefoon() {
+
+        return getString(CONTRACTOR_PHONE);
+    }
+
+    public Yard setBouwheerTelefoon(final String bouwheerTelefoon) {
+
+        put(CONTRACTOR_PHONE, bouwheerTelefoon);
+        return this;
+    }
+
+    public String getBouwheerEmail() {
+
+        return getString(CONTRACTOR_EMAIL);
+    }
+
+    public Yard setBouwheerEmail(final String email) {
+
+        put(CONTRACTOR_EMAIL, email);
+        return this;
+    }
+    public String getIngenieurNaam() {
+
+        return getString(ENGINEER);
+    }
+
+    public Yard setIngenieurNaam(final String naam) {
+
+        put(ENGINEER, naam);
+        return this;
+    }
+
+    public String getIngenieurTelefoon() {
+
+        return getString(ENGINEER_PHONE);
+    }
+
+    public Yard setIngenieurTelefoon(final String bouwheerTelefoon) {
+
+        put(ENGINEER_PHONE, bouwheerTelefoon);
+        return this;
+    }
+
+    public String getIngenieurEmail() {
+
+        return getString(ENGINEER_EMAIL);
+    }
+
+    public Yard setIngenieurEmail(final String email) {
+
+        put(ENGINEER_EMAIL, email);
+        return this;
+    }
+
+
+    public ParseUser getAuthor() {
         return getParseUser(AUTHOR);
     }
 
-    @Override public Yard setAuthor(ParseUser user) {
+    public Yard setAuthor(ParseUser user) {
         put(AUTHOR, user);
         return this;
     }
 
-    @Override public Yard setCreator(final String creator) {
+    public Yard setCreator(final String creator) {
         put(CREATOR, creator);
         return this;
     }
 
-    @Override public String getId() {
+    public String getId() {
 
         return getObjectId();
     }

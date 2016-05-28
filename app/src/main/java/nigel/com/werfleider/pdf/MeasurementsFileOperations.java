@@ -234,7 +234,7 @@ public class MeasurementsFileOperations {
 
     PdfPCell cell;
     // we add a cell with colspan 3
-    cell = new PdfPCell(new Phrase(yard.getOntwerper()));
+    cell = new PdfPCell(new Phrase(yard.getArchitectNaam()));
     cell.setColspan(4);
     cell.setRowspan(2);
     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -256,7 +256,7 @@ public class MeasurementsFileOperations {
     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
     table.addCell(cell);
 
-    cell = new PdfPCell(new Phrase("Opdrachtgever: " + yard.getOpdrachtgever()));
+    cell = new PdfPCell(new Phrase("Opdrachtgever: " + yard.getBouwheerNaam()));
     cell.setColspan(5);
     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
     table.addCell(cell);
@@ -266,7 +266,7 @@ public class MeasurementsFileOperations {
     cell.setColspan(2);
     table.addCell(cell);
 
-    cell = new PdfPCell(new Phrase(yard.getOntwerperStad()));
+    cell = new PdfPCell(new Phrase(yard.getArchitectNaam()));
     cell.setColspan(4);
     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
     table.addCell(cell);
@@ -280,7 +280,7 @@ public class MeasurementsFileOperations {
     cell.setColspan(2);
     table.addCell(cell);
 
-    table.addCell(getSmallFontPdfCell(yard.getOpdrachtAdres(), 11));
+    table.addCell(getSmallFontPdfCell(yard.getYardAddress(), 11));
     table.addCell(getSmallFontPdfCell("", 1));
     table.addCell(getSmallFontPdfCell("art.", 1));
     table.addCell(getSmallFontPdfCell("beschrijving", 3));

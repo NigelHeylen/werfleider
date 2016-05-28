@@ -54,7 +54,7 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
 
     holder.container.setOnClickListener(v -> flow.goTo(new YardDetailScreen(werf, yardType)));
 
-    holder.edit.setOnClickListener(v -> flow.goTo(new WerfCreateScreen(werf)));
+    holder.edit.setOnClickListener(v -> flow.goTo(new YardCreateScreen(werf)));
 
     holder.delete.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
     holder.edit.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);

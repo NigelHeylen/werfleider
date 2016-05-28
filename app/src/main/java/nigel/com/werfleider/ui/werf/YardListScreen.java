@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Contact;
@@ -152,7 +151,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
     public void handleCreate() {
 
-      flow.goTo(new WerfCreateScreen());
+      flow.goTo(new YardCreateScreen());
     }
 
     public void setYardType(YardType yardType) {

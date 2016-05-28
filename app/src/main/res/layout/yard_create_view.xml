@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.werf.YardCreateView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <android.support.v7.widget.CardView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:layout_margin="4dp">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:padding="8dp"
+          android:orientation="vertical">
+
+        <TextView
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Werf details"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_naam"
+            style="@style/Werf.Create.EditText"
+            android:hint="Werf naam"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_nummer"
+            style="@style/Werf.Create.EditText"
+            android:hint="Werf nummer"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+          <com.rengwuxian.materialedittext.MaterialEditText
+              android:id="@+id/werf_create_opdracht_adres"
+              android:hint="Werf adres"
+              android:layout_toLeftOf="@+id/werf_create_opdracht_adres_nummer"
+              style="@style/Werf.Create.EditText"/>
+
+          <com.rengwuxian.materialedittext.MaterialEditText
+              android:id="@+id/werf_create_opdracht_adres_nummer"
+              android:hint="Nr"
+              android:layout_marginLeft="16dp"
+              android:layout_width="50dp"
+              android:layout_alignParentRight="true"
+              style="@style/Werf.Create.EditText"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+          <com.rengwuxian.materialedittext.MaterialEditText
+              android:id="@+id/werf_create_opdracht_stad"
+              android:hint="Werf stad"
+              android:layout_toLeftOf="@+id/werf_create_opdracht_postcode"
+              style="@style/Werf.Create.EditText"/>
+
+          <com.rengwuxian.materialedittext.MaterialEditText
+              android:id="@+id/werf_create_opdracht_postcode"
+              android:hint="Code"
+              android:layout_marginLeft="16dp"
+              android:layout_width="50dp"
+              android:layout_alignParentRight="true"
+              style="@style/Werf.Create.EditText"/>
+        </RelativeLayout>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_omschrijving"
+            android:hint="Omschrijving der werken"
+            style="@style/Werf.Create.EditText"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:text="Datum aanvang van werken"
+            android:textColor="#888888"
+            android:textSize="14sp"/>
+
+        <DatePicker
+            android:id="@+id/werf_create_datum_aanvang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"/>
+
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_termijn"
+            android:hint="Termijn"
+            style="@style/Werf.Create.EditText"/>
+
+      </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:padding="8dp"
+          android:orientation="vertical">
+
+
+        <TextView
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Architect details"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_architect"
+            style="@style/Werf.Create.EditText"
+            android:inputType="textPersonName"
+            android:hint="Architect naam"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_architect_telefoon"
+            style="@style/Werf.Create.EditText"
+            android:inputType="phone"
+            android:hint="Architect telefoon"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_architect_email"
+            style="@style/Werf.Create.EditText"
+            android:inputType="textEmailAddress"
+            android:hint="Architect email"
+        />
+
+
+      </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:padding="8dp">
+
+        <TextView
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Bouwheer details"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_bouwheer"
+            android:inputType="textPersonName"
+            style="@style/Werf.Create.EditText"
+            android:hint="Bouwheer naam"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_bouwheer_telefoon"
+            android:hint="Bouwheer telefoon"
+            android:inputType="phone"
+            style="@style/Werf.Create.EditText"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_bouwheer_email"
+            android:hint="Bouwheer email"
+            android:inputType="textEmailAddress"
+            style="@style/Werf.Create.EditText"/>
+      </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:padding="8dp">
+
+
+        <TextView
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Ingenieur details"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_ingenieur"
+            style="@style/Werf.Create.EditText"
+            android:inputType="textPersonName"
+            android:hint="Ingenieur naam"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_ingenieur_telefoon"
+            android:hint="Ingenieur telefoon"
+            android:inputType="phone"
+            style="@style/Werf.Create.EditText"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/werf_create_ingenieur_email"
+            android:inputType="textEmailAddress"
+            android:hint="Ingenieur email"
+            style="@style/Werf.Create.EditText"/>
+
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/werf_create_save"
+            android:layout_gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:text="@string/tSave"/>
+
+      </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+  </LinearLayout>
+
+</nigel.com.werfleider.ui.werf.YardCreateView>
