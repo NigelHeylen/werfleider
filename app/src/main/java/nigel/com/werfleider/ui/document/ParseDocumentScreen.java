@@ -41,7 +41,6 @@ import static android.view.View.GONE;
 import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.commons.load.Load.LOCAL;
 import static nigel.com.werfleider.commons.load.Load.NETWORK;
-import static nigel.com.werfleider.model.DocumentType.OPMERKINGEN;
 import static nigel.com.werfleider.model.DocumentType.OPMETINGEN;
 import static nigel.com.werfleider.util.ParseStringUtils.CREATED_AT;
 import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_ID;
@@ -220,16 +219,6 @@ import static rx.schedulers.Schedulers.io;
       location.setDocumentId(document)
           .setMeasuringUnit(MeasuringUnit.M)
           .setAuthor(ParseUser.getCurrentUser());
-
-      location.pinInBackground(e -> {
-
-        if (e == null) {
-          adapterData.add(location);
-          adapter.notifyItemInserted(adapterData.size() - 1);
-        }
-      });
-
-      location.saveEventually();
 
       flow.goTo(new ParsePictureGridScreen(document, location, yard));
     }

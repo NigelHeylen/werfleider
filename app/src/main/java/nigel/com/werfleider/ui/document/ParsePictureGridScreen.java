@@ -292,7 +292,7 @@ import static rx.schedulers.Schedulers.io;
 
               final DocumentImage item =
                   new DocumentImage().setImageURL(cursor.getString(dataColumnIndex))
-                      .setCreatedDate(new Date(cursor.getLong(dataAddedIndex)));
+                      .setCreatedDate(new Date(cursor.getLong(dataAddedIndex) * 1000));
 
               documentImages.add(item);
             }
@@ -312,6 +312,7 @@ import static rx.schedulers.Schedulers.io;
 
     public void handleSave() {
 
+      location.pinInBackground();
       location.saveEventually();
       saveImages();
       flow.goTo(new LocationDetailScreen(document, yard, location));

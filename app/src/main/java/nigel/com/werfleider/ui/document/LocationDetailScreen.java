@@ -244,36 +244,38 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
         if (e == null) {
 
-          for (ParseDocumentImage image : list) {
+          if(getView() != null) {
+            for (ParseDocumentImage image : list) {
 
-            if (!adapterData.contains(image)) {
+              if (!adapterData.contains(image)) {
 
-              adapterData.add(image);
+                adapterData.add(image);
+              }
             }
-          }
-          ParseObject.pinAllInBackground(list);
-          adapter.notifyDataSetChanged();
+            ParseObject.pinAllInBackground(list);
+            adapter.notifyDataSetChanged();
 
-          if (!adapterData.isEmpty()) {
-            documentImageBus.onNext(adapterData.get(0));
+            if (!adapterData.isEmpty()) {
+              documentImageBus.onNext(adapterData.get(0));
 
-            getView().showContentView();
-          } else {
+              getView().showContentView();
+            } else {
+
+              if (getView() != null) {
+
+                getView().showEmptyView();
+              }
+            }
+
+            if (load == LOCAL) {
+
+              loadData(NETWORK);
+            }
 
             if (getView() != null) {
 
-              getView().showEmptyView();
+              getView().imageList.scrollToPosition(0);
             }
-          }
-
-          if (load == LOCAL) {
-
-            loadData(NETWORK);
-          }
-
-          if(getView() != null){
-
-            getView().imageList.scrollToPosition(0);
           }
         } else {
           e.printStackTrace();

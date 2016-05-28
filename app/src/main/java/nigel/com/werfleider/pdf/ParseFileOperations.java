@@ -52,7 +52,7 @@ import static org.joda.time.DateTime.now;
 
 public class ParseFileOperations {
 
-  public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
+  public static final String DATE_FORMAT = "dd-MM-yyyy";
 
   final static Font titleFont = new Font(Font.FontFamily.HELVETICA, 24);
 
@@ -227,13 +227,23 @@ public class ParseFileOperations {
           final PdfPCell descriptionCell = new PdfPCell();
 
           descriptionCell.addElement(new Phrase(
-              format("%s\n%s\n\n", documentImage.getFloor(), documentImage.getLocation())));
+              format(Locale.ENGLISH, "Afb. %d\nGenomen op %s",
+                  index, new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT)), paragraphFont));
+          if(!isNullOrEmpty(documentImage.getFloor())) {
+            descriptionCell.addElement(new Phrase(
+                format("\n%s", documentImage.getFloor())));
+          }
+
+          if(!isNullOrEmpty(documentImage.getLocation())){
+            descriptionCell.addElement(new Phrase(
+                format("\n%s", documentImage.getLocation())));
+
+          }
+
           descriptionCell.addElement(new Phrase(
               isNullOrEmpty(documentImage.getTitle()) ? documentImage.getTitle()
-                  : format("%s\n", documentImage.getTitle())));
+                  : format("\n\n%s\n", documentImage.getTitle())));
           descriptionCell.addElement(new Phrase(documentImage.getDescription()));
-          descriptionCell.addElement(new Phrase(format(Locale.ENGLISH, "\n\nGenomen op %s\nImage %d",
-              new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT), index)));
 
           table.addCell(descriptionCell);
 
