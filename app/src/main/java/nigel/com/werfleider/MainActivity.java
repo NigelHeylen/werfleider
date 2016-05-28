@@ -26,9 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.ButterKnife;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseSession;
 import com.parse.ParseUser;
 import flow.Flow;
 import javax.inject.Inject;
@@ -207,12 +204,7 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
     super.onResume();
 
     if(ParseUser.getCurrentUser() != null){
-      ParseSession.getCurrentSessionInBackground(new GetCallback<ParseSession>() {
-        @Override public void done(ParseSession object, ParseException e) {
 
-          if(object.getDate())
-        }
-      });
       final SharedPreferences privatePref = getSharedPreferences(USER, MODE_PRIVATE);
       ParseUser.logInInBackground(privatePref.getString(EMAIL, ""),
           privatePref.getString(PASSWORD, ""), (user, e) -> {
@@ -221,7 +213,6 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
               mainFlow.goTo(new LoginScreen());
               Toast.makeText(this, "Foutieve gebruiker gegevens. Gelieve opnieuw aan te melden", Toast.LENGTH_LONG).show();
             }
-            System.out.println("user = " + user);
           });
     }
   }
