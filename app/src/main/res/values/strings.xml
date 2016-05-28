@@ -14,8 +14,8 @@
   <string name="tBemerkingen">Bemerkingen</string>
   <string name="tInvites">Invites</string>
   <string name="tContacts">Contacts</string>
-  <string name="tInvitedYards">Invited Yards</string>
-  <string name="tMyYards">My Yards</string>
+  <string name="tInvitedYards">Andere werven</string>
+  <string name="tMyYards">Mijn werven</string>
   <string name="tOpenCamera">Click here to open your camera app.</string>
   <string name="tSaved">Saved</string>
   <string name="tNew">New</string>
@@ -41,5 +41,6 @@
     bottom right.</string>
   <string name="tNoPostsFound">No posts were found. Create one by clicking the button on the
     bottom right.</string>
+  <string name="tWerven">Werven</string>
 
 </resources>

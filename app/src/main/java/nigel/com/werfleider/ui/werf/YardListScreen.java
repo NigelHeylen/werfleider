@@ -63,8 +63,6 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
   static class Presenter extends ViewPresenter<YardListView> {
 
-    @Inject ActionBarOwner actionBarOwner;
-
     @Inject Flow flow;
 
     final List<Yard> adapterData = newArrayList();
@@ -83,8 +81,6 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
     }
 
     private void initPresenter() {
-      actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, "Yards", null));
-
       initView();
 
       loadData(LOCAL);

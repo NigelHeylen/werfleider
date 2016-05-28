@@ -16,6 +16,9 @@ import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.model.DocumentType;
+import nigel.com.werfleider.model.ParseDocument;
+
+import static java.lang.String.format;
 
 /**
  * Created by nigel on 25/11/14.
@@ -23,6 +26,8 @@ import nigel.com.werfleider.model.DocumentType;
 public class ParseDocumentView extends FrameLayout {
 
   @Inject ParseDocumentScreen.Presenter presenter;
+
+  @Inject ParseDocument document;
 
   @Bind(R.id.document_locations) RecyclerView locations;
 
@@ -53,7 +58,7 @@ public class ParseDocumentView extends FrameLayout {
       presenter.takeView(this);
 
       actionBarOwner.setConfig(
-          new ActionBarOwner.Config(false, true, presenter.document.getDocumentType().toString(),
+          new ActionBarOwner.Config(false, true, format("%s: %s",document.getDocumentType().toString(), document.getName()),
               new ActionBarOwner.MenuAction(getContext().getString(R.string.tGeneratePdf),
                   () -> presenter.generatePdf(), R.drawable.ic_pdf)));
 

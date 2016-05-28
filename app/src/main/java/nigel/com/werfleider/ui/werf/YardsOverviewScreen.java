@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.ui.home.HomeScreen;
 
@@ -45,10 +46,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
   static class YardsOverviewPresenter extends ViewPresenter<YardsOverviewView> {
 
-    private YardsOverViewAdapter adapter;
-
-    @Inject public YardsOverviewPresenter() {
-    }
+    @Inject ActionBarOwner actionBarOwner;
 
     @Override protected void onLoad(final Bundle savedInstanceState) {
 
@@ -60,7 +58,9 @@ import static com.google.common.collect.Lists.newArrayList;
 
     private void initView() {
 
-      getView().pager.setAdapter(adapter = new YardsOverViewAdapter(getView().getContext()));
+      actionBarOwner.setConfig(
+          new ActionBarOwner.Config(false, true, getView().getContext().getString(R.string.tWerven),
+              null));
     }
   }
 }

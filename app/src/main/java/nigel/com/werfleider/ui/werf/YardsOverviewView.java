@@ -38,6 +38,7 @@ public class YardsOverviewView extends LinearLayout {
       ButterKnife.bind(this);
       presenter.takeView(this);
 
+      pager.setAdapter(new YardsOverViewAdapter(getContext()));
       tabStrip.setViewPager(pager);
     }
   }

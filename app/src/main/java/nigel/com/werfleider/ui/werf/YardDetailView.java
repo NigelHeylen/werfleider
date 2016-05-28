@@ -7,13 +7,20 @@ import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.astuetz.PagerSlidingTabStrip;
+import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.android.ActionBarOwner;
+import nigel.com.werfleider.model.Yard;
 
 /**
  * Created by nigel on 17/04/15.
  */
 public class YardDetailView extends LinearLayout {
+
+    @Inject ActionBarOwner actionBarOwner;
+
+    @Inject Yard yard;
 
     @Bind(R.id.yard_document_pager) ViewPager documentPager;
     @Bind(R.id.yard_document_tabs) PagerSlidingTabStrip documentTabs;
@@ -36,6 +43,11 @@ public class YardDetailView extends LinearLayout {
     }
 
     protected void initView() {
+
+
+        actionBarOwner.setConfig(
+            new ActionBarOwner.Config(false, true, yard.getNaam(),
+                null));
 
         documentPager.setAdapter(new YardDetailDocumentAdapter(getContext()));
         documentPager.setOffscreenPageLimit(1);

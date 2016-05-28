@@ -10,6 +10,10 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.android.ActionBarOwner;
+import nigel.com.werfleider.model.DocumentType;
+
+import static java.lang.String.format;
 
 /**
  * Created by nigel on 09/01/16.
@@ -18,9 +22,13 @@ public class DocumentCreateView extends ScrollView {
 
   @Inject DocumentCreateScreen.DocumentCreatePresenter presenter;
 
+  @Inject DocumentType type;
+
+  @Inject ActionBarOwner actionBarOwner;
+
   @Bind(R.id.document_name) MaterialEditText name;
 
-  @OnClick(R.id.document_save) public void save(){
+  @OnClick(R.id.document_save) public void save() {
 
     presenter.save(name.getText().toString());
   }
@@ -40,6 +48,9 @@ public class DocumentCreateView extends ScrollView {
     if (!isInEditMode()) {
       ButterKnife.bind(this);
       presenter.takeView(this);
+      actionBarOwner.setConfig(
+          new ActionBarOwner.Config(false, true, format("Nieuw %s document", type.toString()),
+              null));
     }
   }
 

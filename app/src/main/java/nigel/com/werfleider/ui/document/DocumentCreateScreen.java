@@ -4,6 +4,7 @@ import android.os.Bundle;
 import com.parse.ParseUser;
 import dagger.Provides;
 import flow.Flow;
+import flow.HasParent;
 import flow.Layout;
 import javax.inject.Inject;
 import mortar.Blueprint;
@@ -13,12 +14,14 @@ import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.ParseDocument;
 import nigel.com.werfleider.model.Yard;
+import nigel.com.werfleider.ui.werf.YardDetailScreen;
 
 /**
  * Created by nigel on 09/01/16.
  */
 
-@Layout(R.layout.document_create_view) public class DocumentCreateScreen implements Blueprint {
+@Layout(R.layout.document_create_view) public class DocumentCreateScreen implements Blueprint,
+    HasParent<YardDetailScreen> {
 
   private final Yard yard;
   private final DocumentType documentType;
@@ -44,6 +47,10 @@ import nigel.com.werfleider.model.Yard;
   @Override public Object getDaggerModule() {
 
     return new Module(yard, documentType, document);
+  }
+
+  @Override public YardDetailScreen getParent() {
+    return new YardDetailScreen(yard);
   }
 
   @dagger.Module(

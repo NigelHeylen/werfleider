@@ -1,13 +1,10 @@
 package nigel.com.werfleider.ui.werf;
 
-import android.os.Bundle;
 import dagger.Provides;
 import flow.HasParent;
 import flow.Layout;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import mortar.Blueprint;
-import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Yard;
@@ -66,18 +63,5 @@ import static com.google.common.collect.Lists.newArrayList;
 
       return werf;
     }
-  }
-
-  @Singleton static class Presenter extends ViewPresenter<YardDetailView> {
-
-    @Inject public Presenter() {
-    }
-
-    @Override protected void onLoad(Bundle savedInstanceState) {
-      super.onLoad(savedInstanceState);
-      if(getView() == null) return;
-      getView().initView();
-    }
-
   }
 }
