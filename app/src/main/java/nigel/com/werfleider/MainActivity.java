@@ -17,13 +17,19 @@ package nigel.com.werfleider;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import butterknife.ButterKnife;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseSession;
+import com.parse.ParseUser;
 import flow.Flow;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -33,6 +39,7 @@ import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainView;
+import nigel.com.werfleider.ui.login.LoginScreen;
 
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
@@ -40,6 +47,10 @@ import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
 
 public class MainActivity extends AppCompatActivity implements ActionBarOwner.View,
     StartActivityForResultPresenter.Activity {
+
+  public static final String EMAIL = "PRIVATE_EMAIL";
+  public static final String PASSWORD = "PRIVATE_PASSWORD";
+  public static final String USER = "PRIVATE_USER";
 
   private MortarActivityScope activityScope;
   private ActionBarOwner.MenuAction actionBarMenuAction;
@@ -78,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
     actionBarOwner.takeView(this);
 
     startActivityForResultPresenter.takeView(this);
+
   }
 
   @Override public Object getSystemService(String name) {
@@ -191,4 +203,26 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
     startActivityForResultPresenter.onActivityResult(requestCode, resultCode, data);
   }
 
+  @Override protected void onResume() {
+    super.onResume();
+
+    if(ParseUser.getCurrentUser() != null){
+      ParseSession.getCurrentSessionInBackground(new GetCallback<ParseSession>() {
+        @Override public void done(ParseSession object, ParseException e) {
+
+          if(object.getDate())
+        }
+      });
+      final SharedPreferences privatePref = getSharedPreferences(USER, MODE_PRIVATE);
+      ParseUser.logInInBackground(privatePref.getString(EMAIL, ""),
+          privatePref.getString(PASSWORD, ""), (user, e) -> {
+
+            if(e != null){
+              mainFlow.goTo(new LoginScreen());
+              Toast.makeText(this, "Foutieve gebruiker gegevens. Gelieve opnieuw aan te melden", Toast.LENGTH_LONG).show();
+            }
+            System.out.println("user = " + user);
+          });
+    }
+  }
 }
