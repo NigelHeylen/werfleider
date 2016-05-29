@@ -6,7 +6,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -22,9 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.MeasuringUnit;
 import org.joda.time.DateTime;
@@ -46,10 +45,10 @@ public class MeasurementsFileOperations {
     this.context = context;
   }
 
-  public boolean writeDocument(final Yard yard, final ParseDocument parseDocument,
-      final Multimap<ParseDocumentLocation, ParseDocumentImage> documentMap) {
+  public boolean writeDocument(final Yard yard, final Document parseDocument,
+      final Multimap<DocumentLocation, ParseDocumentImage> documentMap) {
 
-    Document document = new Document(PageSize.A4, 0, 10, 50, 0);
+    com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4, 0, 10, 50, 0);
     try {
 
       final File path = Environment.getExternalStoragePublicDirectory(
@@ -89,14 +88,14 @@ public class MeasurementsFileOperations {
   }
 
   public static PdfPTable createTable(final Yard yard,
-      final Multimap<ParseDocumentLocation, ParseDocumentImage> documentMap) {
+      final Multimap<DocumentLocation, ParseDocumentImage> documentMap) {
 
     // a table with three columns
     PdfPTable table = new PdfPTable(12);
     // the cell object
     addHeaders(table, yard);
 
-    for (ParseDocumentLocation location : documentMap.keySet()) {
+    for (DocumentLocation location : documentMap.keySet()) {
 
       addLocationHeader(table, location, documentMap.get(location));
 
@@ -156,7 +155,7 @@ public class MeasurementsFileOperations {
     table.addCell(getSmallFontPdfCell("", 1));
   }
 
-  private static void addLocationRow(PdfPTable table, ParseDocumentLocation location,
+  private static void addLocationRow(PdfPTable table, DocumentLocation location,
       String imageLocation, final List<ParseDocumentImage> images) {
 
     table.addCell(getSmallFontPdfCell("", 1));
@@ -172,7 +171,7 @@ public class MeasurementsFileOperations {
     table.addCell(getSmallFontPdfCell(images.get(0).getMS(), 1));
   }
 
-  private static void addFloorRow(PdfPTable table, ParseDocumentLocation location, String floor,
+  private static void addFloorRow(PdfPTable table, DocumentLocation location, String floor,
       Collection<ParseDocumentImage> imageCollection) {
 
     table.addCell(getSmallFontPdfCell("", 1));
@@ -214,7 +213,7 @@ public class MeasurementsFileOperations {
     table.addCell(getSmallFontPdfCell("", 1));
   }
 
-  private static void addLocationHeader(PdfPTable table, ParseDocumentLocation location,
+  private static void addLocationHeader(PdfPTable table, DocumentLocation location,
       Collection<ParseDocumentImage> images) {
 
     table.addCell(getSmallFontPdfCell(location.getArtNr(), 1));

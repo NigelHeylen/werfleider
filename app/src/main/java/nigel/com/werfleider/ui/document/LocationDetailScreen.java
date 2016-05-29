@@ -24,9 +24,9 @@ import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import rx.subjects.BehaviorSubject;
@@ -46,14 +46,14 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 @Layout(R.layout.parsedocument_location_detail_view) public class LocationDetailScreen
     implements Blueprint, HasParent<ParseDocumentScreen> {
 
-  private final ParseDocument document;
+  private final Document document;
 
   private final Yard yard;
 
-  private final ParseDocumentLocation location;
+  private final DocumentLocation location;
 
-  public LocationDetailScreen(final ParseDocument document, final Yard yard,
-      final ParseDocumentLocation location) {
+  public LocationDetailScreen(final Document document, final Yard yard,
+      final DocumentLocation location) {
 
     this.document = document;
     this.yard = yard;
@@ -86,13 +86,13 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
       },
       addsTo = CorePresenter.Module.class) static class Module {
 
-    private final ParseDocument document;
+    private final Document document;
 
     private final Yard yard;
 
-    private final ParseDocumentLocation location;
+    private final DocumentLocation location;
 
-    Module(final ParseDocument document, final Yard yard, final ParseDocumentLocation location) {
+    Module(final Document document, final Yard yard, final DocumentLocation location) {
 
       this.document = document;
       this.location = location;
@@ -104,12 +104,12 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
       return yard;
     }
 
-    @Provides @Singleton ParseDocument provideDocument() {
+    @Provides @Singleton Document provideDocument() {
 
       return document;
     }
 
-    @Provides @Singleton ParseDocumentLocation provideLocation() {
+    @Provides @Singleton DocumentLocation provideLocation() {
 
       return location;
     }
@@ -128,9 +128,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
   @Singleton public static class Presenter extends ReactiveViewPresenter<LocationDetailView> {
 
-    @Inject ParseDocument document;
+    @Inject Document document;
 
-    @Inject ParseDocumentLocation location;
+    @Inject DocumentLocation location;
 
     @Inject Yard yard;
 

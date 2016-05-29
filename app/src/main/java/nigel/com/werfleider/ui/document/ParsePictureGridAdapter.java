@@ -18,7 +18,7 @@ import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.DocumentImage;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 
 /**
  * Created by nigel on 03/12/14.
@@ -31,7 +31,7 @@ public class ParsePictureGridAdapter extends RecyclerView.Adapter<ParsePictureGr
 
     @Inject Picasso pablo;
 
-    public ParsePictureGridAdapter(final Context context, final ParseDocumentLocation parseDocumentLocation) {
+    public ParsePictureGridAdapter(final Context context, final DocumentLocation documentLocation) {
 
         Mortar.inject(
                 context,

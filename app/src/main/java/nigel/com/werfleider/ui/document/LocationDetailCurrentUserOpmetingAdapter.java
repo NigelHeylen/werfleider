@@ -10,14 +10,14 @@ import com.parse.ParseUser;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 
 /**
  * Created by nigel on 26/12/15.
  */
 public class LocationDetailCurrentUserOpmetingAdapter extends PagerAdapter {
 
-  @Inject ParseDocument document;
+  @Inject Document document;
 
   public LocationDetailCurrentUserOpmetingAdapter(Context context) {
 

@@ -18,8 +18,8 @@ import java.util.List;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.ParseDocument;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.Document;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.location.LocationEditScreen;
 
@@ -35,7 +35,7 @@ public class ParseDocumentLocationAdapter
   private final Context context;
   private final View parent;
 
-  @Inject ParseDocument document;
+  @Inject Document document;
 
   @Inject Picasso pablo;
 
@@ -43,7 +43,7 @@ public class ParseDocumentLocationAdapter
 
   @Inject Yard yard;
 
-  @Inject List<ParseDocumentLocation> locations;
+  @Inject List<DocumentLocation> locations;
 
   public ParseDocumentLocationAdapter(final Context context, View parent) {
     this.context = context;
@@ -62,7 +62,7 @@ public class ParseDocumentLocationAdapter
 
   @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-    final ParseDocumentLocation location = locations.get(position);
+    final DocumentLocation location = locations.get(position);
 
     holder.title.setText(location.getTitle());
 

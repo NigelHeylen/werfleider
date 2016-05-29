@@ -27,9 +27,9 @@ import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
 import nigel.com.werfleider.model.DocumentImage;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.ui.widget.HeaderViewRecyclerAdapter;
@@ -47,13 +47,13 @@ import static rx.schedulers.Schedulers.io;
 @Layout(R.layout.parsepicture_grid) public class ParsePictureGridScreen
     implements Blueprint, HasParent<Blueprint> {
 
-  private final ParseDocument document;
+  private final Document document;
 
-  private final ParseDocumentLocation location;
+  private final DocumentLocation location;
 
   private final Yard yard;
 
-  public ParsePictureGridScreen(final ParseDocument document, final ParseDocumentLocation location,
+  public ParsePictureGridScreen(final Document document, final DocumentLocation location,
       final Yard yard) {
 
     this.document = document;
@@ -83,13 +83,13 @@ import static rx.schedulers.Schedulers.io;
       },
       addsTo = CorePresenter.Module.class) static class Module {
 
-    private final ParseDocument document;
+    private final Document document;
 
-    private final ParseDocumentLocation location;
+    private final DocumentLocation location;
 
     private final Yard yard;
 
-    public Module(final ParseDocument document, final ParseDocumentLocation location,
+    public Module(final Document document, final DocumentLocation location,
         final Yard yard) {
 
       this.document = document;
@@ -97,12 +97,12 @@ import static rx.schedulers.Schedulers.io;
       this.yard = yard;
     }
 
-    @Provides @Singleton ParseDocument provideDocument() {
+    @Provides @Singleton Document provideDocument() {
 
       return document;
     }
 
-    @Provides @Singleton ParseDocumentLocation provideCollection() {
+    @Provides @Singleton DocumentLocation provideCollection() {
 
       return location;
     }
@@ -125,9 +125,9 @@ import static rx.schedulers.Schedulers.io;
 
   @Singleton public static class Presenter extends ReactiveViewPresenter<ParsePictureGridView> {
 
-    @Inject ParseDocumentLocation location;
+    @Inject DocumentLocation location;
 
-    @Inject ParseDocument document;
+    @Inject Document document;
 
     @Inject Yard yard;
 

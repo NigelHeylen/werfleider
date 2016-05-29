@@ -1,90 +1,58 @@
 package nigel.com.werfleider.model;
 
-import org.joda.time.DateTime;
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
-import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
+import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
+import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_TYPE;
+import static nigel.com.werfleider.util.ParseStringUtils.NAME;
+import static nigel.com.werfleider.util.ParseStringUtils.YARD_ID;
 
 /**
- * Created by nigel on 31/01/15.
+ * Created by nigel on 14/04/15.
  */
-public class Document {
+@ParseClassName("Document") public class Document extends ParseObject {
 
-    private int id;
+  public ParseObject getWerfId() {
 
-    private int werfId;
+    return getParseObject(YARD_ID);
+  }
 
-    private DocumentType documentType;
+  public Document setWerf(final Yard werf) {
 
-    private List<DocumentLocation> fotoReeksList = newArrayList();
+    put(YARD_ID, werf);
+    return this;
+  }
 
-    private DateTime createdAt;
+  public DocumentType getDocumentType() {
 
-    public Document() {
-    }
+    return DocumentType.valueOf(getString(DOCUMENT_TYPE));
+  }
 
-    public List<DocumentLocation> getFotoReeksList() {
-        return fotoReeksList;
-    }
+  public Document setDocumentType(final DocumentType documentType) {
 
-    public Document setFotoReeksList(final List<DocumentLocation> fotoReeksList) {
-        this.fotoReeksList = fotoReeksList;
-        return this;
-    }
+    put(DOCUMENT_TYPE, documentType.name());
+    return this;
+  }
 
-    public void add(final DocumentLocation collection) {
-        fotoReeksList.add(collection);
-    }
+  public ParseUser getAuthor() {
+    return getParseUser(AUTHOR);
+  }
 
-    public int getWerfId() {
-        return werfId;
-    }
+  public Document setAuthor(ParseUser user) {
+    put(AUTHOR, user);
+    return this;
+  }
 
-    public Document setWerfId(final int werfId) {
-        this.werfId = werfId;
-        return this;
-    }
+  public Document setName(final String name) {
 
-    public int getId() {
-        return id;
-    }
+    put(NAME, name);
+    return this;
+  }
 
-    public Document setId(final int id) {
-        this.id = id;
-        return this;
-    }
+  public String getName(){
 
-    public DateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Document setCreatedAt(final String createdAt) {
-        this.createdAt = new DateTime(createdAt);
-        return this;
-    }
-
-    public DocumentType getDocumentType() {
-        return documentType;
-    }
-
-    public Document setDocumentType(final DocumentType documentType) {
-        this.documentType = documentType;
-        return this;
-    }
-
-    public Document setCreatedAt(final DateTime createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    @Override public String toString() {
-        return "Document{" +
-                "id=" + id +
-                ", werfId=" + werfId +
-                ", documentType=" + documentType +
-                ", fotoReeksList=" + fotoReeksList +
-                ", createdAt=" + createdAt +
-                '}';
-    }
+    return getString(NAME);
+  }
 }

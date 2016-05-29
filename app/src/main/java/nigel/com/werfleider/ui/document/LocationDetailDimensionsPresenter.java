@@ -9,7 +9,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.List;
 import javax.inject.Inject;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.MeasuringUnit;
 import rx.subjects.BehaviorSubject;
@@ -28,7 +28,7 @@ public class LocationDetailDimensionsPresenter
 
   @Inject DocumentImageAdapterData imageList;
 
-  @Inject ParseDocumentLocation location;
+  @Inject DocumentLocation location;
 
   @Inject BehaviorSubject<ParseDocumentImage> documentImageBus;
 
@@ -81,7 +81,7 @@ public class LocationDetailDimensionsPresenter
     showOrHideEditTexts(location);
   }
 
-  private void showOrHideEditTexts(final ParseDocumentLocation location) {
+  private void showOrHideEditTexts(final DocumentLocation location) {
 
     for (MaterialEditText editText : getView().editTexts) {
       editText.setVisibility(View.INVISIBLE);

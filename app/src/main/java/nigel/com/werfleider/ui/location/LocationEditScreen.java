@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.model.ParseDocument;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.Document;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.document.ParseDocumentScreen;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
@@ -22,11 +22,11 @@ import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 @Layout(R.layout.location_edit_view) public class LocationEditScreen implements Blueprint,
     HasParent<ParseDocumentScreen> {
 
-  private final ParseDocumentLocation location;
-  private final ParseDocument document;
+  private final DocumentLocation location;
+  private final Document document;
   private final Yard yard;
 
-  public LocationEditScreen(ParseDocumentLocation location, ParseDocument document, Yard yard) {
+  public LocationEditScreen(DocumentLocation location, Document document, Yard yard) {
 
     this.location = location;
     this.document = document;
@@ -55,13 +55,13 @@ import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
       },
       addsTo = CorePresenter.Module.class) static class Module {
 
-    private final ParseDocumentLocation location;
+    private final DocumentLocation location;
 
-    public Module(ParseDocumentLocation location) {
+    public Module(DocumentLocation location) {
       this.location = location;
     }
 
-    @Provides ParseDocumentLocation location(){
+    @Provides DocumentLocation location(){
 
       return location;
     }
@@ -69,7 +69,7 @@ import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 
   static class LocationEditPresenter extends ReactiveViewPresenter<LocationEditView> {
 
-    @Inject ParseDocumentLocation location;
+    @Inject DocumentLocation location;
 
     @Inject Flow flow;
 

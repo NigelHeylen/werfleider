@@ -18,7 +18,7 @@ import java.util.Date;
 import javax.inject.Inject;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.ImageUtils;
 
@@ -30,7 +30,7 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
 
   @Inject DocumentImageAdapterData adapterData;
 
-  @Inject ParseDocumentLocation location;
+  @Inject DocumentLocation location;
 
   @Inject StartActivityForResultPresenter startActivityForResultPresenter;
 

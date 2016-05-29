@@ -27,9 +27,9 @@ import nigel.com.werfleider.commons.recyclerview.DividerItemDecoration;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.pdf.MeasurementsFileOperations;
 import nigel.com.werfleider.pdf.ParseFileOperations;
@@ -58,9 +58,9 @@ import static rx.schedulers.Schedulers.io;
 
   private final Yard yard;
 
-  private final ParseDocument document;
+  private final Document document;
 
-  public ParseDocumentScreen(final Yard yard, final ParseDocument document) {
+  public ParseDocumentScreen(final Yard yard, final Document document) {
 
     this.yard = yard;
     this.document = document;
@@ -88,9 +88,9 @@ import static rx.schedulers.Schedulers.io;
 
     private final Yard yard;
 
-    private final ParseDocument document;
+    private final Document document;
 
-    public Module(final Yard yard, final ParseDocument document) {
+    public Module(final Yard yard, final Document document) {
 
       this.yard = yard;
       this.document = document;
@@ -101,7 +101,7 @@ import static rx.schedulers.Schedulers.io;
       return yard;
     }
 
-    @Provides @Singleton ParseDocument providePlaatsBeschrijf() {
+    @Provides @Singleton Document providePlaatsBeschrijf() {
 
       return document;
     }
@@ -116,7 +116,7 @@ import static rx.schedulers.Schedulers.io;
       return new MeasurementsFileOperations(context);
     }
 
-    @Provides @Singleton List<ParseDocumentLocation> provideLocations() {
+    @Provides @Singleton List<DocumentLocation> provideLocations() {
 
       return newArrayList();
     }
@@ -128,7 +128,7 @@ import static rx.schedulers.Schedulers.io;
 
     @Inject MeasurementsFileOperations measurementsFileOperations;
 
-    @Inject ParseDocument document;
+    @Inject Document document;
 
     @Inject @MainScope Flow flow;
 
@@ -136,7 +136,7 @@ import static rx.schedulers.Schedulers.io;
 
     @Inject Context context;
 
-    @Inject List<ParseDocumentLocation> adapterData;
+    @Inject List<DocumentLocation> adapterData;
 
     private ParseDocumentLocationAdapter adapter;
 
@@ -154,8 +154,8 @@ import static rx.schedulers.Schedulers.io;
 
     private void loadData(final Load load) {
 
-      final ParseQuery<ParseDocumentLocation> query =
-          ParseQuery.getQuery(ParseDocumentLocation.class);
+      final ParseQuery<DocumentLocation> query =
+          ParseQuery.getQuery(DocumentLocation.class);
 
       if (load == LOCAL) {
 
@@ -168,7 +168,7 @@ import static rx.schedulers.Schedulers.io;
 
             if (e == null) {
 
-              for (ParseDocumentLocation location : list) {
+              for (DocumentLocation location : list) {
 
                 if (!adapterData.contains(location)) {
 
@@ -219,7 +219,7 @@ import static rx.schedulers.Schedulers.io;
 
       Toast.makeText(context, "Creating location...", Toast.LENGTH_LONG).show();
 
-      final ParseDocumentLocation location = new ParseDocumentLocation();
+      final DocumentLocation location = new DocumentLocation();
       location.setDocumentId(document)
           .setMeasuringUnit(MeasuringUnit.M)
           .setAuthor(ParseUser.getCurrentUser());
@@ -243,13 +243,13 @@ import static rx.schedulers.Schedulers.io;
 
                 if (e == null) {
 
-                  final Multimap<ParseDocumentLocation, ParseDocumentImage> documentImageMultiMap =
+                  final Multimap<DocumentLocation, ParseDocumentImage> documentImageMultiMap =
                       ArrayListMultimap.create();
 
                   for (ParseDocumentImage parseDocumentImage : list) {
 
                     documentImageMultiMap.put(
-                        (ParseDocumentLocation) parseDocumentImage.getLocationId(),
+                        (DocumentLocation) parseDocumentImage.getLocationId(),
                         parseDocumentImage);
                   }
 
@@ -313,13 +313,13 @@ import static rx.schedulers.Schedulers.io;
 
                   if (e == null) {
 
-                    final Multimap<ParseDocumentLocation, ParseDocumentImage>
+                    final Multimap<DocumentLocation, ParseDocumentImage>
                         documentImageMultiMap = ArrayListMultimap.create();
 
                     for (ParseDocumentImage parseDocumentImage : list) {
 
                       documentImageMultiMap.put(
-                          (ParseDocumentLocation) parseDocumentImage.getLocationId(),
+                          (DocumentLocation) parseDocumentImage.getLocationId(),
                           parseDocumentImage);
                     }
 

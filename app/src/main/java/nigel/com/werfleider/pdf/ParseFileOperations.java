@@ -14,7 +14,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
@@ -35,9 +34,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
 import org.joda.time.DateTime;
 
@@ -97,9 +96,9 @@ public class ParseFileOperations {
     return new Paragraph("\n\n");
   }
 
-  private void createFirstPageDocuments(final Yard werf, final ParseDocument document,
-      final Document iTextDocument,
-      final Multimap<ParseDocumentLocation, ParseDocumentImage> locationsMap)
+  private void createFirstPageDocuments(final Yard werf, final Document document,
+      final com.itextpdf.text.Document iTextDocument,
+      final Multimap<DocumentLocation, ParseDocumentImage> locationsMap)
       throws IOException, DocumentException {
 
     iTextDocument.add(spacingParagraph());
@@ -120,7 +119,7 @@ public class ParseFileOperations {
   }
 
   private String getFrontPageLocationString(
-      final Multimap<ParseDocumentLocation, ParseDocumentImage> document) {
+      final Multimap<DocumentLocation, ParseDocumentImage> document) {
 
     final ImmutableListMultimap<String, ParseDocumentImage> partionedMap =
         Multimaps.index(document.values(), new Function<ParseDocumentImage, String>() {
@@ -145,8 +144,8 @@ public class ParseFileOperations {
     return builder.toString();
   }
 
-  public boolean write(final ParseDocument writeDocument, final Yard yard,
-      final Multimap<ParseDocumentLocation, ParseDocumentImage> locationsMap) {
+  public boolean write(final Document writeDocument, final Yard yard,
+      final Multimap<DocumentLocation, ParseDocumentImage> locationsMap) {
 
     try {
       final File path = Environment.getExternalStoragePublicDirectory(
@@ -165,7 +164,7 @@ public class ParseFileOperations {
       }
 
       // step 1
-      final Document document = new Document();
+      final com.itextpdf.text.Document document = new com.itextpdf.text.Document();
       // step 2
       final PdfWriter writer =
           PdfWriter.getInstance(document, new FileOutputStream(file.getAbsoluteFile()));
@@ -186,7 +185,7 @@ public class ParseFileOperations {
       double totalPageHeight;
 
       // step 4
-      for (ParseDocumentLocation location : locationsMap.keySet()) {
+      for (DocumentLocation location : locationsMap.keySet()) {
 
         Chapter chapter = new Chapter(
             new Paragraph(format("%s - %s", location.getArtNr(), location.getTitle()), titleFont),

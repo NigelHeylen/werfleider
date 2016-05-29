@@ -13,7 +13,7 @@ import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.werf.YardDetailScreen;
 
@@ -28,7 +28,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
   private final Yard yard;
   private final DocumentType documentType;
-  private final ParseDocument document;
+  private final Document document;
 
   public DocumentCreateScreen(Yard yard, DocumentType documentType) {
     this.yard = yard;
@@ -36,7 +36,7 @@ import static com.google.common.collect.Lists.newArrayList;
     this.document = null;
   }
 
-  public DocumentCreateScreen(Yard yard, DocumentType documentType, ParseDocument document) {
+  public DocumentCreateScreen(Yard yard, DocumentType documentType, Document document) {
     this.yard = yard;
     this.documentType = documentType;
     this.document = document;
@@ -67,9 +67,9 @@ import static com.google.common.collect.Lists.newArrayList;
 
     private final Yard yard;
     private final DocumentType documentType;
-    private final ParseDocument document;
+    private final Document document;
 
-    public Module(Yard yard, DocumentType documentType, ParseDocument document) {
+    public Module(Yard yard, DocumentType documentType, Document document) {
 
       this.yard = yard;
       this.documentType = documentType;
@@ -85,7 +85,7 @@ import static com.google.common.collect.Lists.newArrayList;
       return documentType;
     }
 
-    @Provides ParseDocument document() {
+    @Provides Document document() {
       return document;
     }
   }
@@ -98,7 +98,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
     @Inject Flow flow;
 
-    @Inject ParseDocument document;
+    @Inject Document document;
 
     @Override protected void onLoad(final Bundle savedInstanceState) {
 
@@ -113,11 +113,11 @@ import static com.google.common.collect.Lists.newArrayList;
 
     public void save(String name) {
 
-      ParseDocument document;
+      Document document;
 
       if (this.document == null) {
 
-        document = new ParseDocument();
+        document = new Document();
       } else {
 
         document = this.document;

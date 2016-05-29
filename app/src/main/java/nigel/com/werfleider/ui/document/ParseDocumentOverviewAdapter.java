@@ -17,7 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.Yard;
 import org.joda.time.DateTime;
 
@@ -29,7 +29,7 @@ import static android.view.View.VISIBLE;
 public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
   @Inject Context context;
-  private final List<ParseDocument> documents;
+  private final List<Document> documents;
   private final ParseDocumentOverviewView parent;
 
   @Inject Flow flow;
@@ -37,9 +37,9 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
   @Inject Yard yard;
 
   public ParseDocumentOverviewAdapter(final Context context,
-      final List<ParseDocument> parseDocuments, ParseDocumentOverviewView parent) {
+      final List<Document> documents, ParseDocumentOverviewView parent) {
 
-    this.documents = parseDocuments;
+    this.documents = documents;
     this.parent = parent;
     Mortar.inject(context, this);
   }
@@ -57,7 +57,7 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
 
     final ViewHolder viewHolder = (ViewHolder) holder;
 
-    final ParseDocument document = documents.get(position);
+    final Document document = documents.get(position);
 
     viewHolder.date.setText(new DateTime(document.getCreatedAt()).toString("dd-MM-yyyy"));
     viewHolder.name.setText(document.getName());

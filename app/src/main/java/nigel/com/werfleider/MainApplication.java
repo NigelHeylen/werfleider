@@ -27,9 +27,9 @@ import mortar.MortarScope;
 import nigel.com.werfleider.commons.core.BaseApplication;
 import nigel.com.werfleider.core.ApplicationModule;
 import nigel.com.werfleider.model.Contact;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.ParseDocumentLocation;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
 
 public class MainApplication extends BaseApplication {
@@ -61,8 +61,8 @@ public class MainApplication extends BaseApplication {
         Parse.enableLocalDatastore(this);
 
         ParseObject.registerSubclass(Yard.class);
-        ParseObject.registerSubclass(ParseDocument.class);
-        ParseObject.registerSubclass(ParseDocumentLocation.class);
+        ParseObject.registerSubclass(Document.class);
+        ParseObject.registerSubclass(DocumentLocation.class);
         ParseObject.registerSubclass(ParseDocumentImage.class);
         ParseObject.registerSubclass(Contact.class);
         Parse.initialize(

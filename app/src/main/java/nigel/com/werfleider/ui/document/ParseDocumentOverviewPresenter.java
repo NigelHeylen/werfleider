@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.Yard;
 
 import static android.view.View.GONE;
@@ -34,7 +34,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   @Inject Flow flow;
 
-  final List<ParseDocument> adapterData = newArrayList();
+  final List<Document> adapterData = newArrayList();
 
   private ParseDocumentOverviewAdapter adapter;
 
@@ -53,7 +53,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   private void loadDocuments(final Load load) {
 
-    final ParseQuery<ParseDocument> query = ParseQuery.getQuery(ParseDocument.class);
+    final ParseQuery<Document> query = ParseQuery.getQuery(Document.class);
 
     if (load == LOCAL) {
 
@@ -66,7 +66,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
           if (e == null) {
 
-            for (ParseDocument doc : list) {
+            for (Document doc : list) {
 
               if (!adapterData.contains(doc)) {
 

@@ -1,93 +1,80 @@
 package nigel.com.werfleider.model;
 
-import com.google.common.base.Predicate;
-
-import java.util.List;
-
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 import nigel.com.werfleider.util.MeasuringUnit;
 
-import static com.google.common.collect.Iterables.any;
-import static com.google.common.collect.Iterables.isEmpty;
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static nigel.com.werfleider.util.ParseStringUtils.ART_NR;
+import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
+import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_ID;
+import static nigel.com.werfleider.util.ParseStringUtils.MEASURING_UNIT;
+import static nigel.com.werfleider.util.ParseStringUtils.TITLE;
 
 /**
- * Created by nigel on 04/12/14.
+ * Created by nigel on 14/04/15.
  */
-public class DocumentLocation {
+@ParseClassName("DocumentLocation") public class DocumentLocation extends ParseObject {
 
-    private int id;
-    private int documentId;
-    private String location;
-    private List<DocumentImage> imageList;
-    private MeasuringUnit measuringUnit;
+  public ParseObject getDocumentId() {
 
-    public DocumentLocation(final String location) {
-        this.location = location;
-        imageList = newArrayList();
+    return getParseObject(DOCUMENT_ID);
+  }
+
+  public DocumentLocation setDocumentId(final ParseObject document) {
+
+    put(DOCUMENT_ID, document);
+    return this;
+  }
+
+  public String getTitle() {
+
+    return getString(TITLE);
+  }
+
+  public DocumentLocation setTitle(final String title) {
+
+    put(TITLE, title);
+    return this;
+  }
+
+  public MeasuringUnit getMeasuringUnit() {
+
+    if(isNullOrEmpty(getString(MEASURING_UNIT))){
+      return null;
     }
 
-    public DocumentLocation(final String location, final List<DocumentImage> imageList) {
-        this.location = location;
-        this.imageList = imageList;
+    return MeasuringUnit.valueOf(getString(MEASURING_UNIT));
+  }
+
+  public DocumentLocation setMeasuringUnit(final MeasuringUnit measuringUnit) {
+
+    if (getMeasuringUnit() == null || getMeasuringUnit() != measuringUnit) {
+      put(MEASURING_UNIT, measuringUnit.name());
     }
+    return this;
+  }
 
-    public int getId() {
-        return id;
-    }
+  public ParseUser getAuthor() {
 
-    public DocumentLocation setId(final int id) {
-        this.id = id;
-        return this;
-    }
+    return getParseUser(AUTHOR);
+  }
 
-    public int getDocumentId() {
-        return documentId;
-    }
+  public DocumentLocation setAuthor(ParseUser user) {
 
-    public void setDocumentId(final int documentId) {
-        this.documentId = documentId;
-    }
+    put(AUTHOR, user);
+    return this;
+  }
 
-    public String getLocation() {
-        return location;
-    }
+  public DocumentLocation setArtNr(final String artNr) {
 
-    public List<DocumentImage> getImageList() {
-        return imageList;
-    }
+    put(ART_NR, artNr);
+    return this;
+  }
 
-    public void addToImageList(final DocumentImage image){
-        if(!any(imageList, new Predicate<DocumentImage>() {
-                    @Override public boolean apply(final DocumentImage input) {
-                        return input.getImageURL().equals(image.getImageURL());
-                    }
-                })) {
-            imageList.add(image);
-        }
-    }
+  public String getArtNr() {
 
-    public DocumentLocation setImageList(final List<DocumentImage> imageList) {
-        this.imageList = imageList;
-        return this;
-
-    }
-
-    public boolean hasImages(){
-        return !isEmpty(imageList);
-    }
-
-    public DocumentLocation setLocation(final String location) {
-        this.location = location;
-        return this;
-
-    }
-
-    public MeasuringUnit getMeasuringUnit() {
-        return measuringUnit;
-    }
-
-    public DocumentLocation setMeasuringUnit(final MeasuringUnit measuringUnit) {
-        this.measuringUnit = measuringUnit;
-        return this;
-    }
+    return getString(ART_NR);
+  }
 }

@@ -16,7 +16,7 @@ import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.ParseDocument;
+import nigel.com.werfleider.model.Document;
 
 import static java.lang.String.format;
 
@@ -27,7 +27,7 @@ public class ParseDocumentView extends FrameLayout {
 
   @Inject ParseDocumentScreen.Presenter presenter;
 
-  @Inject ParseDocument document;
+  @Inject Document document;
 
   @Bind(R.id.document_locations) RecyclerView locations;
 
