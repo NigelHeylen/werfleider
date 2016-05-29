@@ -22,7 +22,6 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.ImageUtils;
 import org.joda.time.DateTime;
-import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
@@ -130,26 +129,26 @@ public class YardCreateView extends ScrollView {
       });
     }
 
-    subscription.add(subscribeToTextChangeEvent(naam, yard::setNaam));
-    subscription.add(subscribeToTextChangeEvent(nummer, yard::setNummer));
-    subscription.add(subscribeToTextChangeEvent(adres, yard::setYardAdress));
-    subscription.add(subscribeToTextChangeEvent(huisNummer, yard::setYardAddressNumber));
-    subscription.add(subscribeToTextChangeEvent(stad, yard::setYardCity));
-    subscription.add(subscribeToTextChangeEvent(postcode, yard::setYardAreaCode));
-    subscription.add(subscribeToTextChangeEvent(omschrijving, yard::setOmschrijving));
-    subscription.add(subscribeToTextChangeEvent(termijn, yard::setTermijn));
+    subscribeToTextChangeEvent(naam, yard::setNaam);
+    subscribeToTextChangeEvent(nummer, yard::setNummer);
+    subscribeToTextChangeEvent(adres, yard::setYardAdress);
+    subscribeToTextChangeEvent(huisNummer, yard::setYardAddressNumber);
+    subscribeToTextChangeEvent(stad, yard::setYardCity);
+    subscribeToTextChangeEvent(postcode, yard::setYardAreaCode);
+    subscribeToTextChangeEvent(omschrijving, yard::setOmschrijving);
+    subscribeToTextChangeEvent(termijn, yard::setTermijn);
 
-    subscription.add(subscribeToTextChangeEvent(bouwheer, yard::setBouwHeerNaam));
-    subscription.add(subscribeToTextChangeEvent(bouwheerEmail, yard::setBouwheerEmail));
-    subscription.add(subscribeToTextChangeEvent(bouwheerTelefoon, yard::setBouwheerTelefoon));
+    subscribeToTextChangeEvent(bouwheer, yard::setBouwHeerNaam);
+    subscribeToTextChangeEvent(bouwheerEmail, yard::setBouwheerEmail);
+    subscribeToTextChangeEvent(bouwheerTelefoon, yard::setBouwheerTelefoon);
 
-    subscription.add(subscribeToTextChangeEvent(ingenieur, yard::setIngenieurNaam));
-    subscription.add(subscribeToTextChangeEvent(ingenieurTelefoon, yard::setIngenieurTelefoon));
-    subscription.add(subscribeToTextChangeEvent(ingenieurEmail, yard::setIngenieurEmail));
+    subscribeToTextChangeEvent(ingenieur, yard::setIngenieurNaam);
+    subscribeToTextChangeEvent(ingenieurTelefoon, yard::setIngenieurTelefoon);
+    subscribeToTextChangeEvent(ingenieurEmail, yard::setIngenieurEmail);
   }
 
-  private Subscription subscribeToTextChangeEvent(EditText editText, Action1<String> action) {
-    return RxTextView.textChanges(editText).skip(1).doOnNext(System.out::println).map(CharSequence::toString).subscribe(action);
+  private void subscribeToTextChangeEvent(EditText editText, Action1<String> action) {
+    subscription.add(RxTextView.textChanges(editText).skip(1).map(CharSequence::toString).subscribe(action));
   }
 
   @OnClick(R.id.werf_choose_image) public void chooseImage() {
