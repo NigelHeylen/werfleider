@@ -2,7 +2,6 @@ package nigel.com.werfleider.ui.werf;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -12,6 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ButtonRectangle;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import java.io.File;
@@ -22,6 +22,9 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.ImageUtils;
 import org.joda.time.DateTime;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nigel on 07/02/15.
@@ -54,18 +57,10 @@ public class YardCreateView extends ScrollView {
 
   @Bind(R.id.werf_create_save) ButtonRectangle save;
 
-  @OnClick(R.id.werf_create_save) public void save() {
-    presenter.create(getString(naam), getString(nummer), getString(adres), getString(huisNummer),
-        getString(stad), getString(postcode), getString(omschrijving),
-        new DateTime(aanvang.getYear(), aanvang.getMonth(), aanvang.getDayOfMonth(), 1, 1),
-        getString(termijn), getString(architect), getString(architectTelefoon),
-        getString(architectEmail), getString(bouwheer), getString(bouwheerTelefoon),
-        getString(bouwheerEmail), getString(ingenieur), getString(ingenieurTelefoon),
-        getString(ingenieurEmail));
-  }
+  private CompositeSubscription subscription = new CompositeSubscription();
 
-  @NonNull private String getString(EditText editText) {
-    return editText.getText().toString();
+  @OnClick(R.id.werf_create_save) public void save() {
+    presenter.create();
   }
 
   @Inject Picasso pablo;
@@ -89,46 +84,72 @@ public class YardCreateView extends ScrollView {
     super.onDetachedFromWindow();
     presenter.dropView(this);
     ButterKnife.unbind(this);
+    subscription.unsubscribe();
   }
 
   public void setData(Yard yard) {
-    if (yard != null) {
-      naam.setText(yard.getNaam());
-      nummer.setText(yard.getNummer());
-      adres.setText(yard.getYardAddress());
-      huisNummer.setText(yard.getYardAddressNumber());
-      stad.setText(yard.getYardCity());
-      postcode.setText(yard.getYardAreaCode());
-      omschrijving.setText(yard.getOmschrijving());
-      aanvang.updateDate(yard.getDatumAanvang().getYear(), yard.getDatumAanvang().getMonthOfYear(),
-          yard.getDatumAanvang().getDayOfMonth());
-      termijn.setText(yard.getTermijn());
 
-      architect.setText(yard.getArchitectNaam());
-      architectTelefoon.setText(yard.getArchitectTelefoon());
-      architectEmail.setText(yard.getArchitectEmail());
-
-      bouwheer.setText(yard.getBouwheerNaam());
-      bouwheerTelefoon.setText(yard.getBouwheerTelefoon());
-      bouwheerEmail.setText(yard.getBouwheerEmail());
-
-      ingenieur.setText(yard.getIngenieurNaam());
-      ingenieurTelefoon.setText(yard.getIngenieurTelefoon());
-      ingenieurEmail.setText(yard.getIngenieurEmail());
-
-      if (yard.getImageByteArray() != null) {
-
-        werfImage.post(() -> {
-
-          try {
-            File f = ImageUtils.getFileFromImageByteArray(yard, getContext());
-            pablo.load(f).resize(werfImage.getWidth(), 0).into(werfImage);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        });
-      }
+    if(yard.getCreatedAt() != null){
+      save.setVisibility(GONE);
     }
+
+    naam.setText(yard.getNaam());
+    nummer.setText(yard.getNummer());
+    adres.setText(yard.getYardAddress());
+    huisNummer.setText(yard.getYardAddressNumber());
+    stad.setText(yard.getYardCity());
+    postcode.setText(yard.getYardAreaCode());
+    omschrijving.setText(yard.getOmschrijving());
+    aanvang.init(yard.getDatumAanvang().getYear(), yard.getDatumAanvang().getMonthOfYear(),
+        yard.getDatumAanvang().getDayOfMonth(),
+        (view, year, monthOfYear, dayOfMonth) -> yard.setDatumAanvang(new DateTime(year, monthOfYear, dayOfMonth, 1, 1)));
+    termijn.setText(yard.getTermijn());
+
+    architect.setText(yard.getArchitectNaam());
+    architectTelefoon.setText(yard.getArchitectTelefoon());
+    architectEmail.setText(yard.getArchitectEmail());
+
+    bouwheer.setText(yard.getBouwheerNaam());
+    bouwheerTelefoon.setText(yard.getBouwheerTelefoon());
+    bouwheerEmail.setText(yard.getBouwheerEmail());
+
+    ingenieur.setText(yard.getIngenieurNaam());
+    ingenieurTelefoon.setText(yard.getIngenieurTelefoon());
+    ingenieurEmail.setText(yard.getIngenieurEmail());
+
+    if (yard.getImageByteArray() != null) {
+
+      werfImage.post(() -> {
+
+        try {
+          File f = ImageUtils.getFileFromImageByteArray(yard, getContext());
+          pablo.load(f).resize(werfImage.getWidth(), 0).into(werfImage);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      });
+    }
+
+    subscription.add(subscribeToTextChangeEvent(naam, yard::setNaam));
+    subscription.add(subscribeToTextChangeEvent(nummer, yard::setNummer));
+    subscription.add(subscribeToTextChangeEvent(adres, yard::setYardAdress));
+    subscription.add(subscribeToTextChangeEvent(huisNummer, yard::setYardAddressNumber));
+    subscription.add(subscribeToTextChangeEvent(stad, yard::setYardCity));
+    subscription.add(subscribeToTextChangeEvent(postcode, yard::setYardAreaCode));
+    subscription.add(subscribeToTextChangeEvent(omschrijving, yard::setOmschrijving));
+    subscription.add(subscribeToTextChangeEvent(termijn, yard::setTermijn));
+
+    subscription.add(subscribeToTextChangeEvent(bouwheer, yard::setBouwHeerNaam));
+    subscription.add(subscribeToTextChangeEvent(bouwheerEmail, yard::setBouwheerEmail));
+    subscription.add(subscribeToTextChangeEvent(bouwheerTelefoon, yard::setBouwheerTelefoon));
+
+    subscription.add(subscribeToTextChangeEvent(ingenieur, yard::setIngenieurNaam));
+    subscription.add(subscribeToTextChangeEvent(ingenieurTelefoon, yard::setIngenieurTelefoon));
+    subscription.add(subscribeToTextChangeEvent(ingenieurEmail, yard::setIngenieurEmail));
+  }
+
+  private Subscription subscribeToTextChangeEvent(EditText editText, Action1<String> action) {
+    return RxTextView.textChanges(editText).skip(1).doOnNext(System.out::println).map(CharSequence::toString).subscribe(action);
   }
 
   @OnClick(R.id.werf_choose_image) public void chooseImage() {

@@ -66,8 +66,8 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
             .withTextColorId(R.color.green)
             .withOnClickListener(token -> {
 
-              werf.deleteEventually();
               werf.unpinInBackground();
+              werf.deleteEventually();
               yards.remove(werf);
 
               notifyItemRemoved(position);

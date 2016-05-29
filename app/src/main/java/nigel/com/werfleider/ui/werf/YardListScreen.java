@@ -94,7 +94,11 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
       }
 
       if (yardType == MINE) {
-        query.whereEqualTo(AUTHOR, ParseUser.getCurrentUser());
+        if(load == LOCAL) {
+          query.whereContainedIn(AUTHOR, newArrayList(null, ParseUser.getCurrentUser()));
+        } else {
+          query.whereEqualTo(AUTHOR, ParseUser.getCurrentUser());
+        }
       } else {
 
         //query.include(INVITES);
@@ -112,6 +116,12 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
             if (!adapterData.contains(yard)) {
               adapterData.add(yard);
             }
+
+            //if(yard.getAuthor() == null && load == LOCAL){
+            //
+            //  yard.setAuthor(ParseUser.getCurrentUser());
+            //  yard.saveEventually();
+            //}
           }
           adapter.notifyDataSetChanged();
           ParseObject.pinAllInBackground(list);

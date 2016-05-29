@@ -209,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
       ParseUser.logInInBackground(privatePref.getString(EMAIL, ""),
           privatePref.getString(PASSWORD, ""), (user, e) -> {
 
+            System.out.println("user = " + user);
             if(e != null){
               mainFlow.goTo(new LoginScreen());
               Toast.makeText(this, "Foutieve gebruiker gegevens. Gelieve opnieuw aan te melden", Toast.LENGTH_LONG).show();

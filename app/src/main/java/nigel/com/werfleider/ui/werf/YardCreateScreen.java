@@ -14,15 +14,14 @@ import flow.HasParent;
 import flow.Layout;
 import javax.inject.Inject;
 import mortar.Blueprint;
-import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Yard;
+import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.ImageUtils;
-import org.joda.time.DateTime;
-
-import static nigel.com.werfleider.util.ParseStringUtils.NAME;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by nigel on 07/02/15.
@@ -38,7 +37,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
   }
 
   public YardCreateScreen() {
-    yard = null;
+    yard = new Yard();
   }
 
   @Override public String getMortarScopeName() {
@@ -50,6 +49,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
   }
 
   @Override public YardsOverviewScreen getParent() {
+    if(yard.getCreatedAt() != null) yard.saveEventually(e -> {
+      if(e != null) e.printStackTrace();
+    });
     return new YardsOverviewScreen();
   }
 
@@ -70,7 +72,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
     }
   }
 
-  static class Presenter extends ViewPresenter<YardCreateView>
+  static class Presenter extends ReactiveViewPresenter<YardCreateView>
       implements StartActivityForResultPresenter.ActivityResultListener {
 
     private static final int SELECT_PHOTO = 100;
@@ -79,7 +81,6 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
     @Inject Yard yard;
 
     @Inject StartActivityForResultPresenter resultPresenter;
-    private byte[] imageByteArray = new byte[]{};
 
     @Override protected void onLoad(Bundle savedInstanceState) {
       super.onLoad(savedInstanceState);
@@ -88,10 +89,6 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
         getView().setData(yard);
 
         resultPresenter.setActivityResultListener(this);
-
-        if(yard != null && yard.getImageByteArray() != null){
-          imageByteArray = yard.getImageByteArray();
-        }
       }
     }
 
@@ -100,44 +97,14 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
       resultPresenter.removeListener();
     }
 
-    public void create(String naam, String nummer, String adres, String huisNummer, String stad,
-        String postcode, String omschrijving, DateTime aanvang, String termijn, String architect,
-        String architectTelefoon, String architectEmail, String bouwheer, String bouwheerTelefoon,
-        String bouwheerEmail, String ingenieur, String ingenieurTelefoon, String ingenieurEmail) {
-      Yard yard;
-
-      if (this.yard != null) {
-        yard = this.yard;
-      } else {
-        yard = new Yard();
-      }
-
-      yard.setNaam(naam)
-          .setNummer(nummer)
-          .setYardAdress(adres)
-          .setYardAddressNumber(huisNummer)
-          .setYardCity(stad)
-          .setYardAreaCode(postcode)
-          .setOmschrijving(omschrijving)
-          .setDatumAanvang(aanvang)
-          .setTermijn(termijn)
-          .setArchitectNaam(architect)
-          .setArchitectTelefoon(architectTelefoon)
-          .setArchitectEmail(architectEmail)
-          .setBouwHeerNaam(bouwheer)
-          .setBouwheerTelefoon(bouwheerTelefoon)
-          .setBouwheerEmail(bouwheerEmail)
-          .setIngenieurNaam(ingenieur)
-          .setIngenieurTelefoon(ingenieurTelefoon)
-          .setIngenieurEmail(ingenieurEmail)
-          .setCreator(ParseUser.getCurrentUser().getString(NAME))
-          .setImageByteArray(imageByteArray)
-          .setAuthor(ParseUser.getCurrentUser());
+    public void create() {
 
       yard.pinInBackground();
+      yard.setAuthor(ParseUser.getCurrentUser());
 
       yard.saveEventually();
-      flow.goTo(new YardsOverviewScreen());
+
+      flow.goBack();
     }
 
     public void getImage() {
@@ -167,7 +134,11 @@ import static nigel.com.werfleider.util.ParseStringUtils.NAME;
         String filePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
         cursor.close();
 
-        imageByteArray = ImageUtils.getBytesFromFilePath(filePath);
+        subscribe(Observable.just(filePath)
+            .map(ImageUtils::getBytesFromFilePath)
+            .subscribeOn(Schedulers.computation())
+            .subscribe(yard::setImageByteArray));
+
         if (getView() != null) {
           getView().setImage(imageUri);
         }

@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" android:padding="3dp">
 
-  <RelativeLayout android:layout_width="match_parent"
+  <RelativeLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
 
@@ -38,6 +39,7 @@
         android:id="@+id/werf.item.edit"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_centerVertical="true"
         android:layout_marginRight="4dp"
         android:layout_toLeftOf="@+id/werf.item.delete"
         app:srcCompat="@drawable/ic_edit"/>
@@ -46,6 +48,7 @@
         android:id="@+id/werf.item.delete"
         android:layout_width="30dp"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_height="30dp"
         android:layout_marginRight="10dp"
         app:srcCompat="@drawable/ic_delete"/>

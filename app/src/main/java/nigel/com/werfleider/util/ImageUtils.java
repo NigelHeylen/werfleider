@@ -40,10 +40,28 @@ public class ImageUtils {
   // convert from bitmap to byte array
   public static byte[] getBytesFromBitmap(final Bitmap bitmap) {
 
-    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+    int startCompress = 100;
 
-    return stream.toByteArray();
+    byte[] bytes;
+
+    do{
+
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
+      bitmap.compress(Bitmap.CompressFormat.JPEG, startCompress, stream);
+
+      bytes = stream.toByteArray();
+      if(startCompress > 90) {
+        startCompress -= 5;
+      } else if(startCompress > 80){
+
+        startCompress -= 3;
+      } else {
+        startCompress -= 2;
+      }
+
+    }while(bytes.length > 110000);
+
+    return bytes;
   }
 
   //decodes image and scales it to reduce memory consumption
@@ -80,7 +98,7 @@ public class ImageUtils {
 
   public static File getFileFromImageByteArray(Yard yard, Context context) throws IOException {
 
-    File f = new File(context.getCacheDir(), "werf_image");
+    File f = new File(context.getCacheDir(), "werf_image" + yard.getImageByteArray().length);
     f.createNewFile();
     FileOutputStream fos = new FileOutputStream(f);
     fos.write(yard.getImageByteArray());
