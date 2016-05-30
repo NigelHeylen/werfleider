@@ -1,0 +1,53 @@
+package nigel.com.werfleider.ui.location;
+
+import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
+import android.widget.FrameLayout;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import javax.inject.Inject;
+import mortar.Mortar;
+import nigel.com.werfleider.R;
+
+/**
+ * Created by nigel on 29/05/16.
+ */
+public class AddLocationsView extends FrameLayout {
+
+  @Inject AddLocationsScreen.AddLocationsPresenter presenter;
+
+  @Bind(R.id.locations_recyclerview) RecyclerView recyclerView;
+
+  private AddLocationsAdapter adapter;
+
+  public AddLocationsView(final Context context, final AttributeSet attrs) {
+
+    super(context, attrs);
+    if(!isInEditMode()) Mortar.inject(context, this);
+  }
+
+  @Override protected void onFinishInflate() {
+    super.onFinishInflate();
+    if(!isInEditMode()){
+      ButterKnife.bind(this);
+      presenter.takeView(this);
+
+      recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+      recyclerView.setHasFixedSize(true);
+      recyclerView.setAdapter(adapter = new AddLocationsAdapter(getContext()));
+    }
+  }
+
+  @OnClick(R.id.create_view) public void addLocation(){
+
+    presenter.addLocation();
+  }
+
+  public void notifyItemAdded() {
+    adapter.notifyItemChanged(0);
+    adapter.notifyItemInserted(adapter.getItemCount());
+  }
+}

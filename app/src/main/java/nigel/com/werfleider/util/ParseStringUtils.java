@@ -104,4 +104,7 @@ public class ParseStringUtils {
   public static final String YARD_AREA_CODE = "yard_area_code";
   public static final String DEADLINE = "deadline";
   public static final String YARD_IMAGE = "yard_image";
+  public static final String YARD_LOCATIONS = "locations";
+
+  public static final String SUB_LOCATIONS = "sub_locations";
 }

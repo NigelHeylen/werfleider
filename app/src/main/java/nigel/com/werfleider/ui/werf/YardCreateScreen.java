@@ -18,6 +18,7 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Yard;
+import nigel.com.werfleider.ui.location.AddLocationsScreen;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.ImageUtils;
 import rx.Observable;
@@ -143,6 +144,10 @@ import rx.schedulers.Schedulers;
           getView().setImage(imageUri);
         }
       }
+    }
+
+    public void addLocations() {
+      flow.goTo(new AddLocationsScreen(yard));
     }
   }
 }

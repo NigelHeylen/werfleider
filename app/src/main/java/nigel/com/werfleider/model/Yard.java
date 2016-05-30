@@ -7,10 +7,11 @@ import java.util.List;
 import nigel.com.werfleider.util.ParseStringUtils;
 import org.joda.time.DateTime;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR;
-import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_PHONE;
 import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_EMAIL;
+import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_PHONE;
 import static nigel.com.werfleider.util.ParseStringUtils.CREATOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DATE_START_WORK;
 import static nigel.com.werfleider.util.ParseStringUtils.DEADLINE;
@@ -29,6 +30,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_ADDRESS_NUMBER;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_AREA_CODE;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_CITY;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_IMAGE;
+import static nigel.com.werfleider.util.ParseStringUtils.YARD_LOCATIONS;
 
 /**
  * Created by nigel on 14/04/15.
@@ -268,7 +270,16 @@ public class Yard extends ParseObject {
         return getObjectId();
     }
 
-    public List<ParseUser> getInvites() {
+    public List<Contact> getInvites() {
         return getList(INVITES);
+    }
+
+    public List<Location> getLocations() {
+        return getList(YARD_LOCATIONS) != null ? getList(YARD_LOCATIONS) : newArrayList();
+    }
+
+    public Yard setLocations(final List<Location> locations){
+        put(YARD_LOCATIONS, locations);
+        return this;
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:padding="8dp"
+    android:layout_height="wrap_content">
+
+  <TextView
+      android:id="@+id/sub_location_index"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:layout_width="wrap_content"
+      android:textColor="@android:color/black"
+      tools:text="50"
+      android:layout_marginLeft="4dp"
+      android:layout_marginRight="2dp"
+      android:gravity="right"
+      android:layout_height="wrap_content"/>
+
+
+  <EditText
+      style="@style/Werf.Create.EditText"
+      android:hint="Naam"
+      android:id="@+id/sub_location_text"/>
+</LinearLayout>

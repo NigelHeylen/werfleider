@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.location.AddLocationsView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:tools="http://schemas.android.com/tools">
+
+  <android.support.v7.widget.RecyclerView
+      tools:listitem="@layout/add_location_entry"
+      android:id="@+id/locations_recyclerview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+
+  <include layout="@layout/floating_action_create"/>
+
+</nigel.com.werfleider.ui.location.AddLocationsView>

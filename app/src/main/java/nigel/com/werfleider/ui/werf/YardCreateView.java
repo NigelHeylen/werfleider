@@ -7,6 +7,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -16,14 +17,18 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.ImageUtils;
 import org.joda.time.DateTime;
+import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
+
+import static java.lang.String.format;
 
 /**
  * Created by nigel on 07/02/15.
@@ -55,6 +60,8 @@ public class YardCreateView extends ScrollView {
   @Bind(R.id.werf_create_ingenieur_email) MaterialEditText ingenieurEmail;
 
   @Bind(R.id.werf_create_save) ButtonRectangle save;
+
+  @Bind(R.id.werf_number_locations) TextView aantalLocaties;
 
   private CompositeSubscription subscription = new CompositeSubscription();
 
@@ -88,7 +95,7 @@ public class YardCreateView extends ScrollView {
 
   public void setData(Yard yard) {
 
-    if(yard.getCreatedAt() != null){
+    if (yard.getAuthor() != null) {
       save.setVisibility(GONE);
     }
 
@@ -101,7 +108,8 @@ public class YardCreateView extends ScrollView {
     omschrijving.setText(yard.getOmschrijving());
     aanvang.init(yard.getDatumAanvang().getYear(), yard.getDatumAanvang().getMonthOfYear(),
         yard.getDatumAanvang().getDayOfMonth(),
-        (view, year, monthOfYear, dayOfMonth) -> yard.setDatumAanvang(new DateTime(year, monthOfYear, dayOfMonth, 1, 1)));
+        (view, year, monthOfYear, dayOfMonth) -> yard.setDatumAanvang(
+            new DateTime(year, monthOfYear + 1, dayOfMonth, 1, 1)));
     termijn.setText(yard.getTermijn());
 
     architect.setText(yard.getArchitectNaam());
@@ -129,6 +137,12 @@ public class YardCreateView extends ScrollView {
       });
     }
 
+    subscription.add(Observable.just(yard)
+        .map(Yard::getLocations)
+        .map(List::size)
+        .map(size -> format("%s locaties", size))
+        .subscribe(RxTextView.text(aantalLocaties)));
+
     subscribeToTextChangeEvent(naam, yard::setNaam);
     subscribeToTextChangeEvent(nummer, yard::setNummer);
     subscribeToTextChangeEvent(adres, yard::setYardAdress);
@@ -148,7 +162,8 @@ public class YardCreateView extends ScrollView {
   }
 
   private void subscribeToTextChangeEvent(EditText editText, Action1<String> action) {
-    subscription.add(RxTextView.textChanges(editText).skip(1).map(CharSequence::toString).subscribe(action));
+    subscription.add(
+        RxTextView.textChanges(editText).skip(1).map(CharSequence::toString).subscribe(action));
   }
 
   @OnClick(R.id.werf_choose_image) public void chooseImage() {
@@ -159,5 +174,10 @@ public class YardCreateView extends ScrollView {
   public void setImage(Uri imageUri) {
 
     pablo.load(imageUri).resize(werfImage.getWidth(), 0).into(werfImage);
+  }
+
+  @OnClick(R.id.werf_add_locations) public void addLocations(){
+
+    presenter.addLocations();
   }
 }

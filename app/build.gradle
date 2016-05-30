@@ -100,6 +100,7 @@ dependencies {
   compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
     transitive = true;
   }
+  compile 'com.hannesdorfmann.adaptercommands:adaptercommands:1.0.3'
 }
 configurations {
   all*.exclude group: 'com.google.guava', module: 'guava-jdk5'

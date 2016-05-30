@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.ui.home.HomeScreen;
 
@@ -51,12 +52,16 @@ import static nigel.com.werfleider.MainActivity.USER;
 
     @Inject Flow flow;
 
+    @Inject ActionBarOwner actionBarOwner;
+
     @Override protected void onLoad(final Bundle savedInstanceState) {
 
       super.onLoad(savedInstanceState);
       if (getView() == null) {
         return;
       }
+
+      actionBarOwner.setConfig(new ActionBarOwner.Config(true, false, "Login", null));
     }
 
     public void handleLogin(final String email, final String password) {
@@ -69,6 +74,7 @@ import static nigel.com.werfleider.MainActivity.USER;
           preferences.edit().putString(EMAIL, email).putString(PASSWORD, password).commit();
           flow.goTo(new HomeScreen());
         } else {
+          e.printStackTrace();
           Toast.makeText(getView().getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
 
