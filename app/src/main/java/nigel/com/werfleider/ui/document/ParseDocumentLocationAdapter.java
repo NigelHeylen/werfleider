@@ -84,8 +84,8 @@ public class ParseDocumentLocationAdapter
         .withActionMessage("Delete")
         .withTextColorId(R.color.green)
         .withOnClickListener(token -> {
-          location.deleteEventually();
           location.unpinInBackground();
+          location.deleteEventually();
 
           locations.remove(position);
           notifyItemRemoved(position);

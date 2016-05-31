@@ -31,16 +31,15 @@ public class LocationDetailInfoPresenter extends ReactiveViewPresenter<LocationD
 
     this.documentImage = documentImage;
     if(getView() == null) return;
-    getView().floor.setText(documentImage.getFloor());
-    getView().location.setText(documentImage.getLocation());
-  }
-  public void changeLocation(final String locationString) {
-
-    documentImage.setLocation(locationString);
+    //getView().floor.setText(documentImage.getFloor());
+    //getView().location.setText(documentImage.getLocation());
   }
 
-  public void changeFloor(final String floor) {
-
+  public void setFloor(String floor) {
     documentImage.setFloor(floor);
+  }
+
+  public void setLocation(String location) {
+    documentImage.setLocation(location);
   }
 }
