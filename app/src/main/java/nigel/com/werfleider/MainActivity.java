@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.ButterKnife;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 import flow.Flow;
 import javax.inject.Inject;
@@ -209,8 +210,7 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
       ParseUser.logInInBackground(privatePref.getString(EMAIL, ""),
           privatePref.getString(PASSWORD, ""), (user, e) -> {
 
-            System.out.println("user = " + user);
-            if(e != null){
+            if(e != null && e.getCode() != ParseException.CONNECTION_FAILED){
               mainFlow.goTo(new LoginScreen());
               Toast.makeText(this, "Foutieve gebruiker gegevens. Gelieve opnieuw aan te melden", Toast.LENGTH_LONG).show();
             }
