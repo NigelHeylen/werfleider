@@ -17,18 +17,14 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.ImageUtils;
 import org.joda.time.DateTime;
-import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
-
-import static java.lang.String.format;
 
 /**
  * Created by nigel on 07/02/15.
@@ -60,8 +56,6 @@ public class YardCreateView extends ScrollView {
   @Bind(R.id.werf_create_ingenieur_email) MaterialEditText ingenieurEmail;
 
   @Bind(R.id.werf_create_save) ButtonRectangle save;
-
-  @Bind(R.id.werf_number_locations) TextView aantalLocaties;
 
   private CompositeSubscription subscription = new CompositeSubscription();
 
@@ -137,12 +131,6 @@ public class YardCreateView extends ScrollView {
       });
     }
 
-    subscription.add(Observable.just(yard)
-        .map(Yard::getLocations)
-        .map(List::size)
-        .map(size -> format("%s locaties", size))
-        .subscribe(RxTextView.text(aantalLocaties)));
-
     subscribeToTextChangeEvent(naam, yard::setNaam);
     subscribeToTextChangeEvent(nummer, yard::setNummer);
     subscribeToTextChangeEvent(adres, yard::setYardAdress);
@@ -176,8 +164,4 @@ public class YardCreateView extends ScrollView {
     pablo.load(imageUri).resize(werfImage.getWidth(), 0).into(werfImage);
   }
 
-  @OnClick(R.id.werf_add_locations) public void addLocations(){
-
-    presenter.addLocations();
-  }
 }

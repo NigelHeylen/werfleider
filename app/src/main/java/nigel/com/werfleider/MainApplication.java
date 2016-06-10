@@ -27,9 +27,7 @@ import nigel.com.werfleider.core.ApplicationModule;
 import nigel.com.werfleider.model.Contact;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentLocation;
-import nigel.com.werfleider.model.Location;
 import nigel.com.werfleider.model.ParseDocumentImage;
-import nigel.com.werfleider.model.SubLocation;
 import nigel.com.werfleider.model.Yard;
 
 public class MainApplication extends BaseApplication {
@@ -60,8 +58,6 @@ public class MainApplication extends BaseApplication {
     ParseObject.registerSubclass(DocumentLocation.class);
     ParseObject.registerSubclass(ParseDocumentImage.class);
     ParseObject.registerSubclass(Contact.class);
-    ParseObject.registerSubclass(Location.class);
-    ParseObject.registerSubclass(SubLocation.class);
 
     Parse.initialize(this, "oTMmhRqniCH4RUXpHRvuLoq6tjBm2CokTqYcptdv",
         "Rkth6TnPi92kwUFAsdv3eqlSgl5Wn9HpNxDvKe4t");

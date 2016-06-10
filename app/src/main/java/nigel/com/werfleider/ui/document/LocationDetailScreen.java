@@ -23,10 +23,10 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.Document;
-import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.DocumentLocation;
+import nigel.com.werfleider.model.DocumentType;
+import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import rx.subjects.BehaviorSubject;
@@ -67,6 +67,10 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
   }
 
   @Override public ParseDocumentScreen getParent() {
+
+    yard.saveEventually();
+    document.saveEventually();
+    location.saveEventually();
 
     return new ParseDocumentScreen(yard, document);
   }
@@ -186,6 +190,8 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
           new LinearLayoutManagerEx(getView().getContext(), OrientationHelperEx.HORIZONTAL, false));
 
       getView().imageList.setOnScrollListener(new RecyclerViewEx.OnScrollListener() {
+        public ParseDocumentImage lastDocumentImage;
+
         @Override
         public void onScrollStateChanged(final RecyclerViewEx recyclerViewEx, final int i) {
 
@@ -193,6 +199,10 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
             if (position != layoutManager.findFirstCompletelyVisibleItemPosition()) {
               position = layoutManager.findFirstCompletelyVisibleItemPosition();
               if (position != -1) {
+                if (lastDocumentImage != null) {
+                  lastDocumentImage.saveEventually();
+                }
+                lastDocumentImage = adapterData.get(position);
                 documentImageBus.onNext(adapterData.get(position));
               }
             }
@@ -240,47 +250,49 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
         query.fromLocalDatastore();
       }
 
-      query.orderByAscending(CREATED_AT).whereEqualTo(LOCATION_ID, location).findInBackground((list, e) -> {
+      query.orderByAscending(CREATED_AT)
+          .whereEqualTo(LOCATION_ID, location)
+          .findInBackground((list, e) -> {
 
-        if (e == null) {
-
-          if(getView() != null) {
-            for (ParseDocumentImage image : list) {
-
-              if (!adapterData.contains(image)) {
-
-                adapterData.add(image);
-              }
-            }
-            ParseObject.pinAllInBackground(list);
-            adapter.notifyDataSetChanged();
-
-            if (!adapterData.isEmpty()) {
-              documentImageBus.onNext(adapterData.get(0));
-
-              getView().showContentView();
-            } else {
+            if (e == null) {
 
               if (getView() != null) {
+                for (ParseDocumentImage image : list) {
 
-                getView().showEmptyView();
+                  if (!adapterData.contains(image)) {
+
+                    adapterData.add(image);
+                  }
+                }
+                ParseObject.pinAllInBackground(list);
+                adapter.notifyDataSetChanged();
+
+                if (!adapterData.isEmpty()) {
+                  documentImageBus.onNext(adapterData.get(0));
+
+                  getView().showContentView();
+                } else {
+
+                  if (getView() != null) {
+
+                    getView().showEmptyView();
+                  }
+                }
+
+                if (load == LOCAL) {
+
+                  loadData(NETWORK);
+                }
+
+                if (getView() != null) {
+
+                  getView().imageList.scrollToPosition(0);
+                }
               }
+            } else {
+              e.printStackTrace();
             }
-
-            if (load == LOCAL) {
-
-              loadData(NETWORK);
-            }
-
-            if (getView() != null) {
-
-              getView().imageList.scrollToPosition(0);
-            }
-          }
-        } else {
-          e.printStackTrace();
-        }
-      });
+          });
     }
 
     private void initActionBar() {
