@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManagerEx;
 import android.support.v7.widget.OrientationHelperEx;
 import android.support.v7.widget.RecyclerViewEx;
 import android.view.View;
+import com.google.common.collect.Iterables;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -23,16 +24,18 @@ import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.core.CorePresenter;
-import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
+import nigel.com.werfleider.ui.werf.YardDetailScreen;
+import nigel.com.werfleider.util.FlowUtils;
 import rx.subjects.BehaviorSubject;
 
 import static android.view.View.GONE;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static nigel.com.werfleider.commons.load.Load.LOCAL;
 import static nigel.com.werfleider.commons.load.Load.NETWORK;
@@ -44,18 +47,14 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
  * Created by nigel on 17/04/15.
  */
 @Layout(R.layout.parsedocument_location_detail_view) public class LocationDetailScreen
-    implements Blueprint, HasParent<ParseDocumentScreen> {
-
-  private final Document document;
+    implements Blueprint, HasParent<YardDetailScreen> {
 
   private final Yard yard;
 
   private final DocumentLocation location;
 
-  public LocationDetailScreen(final Document document, final Yard yard,
-      final DocumentLocation location) {
+  public LocationDetailScreen(final Yard yard, final DocumentLocation location) {
 
-    this.document = document;
     this.yard = yard;
     this.location = location;
   }
@@ -63,21 +62,22 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
   @Override public String getMortarScopeName() {
 
     return format("%s document: yard id %s, %s, location: %s", getClass().getName(),
-        yard.getObjectId(), document.getDocumentType().toString(), location.getTitle());
+        yard.getObjectId(), location.getDocumentType().toString(), location.getTitle());
   }
 
-  @Override public ParseDocumentScreen getParent() {
+  @Override public YardDetailScreen getParent() {
 
     yard.saveEventually();
-    document.saveEventually();
     location.saveEventually();
 
-    return new ParseDocumentScreen(yard, document);
+    final int tabIndex = Iterables.indexOf(newArrayList(DocumentType.values()),
+        type -> type.equals(location.getDocumentType()));
+    return new YardDetailScreen(yard, tabIndex);
   }
 
   @Override public Object getDaggerModule() {
 
-    return new Module(document, yard, location);
+    return new Module(yard, location);
   }
 
   @dagger.Module(
@@ -90,15 +90,12 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
       },
       addsTo = CorePresenter.Module.class) static class Module {
 
-    private final Document document;
-
     private final Yard yard;
 
     private final DocumentLocation location;
 
-    Module(final Document document, final Yard yard, final DocumentLocation location) {
+    Module(final Yard yard, final DocumentLocation location) {
 
-      this.document = document;
       this.location = location;
       this.yard = yard;
     }
@@ -106,11 +103,6 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
     @Provides @Singleton Yard provideYard() {
 
       return yard;
-    }
-
-    @Provides @Singleton Document provideDocument() {
-
-      return document;
     }
 
     @Provides @Singleton DocumentLocation provideLocation() {
@@ -131,8 +123,6 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
   }
 
   @Singleton public static class Presenter extends ReactiveViewPresenter<LocationDetailView> {
-
-    @Inject Document document;
 
     @Inject DocumentLocation location;
 
@@ -314,7 +304,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
         @Override public void onPageSelected(int position) {
 
-          if (document.getDocumentType() == DocumentType.OPMETINGEN) {
+          if (location.getDocumentType() == DocumentType.OPMETINGEN) {
 
             getView().addImages.setVisibility(position == 3 ? GONE : View.VISIBLE);
           } else {
@@ -330,7 +320,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
     }
 
     @NonNull private PagerAdapter getPagerAdapter() {
-      if (document.getDocumentType() == DocumentType.OPMETINGEN) {
+      if (location.getDocumentType() == DocumentType.OPMETINGEN) {
         return new LocationDetailCurrentUserOpmetingAdapter(getView().getContext());
       } else {
 
@@ -340,7 +330,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
     public void handleEdit() {
 
-      flow.goTo(new ParsePictureGridScreen(document, location, yard));
+      flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow)));
     }
 
     @Override protected void onExitScope() {

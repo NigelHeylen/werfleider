@@ -15,7 +15,6 @@ import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
-import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,15 +25,14 @@ import nigel.com.werfleider.commons.load.Load;
 import nigel.com.werfleider.commons.recyclerview.DividerItemDecoration;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
-import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.Document;
-import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.DocumentLocation;
+import nigel.com.werfleider.model.DocumentType;
+import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.pdf.MeasurementsFileOperations;
 import nigel.com.werfleider.pdf.ParseFileOperations;
 import nigel.com.werfleider.ui.werf.YardDetailScreen;
-import nigel.com.werfleider.util.MeasuringUnit;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -219,12 +217,12 @@ import static rx.schedulers.Schedulers.io;
 
       Toast.makeText(context, "Creating location...", Toast.LENGTH_LONG).show();
 
-      final DocumentLocation location = new DocumentLocation();
-      location.setDocumentId(document)
-          .setMeasuringUnit(MeasuringUnit.M)
-          .setAuthor(ParseUser.getCurrentUser());
+      //final DocumentLocation location = new DocumentLocation();
+      //location.setDocumentId(document)
+      //    .setMeasuringUnit(MeasuringUnit.M)
+      //    .setAuthor(ParseUser.getCurrentUser());
 
-      flow.goTo(new ParsePictureGridScreen(document, location, yard));
+      //flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow)));
     }
 
     public void generatePdf() {
@@ -253,12 +251,12 @@ import static rx.schedulers.Schedulers.io;
                         parseDocumentImage);
                   }
 
-                  final boolean finished = fop.write(document, yard, documentImageMultiMap);
-                  if (finished) {
-                    subscriber.onNext(true);
-                  } else {
-                    subscriber.onError(new IOException("Writing to pdf failed"));
-                  }
+                  //final boolean finished = fop.write(yard, location, documentImageMultiMap);
+                  //if (finished) {
+                  //  subscriber.onNext(true);
+                  //} else {
+                  //  subscriber.onError(new IOException("Writing to pdf failed"));
+                  //}
                   subscriber.onCompleted();
                 } else {
                   e.printStackTrace();
@@ -323,14 +321,14 @@ import static rx.schedulers.Schedulers.io;
                           parseDocumentImage);
                     }
 
-                    final boolean finished =
-                        measurementsFileOperations.writeDocument(yard, document,
-                            documentImageMultiMap);
-                    if (finished) {
-                      subscriber.onNext(true);
-                    } else {
-                      subscriber.onError(new IOException("Writing to pdf failed"));
-                    }
+                    //final boolean finished =
+                    //    measurementsFileOperations.writeDocument(yard, location,
+                    //        documentImageMultiMap);
+                    //if (finished) {
+                    //  subscriber.onNext(true);
+                    //} else {
+                    //  subscriber.onError(new IOException("Writing to pdf failed"));
+                    //}
                     subscriber.onCompleted();
                   } else {
                     e.printStackTrace();

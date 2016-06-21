@@ -7,13 +7,10 @@ package nigel.com.werfleider.pdf;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
-import com.google.common.base.Function;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
@@ -34,18 +31,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
-import nigel.com.werfleider.model.Document;
-import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.DocumentLocation;
+import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.Yard;
 import org.joda.time.DateTime;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Iterables.getLast;
 import static com.itextpdf.text.Element.ALIGN_CENTER;
 import static com.itextpdf.text.Element.ALIGN_LEFT;
 import static java.lang.String.format;
 import static nigel.com.werfleider.model.ParseDocumentImage.COMPARE_BY_FLOOR;
+import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 import static org.joda.time.DateTime.now;
 
 public class ParseFileOperations {
@@ -78,7 +76,7 @@ public class ParseFileOperations {
 
   private static Paragraph paragraph(final String text) {
 
-    return paragraph(text, ALIGN_LEFT, 150, 20, paragraphFont);
+    return paragraph(text, ALIGN_LEFT, 0, 0, paragraphFont);
   }
 
   private static Paragraph paragraph(final String text, final int alignment, final float indention,
@@ -96,67 +94,105 @@ public class ParseFileOperations {
     return new Paragraph("\n\n");
   }
 
-  private void createFirstPageDocuments(final Yard werf, final Document document,
-      final com.itextpdf.text.Document iTextDocument,
-      final Multimap<DocumentLocation, ParseDocumentImage> locationsMap)
+  private void createFirstPageDocuments(final Yard werf, final DocumentLocation location,
+      final Document iTextDocument, final Multimap<String, ParseDocumentImage> locationsMap)
       throws IOException, DocumentException {
 
     iTextDocument.add(spacingParagraph());
-    iTextDocument.add(
-        paragraph(format("%s:", werf.getNaam()), ALIGN_CENTER, 0, 10, titleFontBoldUnderline));
-
-    iTextDocument.add(paragraph(format("Adres: %s", werf.getYardAddress())));
-
-    iTextDocument.add(paragraph(document.getDocumentType().toString()));
-
-    iTextDocument.add(paragraph(getFrontPageLocationString(locationsMap)));
-
-    iTextDocument.add(
-        paragraph(format("Opgesteld door: %s", ParseUser.getCurrentUser().getUsername())));
-    iTextDocument.add(paragraph(format("Werf: %s", werf.getNaam())));
-
-    iTextDocument.add(paragraph(format("Datum opmaak: %s", now().toString(DATE_FORMAT))));
-  }
-
-  private String getFrontPageLocationString(
-      final Multimap<DocumentLocation, ParseDocumentImage> document) {
-
-    final ImmutableListMultimap<String, ParseDocumentImage> partionedMap =
-        Multimaps.index(document.values(), new Function<ParseDocumentImage, String>() {
-          @Override public String apply(final ParseDocumentImage input) {
-
-            return Strings.nullToEmpty(input.getFloor());
-          }
-        });
-
-    final StringBuilder builder = new StringBuilder();
-    for (String floor : partionedMap.keySet()) {
-
-      builder.append(format("%s : ", floor));
-      for (ParseDocumentImage documentImage : partionedMap.get(floor)) {
-
-        builder.append(format("%s - ", documentImage.getLocation()));
-      }
-      builder.delete(builder.toString().length() - 2, builder.toString().length());
-      builder.append("\n");
+    iTextDocument.add(paragraph(werf.getNaam(), ALIGN_CENTER, 0, 10, titleFontBoldUnderline));
+    if (!isNullOrEmpty(werf.getNummer())) {
+      iTextDocument.add(paragraph(format("Nr: %s", werf.getNummer())));
     }
 
-    return builder.toString();
+    if (!isNullOrEmpty(werf.getYardAddress())) {
+      iTextDocument.add(paragraph(
+          format("Adres: %s %s", werf.getYardAddress(), nullToEmpty(werf.getYardAddressNumber()))));
+    }
+
+    if (!isNullOrEmpty(werf.getYardCity())) {
+
+      iTextDocument.add(paragraph(
+          format("Stad: %s %s", werf.getYardCity(), nullToEmpty(werf.getYardAreaCode()))));
+    }
+
+    if (!isNullOrEmpty(werf.getOmschrijving())) {
+
+      iTextDocument.add(paragraph(format("Omschrijving der werken: %s", werf.getOmschrijving())));
+    }
+
+    iTextDocument.add(paragraph(
+        format("Datum aanvang der werken: %s", werf.getDatumAanvang().toString(DATE_FORMAT))));
+
+    if (!isNullOrEmpty(werf.getTermijn())) {
+      iTextDocument.add(paragraph(format("Termijn: %s", werf.getTermijn())));
+    }
+
+    iTextDocument.add(
+        paragraph(format("Opgesteld door: %s", ParseUser.getCurrentUser().get(NAME))));
+
+    if (werf.getImageByteArray() != null) {
+      final Image image = Image.getInstance(werf.getImageByteArray());
+      image.scaleToFit(600, 300);
+      image.setAlignment(ALIGN_CENTER);
+      iTextDocument.add(image);
+    }
+
+    iTextDocument.add(
+        paragraph(location.getDocumentType().toString(), ALIGN_CENTER, 0, 5, paragraphTitleFont));
+
+    if (!isNullOrEmpty(werf.getArchitectNaam())) {
+
+      iTextDocument.add(paragraph("Architect", ALIGN_LEFT, 0, 5, paragraphSubTitleFont));
+      iTextDocument.add(paragraph(format("Naam: %s", werf.getArchitectNaam())));
+      if (!isNullOrEmpty(werf.getArchitectEmail())) {
+        iTextDocument.add(paragraph(format("Email: %s", werf.getArchitectEmail())));
+      }
+      if (!isNullOrEmpty(werf.getArchitectTelefoon())) {
+        iTextDocument.add(paragraph(format("Telefoon: %s", werf.getArchitectTelefoon())));
+      }
+    }
+
+    if (!isNullOrEmpty(werf.getBouwheerNaam())) {
+
+      iTextDocument.add(paragraph("Bouwheer", ALIGN_LEFT, 0, 5, paragraphSubTitleFont));
+      iTextDocument.add(paragraph(format("Naam: %s", werf.getBouwheerNaam())));
+      if (!isNullOrEmpty(werf.getBouwheerEmail())) {
+        iTextDocument.add(paragraph(format("Email: %s", werf.getBouwheerEmail())));
+      }
+      if (!isNullOrEmpty(werf.getBouwheerTelefoon())) {
+        iTextDocument.add(paragraph(format("Telefoon: %s", werf.getBouwheerTelefoon())));
+      }
+    }
+
+    if (!isNullOrEmpty(werf.getIngenieurNaam())) {
+
+      iTextDocument.add(paragraph("Ingenieur", ALIGN_LEFT, 0, 5, paragraphSubTitleFont));
+      iTextDocument.add(paragraph(format("Naam: %s", werf.getIngenieurNaam())));
+      if (!isNullOrEmpty(werf.getIngenieurEmail())) {
+        iTextDocument.add(paragraph(format("Email: %s", werf.getIngenieurEmail())));
+      }
+      if (!isNullOrEmpty(werf.getIngenieurTelefoon())) {
+        iTextDocument.add(paragraph(format("Telefoon: %s", werf.getIngenieurTelefoon())));
+      }
+    }
   }
 
-  public boolean write(final Document writeDocument, final Yard yard,
-      final Multimap<DocumentLocation, ParseDocumentImage> locationsMap) {
+  public boolean write(final Yard yard, DocumentLocation location,
+      final Multimap<String, ParseDocumentImage> locationsMap) {
 
     try {
-      final File path = Environment.getExternalStoragePublicDirectory(
-          "werfleider/" + now().toString("d-MM-yyyy"));
+      final File path = new File(Environment.getExternalStorageDirectory(),
+          "werfleider/" + yard.getNaam() + "/" + location.getDocumentType().name().toLowerCase());
 
-      path.mkdirs();
+      if (!path.exists()) path.mkdirs();
 
-      final File file = new File(Environment.getExternalStorageDirectory(),
-          "werfleider/" + now().toString("d-MM-yyyy") + "/" + writeDocument.getDocumentType()
-              .name()
-              .toLowerCase() + ".pdf");
+      final File file = new File(Environment.getExternalStorageDirectory(), "werfleider/"
+          + yard.getNaam()
+          + "/"
+          + location.getDocumentType().name().toLowerCase()
+          + "/"
+          + now().toString("d-MM-yyyy")
+          + ".pdf");
       // If file does not exists, then create it
 
       if (!file.exists()) {
@@ -164,7 +200,7 @@ public class ParseFileOperations {
       }
 
       // step 1
-      final com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+      final Document document = new Document();
       // step 2
       final PdfWriter writer =
           PdfWriter.getInstance(document, new FileOutputStream(file.getAbsoluteFile()));
@@ -177,7 +213,7 @@ public class ParseFileOperations {
 
       document.open();
 
-      createFirstPageDocuments(yard, writeDocument, document, locationsMap);
+      createFirstPageDocuments(yard, location, document, locationsMap);
 
       document.newPage();
 
@@ -185,16 +221,14 @@ public class ParseFileOperations {
       double totalPageHeight;
 
       // step 4
-      for (DocumentLocation location : locationsMap.keySet()) {
+      for (String floor : locationsMap.keySet()) {
 
-        Chapter chapter = new Chapter(
-            new Paragraph(format("%s - %s", location.getArtNr(), location.getTitle()), titleFont),
-            chapterIndex);
+        Chapter chapter = new Chapter(new Paragraph(format("%s", floor), titleFont), chapterIndex);
         chapterIndex++;
         document.add(chapter);
         totalPageHeight = 0;
 
-        final List<ParseDocumentImage> imageList = new ArrayList<>(locationsMap.get(location));
+        final List<ParseDocumentImage> imageList = new ArrayList<>(locationsMap.get(floor));
         Collections.sort(imageList, COMPARE_BY_FLOOR);
 
         int index = 0;
@@ -225,17 +259,12 @@ public class ParseFileOperations {
           final PdfPCell descriptionCell = new PdfPCell();
 
           descriptionCell.addElement(new Phrase(
-              format(Locale.ENGLISH, "Afb. %d\nGenomen op %s",
-                  index, new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT)), paragraphFont));
-          if(!isNullOrEmpty(documentImage.getFloor())) {
-            descriptionCell.addElement(new Phrase(
-                format("\n%s", documentImage.getFloor())));
-          }
+              format(Locale.ENGLISH, "Afb. %d\nGenomen op %s", index,
+                  new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT)),
+              paragraphFont));
 
-          if(!isNullOrEmpty(documentImage.getLocation())){
-            descriptionCell.addElement(new Phrase(
-                format("\n%s", documentImage.getLocation())));
-
+          if (!isNullOrEmpty(documentImage.getLocation())) {
+            descriptionCell.addElement(new Phrase(format("\n%s", documentImage.getLocation())));
           }
 
           descriptionCell.addElement(new Phrase(
@@ -248,7 +277,7 @@ public class ParseFileOperations {
           document.add(table);
           totalPageHeight += table.getTotalHeight();
 
-          if (totalPageHeight > 450 && !getLast(locationsMap.get(location)).equals(documentImage)) {
+          if (totalPageHeight > 450 && !getLast(locationsMap.get(floor)).equals(documentImage)) {
             document.newPage();
             document.add(Chunk.NEWLINE);
             totalPageHeight = 0;

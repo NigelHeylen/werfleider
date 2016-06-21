@@ -1,5 +1,6 @@
 package nigel.com.werfleider.ui.werf;
 
+import android.content.Context;
 import com.google.common.collect.Iterables;
 import dagger.Provides;
 import flow.HasParent;
@@ -9,6 +10,8 @@ import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Yard;
+import nigel.com.werfleider.pdf.MeasurementsFileOperations;
+import nigel.com.werfleider.pdf.ParseFileOperations;
 import nigel.com.werfleider.ui.document.ParseDocumentOverviewAdapter;
 import nigel.com.werfleider.ui.document.ParseDocumentOverviewView;
 
@@ -81,6 +84,17 @@ import static com.google.common.collect.Lists.newArrayList;
 
     @Provides int tabIndex(){
       return tab;
+    }
+
+
+    @Provides ParseFileOperations provideFileOperations(final Context context) {
+
+      return new ParseFileOperations(context);
+    }
+
+    @Provides MeasurementsFileOperations provideMeasurementsFileOperations(final Context context) {
+
+      return new MeasurementsFileOperations(context);
     }
   }
 }

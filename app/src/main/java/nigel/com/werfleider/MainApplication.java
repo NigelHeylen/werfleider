@@ -59,8 +59,8 @@ public class MainApplication extends BaseApplication {
     ParseObject.registerSubclass(ParseDocumentImage.class);
     ParseObject.registerSubclass(Contact.class);
 
-    Parse.initialize(this, "oTMmhRqniCH4RUXpHRvuLoq6tjBm2CokTqYcptdv",
-        "Rkth6TnPi92kwUFAsdv3eqlSgl5Wn9HpNxDvKe4t");
+    Parse.initialize(this, "SLy1sdXH1TJayo466DILaMfdZpqnEujSLftOf6LK",
+        "krsJHAgr4wFxwW9Hore2RnQut2KAiPgs6fjr4BLD");
   }
 
   @Override public Object getSystemService(String name) {

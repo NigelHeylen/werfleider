@@ -6,6 +6,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -21,9 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import nigel.com.werfleider.model.Document;
-import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.DocumentLocation;
+import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.MeasuringUnit;
 import org.joda.time.DateTime;
@@ -45,19 +45,25 @@ public class MeasurementsFileOperations {
     this.context = context;
   }
 
-  public boolean writeDocument(final Yard yard, final Document parseDocument,
-      final Multimap<DocumentLocation, ParseDocumentImage> documentMap) {
+  public boolean writeDocument(final Yard yard, DocumentLocation location,
+      final Multimap<String, ParseDocumentImage> documentMap) {
 
-    com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4, 0, 10, 50, 0);
+    Document document = new Document(PageSize.A4, 0, 10, 50, 0);
     try {
 
       final File path = Environment.getExternalStoragePublicDirectory(
-          "werfleider/" + now().toString("d-MM-yyyy"));
+          "werfleider/" + yard.getNaam() + "/" + location.getDocumentType().name().toLowerCase());
 
       path.mkdirs();
 
-      final File file = new File(Environment.getExternalStorageDirectory(),
-          "werfleider/" + now().toString("d-MM-yyyy") + "/opmetingDocument.pdf");
+      final File file = new File(Environment.getExternalStorageDirectory(), "werfleider/"
+          + yard.getNaam()
+          + "/"
+          + location.getDocumentType().name().toLowerCase()
+          + "/"
+          + now().toString("d-MM-yyyy hh:mm")
+          + ".pdf");
+
       // If file does not exists, then create it
 
       if (!file.exists()) {
@@ -74,7 +80,7 @@ public class MeasurementsFileOperations {
 
       document.open();
 
-      document.add(createTable(yard, documentMap));
+      document.add(createTable(yard, location, documentMap));
 
       document.close();
       return true;
@@ -87,49 +93,38 @@ public class MeasurementsFileOperations {
     }
   }
 
-  public static PdfPTable createTable(final Yard yard,
-      final Multimap<DocumentLocation, ParseDocumentImage> documentMap) {
+  public static PdfPTable createTable(final Yard yard, final DocumentLocation location,
+      final Multimap<String, ParseDocumentImage> documentMap) {
 
     // a table with three columns
     PdfPTable table = new PdfPTable(12);
     // the cell object
     addHeaders(table, yard);
 
-    for (DocumentLocation location : documentMap.keySet()) {
+    for (String floor : documentMap.keySet()) {
 
-      addLocationHeader(table, location, documentMap.get(location));
+      addLocationHeader(table, location, documentMap.get(floor));
 
-      ImmutableListMultimap<String, ParseDocumentImage> floorPartition =
-          Multimaps.index(documentMap.get(location), new Function<ParseDocumentImage, String>() {
+      addFloorRow(table, location, floor, documentMap.get(floor));
+
+      ImmutableListMultimap<String, ParseDocumentImage> locationPartition =
+          Multimaps.index(documentMap.get(floor), new Function<ParseDocumentImage, String>() {
             @Override public String apply(ParseDocumentImage input) {
 
-              return input.getFloor();
+              return input.getLocation();
             }
           });
 
-      for (final String floor : floorPartition.keySet()) {
+      for (String imageLocation : locationPartition.keySet()) {
 
-        addFloorRow(table, location, floor, floorPartition.get(floor));
+        addLocationRow(table, location, imageLocation, locationPartition.get(imageLocation));
 
-        ImmutableListMultimap<String, ParseDocumentImage> locationPartition =
-            Multimaps.index(documentMap.get(location), new Function<ParseDocumentImage, String>() {
-              @Override public String apply(ParseDocumentImage input) {
+        int index = 0;
 
-                return input.getLocation();
-              }
-            });
+        for (ParseDocumentImage aImage : locationPartition.get(imageLocation)) {
 
-        for (String imageLocation : locationPartition.keySet()) {
-
-          addLocationRow(table, location, imageLocation, locationPartition.get(imageLocation));
-
-          int index = 0;
-
-          for (ParseDocumentImage aImage : locationPartition.get(imageLocation)) {
-
-            addImageRow(table, index, aImage, location.getMeasuringUnit());
-            index++;
-          }
+          addImageRow(table, index, aImage, location.getMeasuringUnit());
+          index++;
         }
       }
 
@@ -183,7 +178,7 @@ public class MeasurementsFileOperations {
     table.addCell(getSmallFontPdfCell("", 1));
     table.addCell(getSmallFontPdfCell("", 1));
     table.addCell(getSmallFontPdfCell(
-            format("%.2f", getImageTotal(imageCollection, location.getMeasuringUnit())), 1));
+        format("%.2f", getImageTotal(imageCollection, location.getMeasuringUnit())), 1));
     table.addCell(getSmallFontPdfCell("", 1));
   }
 

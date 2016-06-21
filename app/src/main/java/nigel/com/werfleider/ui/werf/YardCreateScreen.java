@@ -7,7 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContentResolverCompat;
+import android.util.Log;
+import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
@@ -50,8 +53,13 @@ import rx.schedulers.Schedulers;
 
   @Override public YardsOverviewScreen getParent() {
     if (yard.getCreatedAt() != null) {
-      yard.saveEventually(e -> {
-        if (e != null) e.printStackTrace();
+      System.out.println("YardCreateScreen.getParent1");
+      yard.saveInBackground(e -> {
+        System.out.println("YardCreateScreen.getParent2");
+        if (e != null) {
+          e.printStackTrace();
+          System.out.println("e.getMessage() = " + e.getMessage());
+        }
       });
     }
     return new YardsOverviewScreen();
@@ -101,12 +109,23 @@ import rx.schedulers.Schedulers;
 
     public void create() {
 
-      yard.pinInBackground();
       yard.setAuthor(ParseUser.getCurrentUser());
+      yard.pinInBackground();
 
-      yard.saveEventually();
+      yard.saveEventually(new SaveCallback() {
+        @Override public void done(ParseException e) {
 
-      flow.goBack();
+          if(e == null) {
+            flow.goBack();
+            System.out.println("Presenter.done");
+          }
+          else {
+
+            Log.e(getClass().getSimpleName(), "Fail", e);
+          }
+        }
+      });
+
     }
 
     public void getImage() {

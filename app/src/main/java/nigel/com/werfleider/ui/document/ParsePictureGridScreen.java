@@ -27,9 +27,8 @@ import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
 import nigel.com.werfleider.model.DocumentImage;
-import nigel.com.werfleider.model.Document;
-import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.DocumentLocation;
+import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.ui.widget.HeaderViewRecyclerAdapter;
@@ -47,19 +46,17 @@ import static rx.schedulers.Schedulers.io;
 @Layout(R.layout.parsepicture_grid) public class ParsePictureGridScreen
     implements Blueprint, HasParent<Blueprint> {
 
-  private final Document document;
-
   private final DocumentLocation location;
 
   private final Yard yard;
+  private final Blueprint parentScreen;
 
-  public ParsePictureGridScreen(final Document document, final DocumentLocation location,
-      final Yard yard) {
-
-    this.document = document;
+  public ParsePictureGridScreen(final DocumentLocation location, final Yard yard,
+      Blueprint parentScreen) {
 
     this.location = location;
     this.yard = yard;
+    this.parentScreen = parentScreen;
   }
 
   @Override public String getMortarScopeName() {
@@ -69,12 +66,14 @@ import static rx.schedulers.Schedulers.io;
 
   @Override public Object getDaggerModule() {
 
-    return new Module(document, location, yard);
+    return new Module(location, yard);
   }
 
   @Override public Blueprint getParent() {
 
-    return new LocationDetailScreen(document, yard, location);
+    yard.saveEventually();
+    location.saveEventually();
+    return parentScreen;
   }
 
   @dagger.Module(
@@ -83,23 +82,14 @@ import static rx.schedulers.Schedulers.io;
       },
       addsTo = CorePresenter.Module.class) static class Module {
 
-    private final Document document;
-
     private final DocumentLocation location;
 
     private final Yard yard;
 
-    public Module(final Document document, final DocumentLocation location,
-        final Yard yard) {
+    public Module(final DocumentLocation location, final Yard yard) {
 
-      this.document = document;
       this.location = location;
       this.yard = yard;
-    }
-
-    @Provides @Singleton Document provideDocument() {
-
-      return document;
     }
 
     @Provides @Singleton DocumentLocation provideCollection() {
@@ -126,8 +116,6 @@ import static rx.schedulers.Schedulers.io;
   @Singleton public static class Presenter extends ReactiveViewPresenter<ParsePictureGridView> {
 
     @Inject DocumentLocation location;
-
-    @Inject Document document;
 
     @Inject Yard yard;
 
@@ -315,7 +303,7 @@ import static rx.schedulers.Schedulers.io;
       location.pinInBackground();
       location.saveEventually();
       saveImages();
-      flow.goTo(new LocationDetailScreen(document, yard, location));
+      flow.goTo(new LocationDetailScreen(yard, location));
     }
   }
 }

@@ -66,12 +66,12 @@ import static nigel.com.werfleider.MainActivity.USER;
 
     public void handleLogin(final String email, final String password) {
 
-      ParseUser.logInInBackground(email, password, (user, e) -> {
+      ParseUser.logInInBackground(email.toLowerCase(), password, (user, e) -> {
         if (e == null) {
 
           final SharedPreferences preferences =
               getView().getContext().getSharedPreferences(USER, MODE_PRIVATE);
-          preferences.edit().putString(EMAIL, email).putString(PASSWORD, password).commit();
+          preferences.edit().putString(EMAIL, email.toLowerCase()).putString(PASSWORD, password).commit();
           flow.goTo(new HomeScreen());
         } else {
           e.printStackTrace();

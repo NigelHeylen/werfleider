@@ -61,7 +61,7 @@ public class SignupScreen implements Blueprint, HasParent<LoginScreen> {
             ParseUser user = new ParseUser();
             user.setUsername(view.email.getEditableText().toString());
             user.setPassword(view.password.getEditableText().toString());
-            user.setEmail(view.email.getEditableText().toString());
+            user.setEmail(view.email.getEditableText().toString().toLowerCase());
             user.put(
                     PROFESSION,
                     view.profession.getEditableText().toString());
@@ -76,8 +76,6 @@ public class SignupScreen implements Blueprint, HasParent<LoginScreen> {
                     new SignUpCallback() {
                         @Override public void done(final ParseException e) {
                              if(e == null){
-                                 Toast.makeText(getView().getContext(), "Signed up", Toast.LENGTH_LONG).show();
-
                                  flow.goTo(new HomeScreen());
                              } else {
                                  Toast.makeText(getView().getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();

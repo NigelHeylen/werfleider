@@ -40,16 +40,16 @@ public class ParseStringUtils {
   public static final String DESIGNER_ADDRESS = "desginer_address";
 
   public static final String CONTRACTOR = "contractor";
-
   public static final String CONTRACTOR_PHONE = "contractor_phone";
-
   public static final String CONTRACTOR_EMAIL = "contactor_email";
 
   public static final String ENGINEER = "engineer";
-
   public static final String ENGINEER_PHONE = "engineer_phone";
+  public static final String ENGINEER_EMAIL = "engineer_email";
 
-  public static final String ENGINEER_EMAIL = "contactor_email";
+  public static final String ARCHITECT = "architect";
+  public static final String ARCHITECT_PHONE = "architect_phone";
+  public static final String ARCHITECT_EMAIL = "architect_email";
 
   public static final String DEFINITION = "definition";
 

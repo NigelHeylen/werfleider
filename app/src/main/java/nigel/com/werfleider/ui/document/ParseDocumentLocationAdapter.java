@@ -12,7 +12,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.github.mrengineer13.snackbar.SnackBar;
 import com.parse.ParseUser;
-import com.squareup.picasso.Picasso;
 import flow.Flow;
 import java.util.List;
 import javax.inject.Inject;
@@ -36,8 +35,6 @@ public class ParseDocumentLocationAdapter
   private final View parent;
 
   @Inject Document document;
-
-  @Inject Picasso pablo;
 
   @Inject Flow flow;
 
@@ -69,7 +66,7 @@ public class ParseDocumentLocationAdapter
     holder.artNr.setText(location.getArtNr());
 
     holder.mContainer.setOnClickListener(
-        v -> flow.goTo(new LocationDetailScreen(document, yard, location)));
+        v -> flow.goTo(new LocationDetailScreen(yard, location)));
 
     holder.delete.setVisibility(
         location.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);

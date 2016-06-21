@@ -8,25 +8,33 @@ import nigel.com.werfleider.util.MeasuringUnit;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static nigel.com.werfleider.util.ParseStringUtils.ART_NR;
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
-import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_ID;
+import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_TYPE;
 import static nigel.com.werfleider.util.ParseStringUtils.MEASURING_UNIT;
 import static nigel.com.werfleider.util.ParseStringUtils.TITLE;
+import static nigel.com.werfleider.util.ParseStringUtils.YARD_ID;
 
 /**
  * Created by nigel on 14/04/15.
  */
 @ParseClassName("DocumentLocation") public class DocumentLocation extends ParseObject {
 
-  public ParseObject getDocumentId() {
+  public DocumentLocation setWerf(final Yard werf) {
 
-    return getParseObject(DOCUMENT_ID);
-  }
-
-  public DocumentLocation setDocumentId(final ParseObject document) {
-
-    put(DOCUMENT_ID, document);
+    put(YARD_ID, werf);
     return this;
   }
+
+  public DocumentType getDocumentType() {
+
+    return DocumentType.valueOf(getString(DOCUMENT_TYPE));
+  }
+
+  public DocumentLocation setDocumentType(final DocumentType documentType) {
+
+    put(DOCUMENT_TYPE, documentType.name());
+    return this;
+  }
+
 
   public String getTitle() {
 

@@ -2,9 +2,11 @@ package nigel.com.werfleider.ui.werf;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
@@ -117,11 +119,14 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
               adapterData.add(yard);
             }
 
-            //if(yard.getAuthor() == null && load == LOCAL){
-            //
-            //  yard.setAuthor(ParseUser.getCurrentUser());
-            //  yard.saveEventually();
-            //}
+          }
+
+          for (Yard yard : list) {
+            yard.saveEventually(new SaveCallback() {
+              @Override public void done(ParseException e) {
+                System.out.println("e = " + e);
+              }
+            });
           }
           adapter.notifyDataSetChanged();
           ParseObject.pinAllInBackground(list);

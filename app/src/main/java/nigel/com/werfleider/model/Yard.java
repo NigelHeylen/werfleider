@@ -7,6 +7,9 @@ import java.util.List;
 import nigel.com.werfleider.util.ParseStringUtils;
 import org.joda.time.DateTime;
 
+import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT;
+import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT_EMAIL;
+import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT_PHONE;
 import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR;
 import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_EMAIL;
@@ -15,9 +18,6 @@ import static nigel.com.werfleider.util.ParseStringUtils.CREATOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DATE_START_WORK;
 import static nigel.com.werfleider.util.ParseStringUtils.DEADLINE;
 import static nigel.com.werfleider.util.ParseStringUtils.DEFINITION;
-import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER;
-import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER_EMAIL;
-import static nigel.com.werfleider.util.ParseStringUtils.DESIGNER_PHONE;
 import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER;
 import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER_EMAIL;
 import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER_PHONE;
@@ -152,34 +152,34 @@ public class Yard extends ParseObject {
 
     public String getArchitectNaam() {
 
-        return getString(DESIGNER);
+        return getString(ARCHITECT);
     }
 
     public Yard setArchitectNaam(final String ontwerper) {
 
-        put(DESIGNER, ontwerper);
+        put(ARCHITECT, ontwerper);
         return this;
     }
 
     public String getArchitectTelefoon() {
 
-        return getString(DESIGNER_PHONE);
+        return getString(ARCHITECT_PHONE);
     }
 
     public Yard setArchitectTelefoon(final String telefoon) {
 
-        put(DESIGNER_PHONE, telefoon);
+        put(ARCHITECT_PHONE, telefoon);
         return this;
     }
 
     public String getArchitectEmail() {
 
-        return getString(DESIGNER_EMAIL);
+        return getString(ARCHITECT_EMAIL);
     }
 
     public Yard setArchitectEmail(final String email) {
 
-        put(DESIGNER_EMAIL, email);
+        put(ARCHITECT_EMAIL, email);
         return this;
     }
 
@@ -271,5 +271,6 @@ public class Yard extends ParseObject {
     public List<Contact> getInvites() {
         return getList(INVITES);
     }
+
 
 }

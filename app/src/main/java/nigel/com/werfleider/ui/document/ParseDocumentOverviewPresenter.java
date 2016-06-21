@@ -9,9 +9,11 @@ import java.util.List;
 import javax.inject.Inject;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.commons.load.Load;
+import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.DocumentType;
-import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.Yard;
+import nigel.com.werfleider.util.FlowUtils;
+import nigel.com.werfleider.util.MeasuringUnit;
 
 import static android.view.View.GONE;
 import static com.google.common.collect.Lists.newArrayList;
@@ -34,14 +36,14 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   @Inject Flow flow;
 
-  final List<Document> adapterData = newArrayList();
+  final List<DocumentLocation> adapterData = newArrayList();
 
   private ParseDocumentOverviewAdapter adapter;
 
   private void loadData() {
 
-    getView().setAdapter(adapter =
-        new ParseDocumentOverviewAdapter(getView().getContext(), adapterData, getView()));
+    getView().setAdapter(
+        adapter = new ParseDocumentOverviewAdapter(getView().getContext(), adapterData, getView()));
 
     if (yard.getAuthor() != ParseUser.getCurrentUser()) {
 
@@ -53,20 +55,21 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   private void loadDocuments(final Load load) {
 
-    final ParseQuery<Document> query = ParseQuery.getQuery(Document.class);
+    final ParseQuery<DocumentLocation> query = ParseQuery.getQuery(DocumentLocation.class);
 
     if (load == LOCAL) {
 
       query.fromLocalDatastore();
     }
 
-    query.whereEqualTo(YARD_ID, yard).orderByAscending(CREATED_AT)
+    query.whereEqualTo(YARD_ID, yard)
+        .orderByAscending(CREATED_AT)
         .whereEqualTo(DOCUMENT_TYPE, documentType.name())
         .findInBackground((list, e) -> {
 
           if (e == null) {
 
-            for (Document doc : list) {
+            for (DocumentLocation doc : list) {
 
               if (!adapterData.contains(doc)) {
 
@@ -88,7 +91,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
           if (getView() != null) {
 
-            if(adapterData.isEmpty()){
+            if (adapterData.isEmpty()) {
 
               getView().showEmptyView();
             } else {
@@ -101,7 +104,16 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   public void handleCreateClick() {
 
-    flow.goTo(new DocumentCreateScreen(yard, documentType));
+    final DocumentLocation location = new DocumentLocation();
+    location.setWerf(yard)
+        .setDocumentType(documentType)
+        .setMeasuringUnit(MeasuringUnit.M)
+        .setAuthor(ParseUser.getCurrentUser());
+
+    location.pinInBackground();
+    location.saveEventually();
+
+    flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow)));
   }
 
   public void setDocumentType(final DocumentType documentType) {
@@ -118,4 +130,5 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
       getView().create.setVisibility(GONE);
     }
   }
+
 }

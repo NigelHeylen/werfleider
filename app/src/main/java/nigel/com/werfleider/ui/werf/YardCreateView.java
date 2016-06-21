@@ -7,7 +7,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -147,6 +146,10 @@ public class YardCreateView extends ScrollView {
     subscribeToTextChangeEvent(ingenieur, yard::setIngenieurNaam);
     subscribeToTextChangeEvent(ingenieurTelefoon, yard::setIngenieurTelefoon);
     subscribeToTextChangeEvent(ingenieurEmail, yard::setIngenieurEmail);
+
+    subscribeToTextChangeEvent(architect, yard::setArchitectNaam);
+    subscribeToTextChangeEvent(architectTelefoon, yard::setArchitectTelefoon);
+    subscribeToTextChangeEvent(architectEmail, yard::setArchitectEmail);
   }
 
   private void subscribeToTextChangeEvent(EditText editText, Action1<String> action) {

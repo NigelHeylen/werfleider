@@ -43,8 +43,8 @@ import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
 import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
 
-public class MainActivity extends AppCompatActivity implements ActionBarOwner.View,
-    StartActivityForResultPresenter.Activity {
+public class MainActivity extends AppCompatActivity
+    implements ActionBarOwner.View, StartActivityForResultPresenter.Activity {
 
   public static final String EMAIL = "PRIVATE_EMAIL";
   public static final String PASSWORD = "PRIVATE_PASSWORD";
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
     actionBarOwner.takeView(this);
 
     startActivityForResultPresenter.takeView(this);
-
   }
 
   @Override public Object getSystemService(String name) {
@@ -210,9 +209,9 @@ public class MainActivity extends AppCompatActivity implements ActionBarOwner.Vi
       ParseUser.logInInBackground(privatePref.getString(EMAIL, ""),
           privatePref.getString(PASSWORD, ""), (user, e) -> {
 
-            if(e != null && e.getCode() != ParseException.CONNECTION_FAILED){
+            if(e != null && e.getCode() != ParseException.INVALID_SESSION_TOKEN){
               mainFlow.goTo(new LoginScreen());
-              Toast.makeText(this, "Foutieve gebruiker gegevens. Gelieve opnieuw aan te melden", Toast.LENGTH_LONG).show();
+              Toast.makeText(this, "Uw sessie is vervallen. Gelieve opnieuw aan te melden", Toast.LENGTH_LONG).show();
             }
           });
     }

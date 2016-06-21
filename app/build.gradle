@@ -96,7 +96,7 @@ dependencies {
 
   compile 'com.parse:parse-android:1.13.0'
 
-  compile fileTree(dir: 'libs', include: 'itextg-5.5.3.jar')
+  compile 'com.itextpdf:itextg:5.5.9'
   compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
     transitive = true;
   }
