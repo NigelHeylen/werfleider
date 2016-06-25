@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
@@ -23,7 +24,7 @@ import static nigel.com.werfleider.util.StringUtils.emptyToOne;
 /**
  * Created by nigel on 26/12/15.
  */
-public class LocationDetailDimensionsPresenter
+@Singleton public class LocationDetailDimensionsPresenter
     extends ReactiveViewPresenter<LocationDetailDimensionsView> {
 
   @Inject DocumentImageAdapterData imageList;

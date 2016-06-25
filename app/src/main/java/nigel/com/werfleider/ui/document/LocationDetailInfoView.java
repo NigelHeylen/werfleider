@@ -50,25 +50,37 @@ public class LocationDetailInfoView extends LinearLayout {
     super.onFinishInflate();
 
     if (!isInEditMode()) {
-      ButterKnife.bind(this);
-      presenter.takeView(this);
+      initView();
+    }
+  }
 
-      final List<String> floors = newArrayList(yard.getFloors());
-      if (!floors.contains(EMPTY)) floors.add(0, EMPTY);
-      floor.setAdapter(floorAdapter =
-          new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, floors));
+  private void initView() {
+    ButterKnife.bind(this);
 
-      final List<String> locations = newArrayList(yard.getLocations());
-      if (!locations.contains(EMPTY)) locations.add(0, EMPTY);
-      location.setAdapter(locationAdapter =
-          new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item,
-              locations));
+    final List<String> floors = newArrayList(yard.getFloors());
+    if (!floors.contains(EMPTY)) floors.add(0, EMPTY);
+    floor.setAdapter(floorAdapter =
+        new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, floors));
 
-      subscribeToSpinnerSubscriptions();
+    final List<String> locations = newArrayList(yard.getLocations());
+    if (!locations.contains(EMPTY)) locations.add(0, EMPTY);
+    location.setAdapter(locationAdapter =
+        new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item,
+            locations));
+
+    subscribeToSpinnerSubscriptions();
+    presenter.takeView(this);
+  }
+
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    if(!isInEditMode()) {
+      initView();
     }
   }
 
   protected void subscribeToSpinnerSubscriptions() {
+
     floorSubscription = RxAdapterView.itemSelections(floor)
         .skip(1)
         .map(floorAdapter::getItem)
@@ -95,14 +107,12 @@ public class LocationDetailInfoView extends LinearLayout {
   public void setFloor(String floor) {
 
     final int index = yard.getFloors().indexOf(floor);
-    System.out.println(index + " LocationDetailInfoView.setFloor " + floor);
     this.floor.setSelection(Math.max(0, index + 1));
   }
 
   public void setLocation(String location) {
 
     final int index = yard.getLocations().indexOf(location);
-    System.out.println(index + " LocationDetailInfoView.setLocation " + location);
     this.location.setSelection(Math.max(0, index + 1));
   }
 }

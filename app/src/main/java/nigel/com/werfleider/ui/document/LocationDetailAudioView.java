@@ -80,6 +80,14 @@ public class LocationDetailAudioView extends ScrollView {
     }
   }
 
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    if(!isInEditMode()){
+      ButterKnife.bind(this);
+      presenter.takeView(this);
+    }
+  }
+
   @Override protected void onDetachedFromWindow() {
 
     super.onDetachedFromWindow();

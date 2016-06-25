@@ -39,6 +39,14 @@ public class LocationDetailCameraView extends RelativeLayout {
     }
   }
 
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    if(!isInEditMode()){
+      ButterKnife.bind(this);
+      presenter.takeView(this);
+    }
+  }
+
   @Override protected void onDetachedFromWindow() {
 
     super.onDetachedFromWindow();

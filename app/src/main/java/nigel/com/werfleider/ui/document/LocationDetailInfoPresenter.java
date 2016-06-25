@@ -2,6 +2,7 @@ package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import rx.subjects.BehaviorSubject;
@@ -9,7 +10,7 @@ import rx.subjects.BehaviorSubject;
 /**
  * Created by nigel on 26/12/15.
  */
-public class LocationDetailInfoPresenter extends ReactiveViewPresenter<LocationDetailInfoView> {
+@Singleton public class LocationDetailInfoPresenter extends ReactiveViewPresenter<LocationDetailInfoView> {
 
   @Inject BehaviorSubject<ParseDocumentImage> documentImageBus;
 
@@ -29,13 +30,10 @@ public class LocationDetailInfoPresenter extends ReactiveViewPresenter<LocationD
 
   private void bindDocumentImage(final ParseDocumentImage documentImage) {
 
-    getView().unsubscribeToSubscriptions();
-
     this.documentImage = documentImage;
-    if (getView() != null) {
 
-      System.out.println("documentImage.getFloor() = " + documentImage.getFloor());
-      System.out.println("documentImage.getLocation() = " + documentImage.getLocation());
+    if (getView() != null) {
+      getView().unsubscribeToSubscriptions();
       getView().setFloor(documentImage.getFloor());
       getView().setLocation(documentImage.getLocation());
       getView().subscribeToSpinnerSubscriptions();
@@ -43,12 +41,10 @@ public class LocationDetailInfoPresenter extends ReactiveViewPresenter<LocationD
   }
 
   public void setFloor(String floor) {
-    System.out.println("floor = " + floor);
     if (documentImage != null) documentImage.setFloor(floor);
   }
 
   public void setLocation(String location) {
-    System.out.println("location = " + location);
     if (documentImage != null) documentImage.setLocation(location);
   }
 }

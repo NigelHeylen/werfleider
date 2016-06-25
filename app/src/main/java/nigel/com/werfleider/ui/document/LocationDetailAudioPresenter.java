@@ -4,6 +4,7 @@ import android.os.Bundle;
 import com.parse.ParseUser;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
@@ -18,7 +19,7 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
 /**
  * Created by nigel on 02/01/16.
  */
-public class LocationDetailAudioPresenter extends ReactiveViewPresenter<LocationDetailAudioView> {
+@Singleton public class LocationDetailAudioPresenter extends ReactiveViewPresenter<LocationDetailAudioView> {
 
   @Inject BehaviorSubject<ParseDocumentImage> documentImageBus;
 

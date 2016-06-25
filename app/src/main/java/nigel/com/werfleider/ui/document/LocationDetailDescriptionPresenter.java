@@ -2,6 +2,7 @@ package nigel.com.werfleider.ui.document;
 
 import android.os.Bundle;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import rx.subjects.BehaviorSubject;
@@ -9,7 +10,7 @@ import rx.subjects.BehaviorSubject;
 /**
  * Created by nigel on 26/12/15.
  */
-public class LocationDetailDescriptionPresenter extends ReactiveViewPresenter<LocationDetailDescriptionView>{
+@Singleton public class LocationDetailDescriptionPresenter extends ReactiveViewPresenter<LocationDetailDescriptionView>{
 
   @Inject BehaviorSubject<ParseDocumentImage> documentImageBus;
 

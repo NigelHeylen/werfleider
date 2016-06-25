@@ -6,6 +6,7 @@ import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.commons.parse.ParseErrorHandler;
@@ -68,7 +69,7 @@ import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
     }
   }
 
-  static class LocationEditPresenter extends ReactiveViewPresenter<LocationEditView> {
+  @Singleton static class LocationEditPresenter extends ReactiveViewPresenter<LocationEditView> {
 
     @Inject DocumentLocation location;
 

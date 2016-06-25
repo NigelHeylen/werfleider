@@ -16,6 +16,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
 import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.DocumentLocation;
@@ -26,7 +27,7 @@ import nigel.com.werfleider.util.ImageUtils;
 /**
  * Created by nigel on 26/12/15.
  */
-public class LocationDetailCameraPresenter extends ReactiveViewPresenter<LocationDetailCameraView>
+@Singleton public class LocationDetailCameraPresenter extends ReactiveViewPresenter<LocationDetailCameraView>
     implements StartActivityForResultPresenter.ActivityResultListener {
 
   @Inject DocumentImageAdapterData adapterData;
