@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
 import nigel.com.werfleider.model.DocumentLocation;
+import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.Yard;
 import org.joda.time.DateTime;
@@ -236,7 +237,7 @@ public class ParseFileOperations {
         for (ParseDocumentImage documentImage : imageList) {
 
           // demonstrate some table features
-          PdfPTable table = new PdfPTable(2);
+          PdfPTable table = new PdfPTable(location.getDocumentType() == DocumentType.PLAATSBESCHRIJF ? 1 : 2);
           // table spacing before starts from top
           table.setSpacingBefore(20);
           // ook van top

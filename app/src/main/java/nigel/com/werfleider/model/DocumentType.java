@@ -11,7 +11,7 @@ import static nigel.com.werfleider.util.StringUtils.capitalize;
  */
 public enum DocumentType {
 
-  AS_BUILT(R.string.tNoLocationsFound, R.drawable.ic_location_large), OPMERKINGEN(
+  PLAATSBESCHRIJF(R.string.tNoLocationsFound, R.drawable.ic_location_large), OPMERKINGEN(
       R.string.tNoRemarksFound, R.drawable.ic_notes), OPMETINGEN(R.string.tNoPostsFound,
       R.drawable.ic_calculations);
 
