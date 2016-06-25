@@ -7,6 +7,7 @@ import java.util.List;
 import nigel.com.werfleider.util.ParseStringUtils;
 import org.joda.time.DateTime;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT;
 import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT_EMAIL;
 import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT_PHONE;
@@ -21,7 +22,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.DEFINITION;
 import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER;
 import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER_EMAIL;
 import static nigel.com.werfleider.util.ParseStringUtils.ENGINEER_PHONE;
+import static nigel.com.werfleider.util.ParseStringUtils.FLOORS;
 import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
+import static nigel.com.werfleider.util.ParseStringUtils.LOCATIONS;
 import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 import static nigel.com.werfleider.util.ParseStringUtils.NUMBER;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_ADDRESS;
@@ -33,244 +36,252 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_IMAGE;
 /**
  * Created by nigel on 14/04/15.
  */
-@ParseClassName("Werf")
-public class Yard extends ParseObject {
+@ParseClassName("Werf") public class Yard extends ParseObject {
 
-    public String getNaam() {
+  public String getNaam() {
 
-        return getString(NAME);
-    }
+    return getString(NAME);
+  }
 
-    public Yard setNaam(final String naam) {
+  public Yard setNaam(final String naam) {
 
-        put(NAME, naam);
-        return this;
-    }
+    put(NAME, naam);
+    return this;
+  }
 
-    public String getNummer() {
+  public String getNummer() {
 
-        return getString(NUMBER);
-    }
+    return getString(NUMBER);
+  }
 
-    public Yard setNummer(final String nummer) {
+  public Yard setNummer(final String nummer) {
 
-        put(NUMBER, nummer);
-        return this;
-    }
+    put(NUMBER, nummer);
+    return this;
+  }
 
+  public String getYardAddress() {
 
-    public String getYardAddress() {
+    return getString(YARD_ADDRESS);
+  }
 
-        return getString(YARD_ADDRESS);
-    }
+  public Yard setYardAdress(final String yardAdress) {
 
-    public Yard setYardAdress(final String yardAdress) {
+    put(YARD_ADDRESS, yardAdress);
+    return this;
+  }
 
-        put(YARD_ADDRESS, yardAdress);
-        return this;
-    }
+  public String getYardAddressNumber() {
 
-    public String getYardAddressNumber() {
+    return getString(ParseStringUtils.YARD_ADDRESS_NUMBER);
+  }
 
-        return getString(ParseStringUtils.YARD_ADDRESS_NUMBER);
-    }
+  public Yard setYardAddressNumber(final String yardAddressNumber) {
 
-    public Yard setYardAddressNumber(final String yardAddressNumber) {
+    put(YARD_ADDRESS_NUMBER, yardAddressNumber);
+    return this;
+  }
 
-        put(YARD_ADDRESS_NUMBER, yardAddressNumber);
-        return this;
-    }
+  public String getYardAreaCode() {
 
-    public String getYardAreaCode() {
+    return getString(ParseStringUtils.YARD_AREA_CODE);
+  }
 
-        return getString(ParseStringUtils.YARD_AREA_CODE);
-    }
+  public Yard setYardAreaCode(final String areaCode) {
 
-    public Yard setYardAreaCode(final String areaCode) {
+    put(YARD_AREA_CODE, areaCode);
+    return this;
+  }
 
-        put(YARD_AREA_CODE, areaCode);
-        return this;
-    }
+  public String getYardCity() {
 
-    public String getYardCity() {
+    return getString(YARD_CITY);
+  }
 
-        return getString(YARD_CITY);
-    }
+  public Yard setYardCity(final String yardCity) {
 
-    public Yard setYardCity(final String yardCity) {
+    put(YARD_CITY, yardCity);
+    return this;
+  }
 
-        put(YARD_CITY, yardCity);
-        return this;
-    }
+  public String getOmschrijving() {
 
+    return getString(DEFINITION);
+  }
 
+  public Yard setOmschrijving(final String omschrijving) {
 
-    public String getOmschrijving() {
+    put(DEFINITION, omschrijving);
+    return this;
+  }
 
-        return getString(DEFINITION);
-    }
+  public DateTime getDatumAanvang() {
 
-    public Yard setOmschrijving(final String omschrijving) {
+    return new DateTime(getString(DATE_START_WORK));
+  }
 
-        put(DEFINITION, omschrijving);
-        return this;
-    }
+  public Yard setDatumAanvang(final DateTime datumAanvang) {
 
-    public DateTime getDatumAanvang() {
+    put(DATE_START_WORK, datumAanvang.toString());
+    return this;
+  }
 
-        return new DateTime(getString(DATE_START_WORK));
-    }
+  public String getTermijn() {
 
-    public Yard setDatumAanvang(final DateTime datumAanvang) {
+    return getString(ParseStringUtils.DEADLINE);
+  }
 
-        put(DATE_START_WORK, datumAanvang.toString());
-        return this;
-    }
+  public Yard setTermijn(final String termijn) {
 
+    put(DEADLINE, termijn);
+    return this;
+  }
 
-    public String getTermijn() {
+  public byte[] getImageByteArray() {
 
-        return getString(ParseStringUtils.DEADLINE);
-    }
+    return getBytes(YARD_IMAGE);
+  }
 
-    public Yard setTermijn(final String termijn) {
+  public Yard setImageByteArray(final byte[] imageBytes) {
+    put(YARD_IMAGE, imageBytes);
+    return this;
+  }
 
-        put(DEADLINE, termijn);
-        return this;
-    }
+  public String getArchitectNaam() {
 
-    public byte[] getImageByteArray(){
+    return getString(ARCHITECT);
+  }
 
-        return getBytes(YARD_IMAGE);
-    }
+  public Yard setArchitectNaam(final String ontwerper) {
 
-    public Yard setImageByteArray(final byte[] imageBytes){
-        put(YARD_IMAGE, imageBytes);
-        return this;
-    }
+    put(ARCHITECT, ontwerper);
+    return this;
+  }
 
+  public String getArchitectTelefoon() {
 
-    public String getArchitectNaam() {
+    return getString(ARCHITECT_PHONE);
+  }
 
-        return getString(ARCHITECT);
-    }
+  public Yard setArchitectTelefoon(final String telefoon) {
 
-    public Yard setArchitectNaam(final String ontwerper) {
+    put(ARCHITECT_PHONE, telefoon);
+    return this;
+  }
 
-        put(ARCHITECT, ontwerper);
-        return this;
-    }
+  public String getArchitectEmail() {
 
-    public String getArchitectTelefoon() {
+    return getString(ARCHITECT_EMAIL);
+  }
 
-        return getString(ARCHITECT_PHONE);
-    }
+  public Yard setArchitectEmail(final String email) {
 
-    public Yard setArchitectTelefoon(final String telefoon) {
+    put(ARCHITECT_EMAIL, email);
+    return this;
+  }
 
-        put(ARCHITECT_PHONE, telefoon);
-        return this;
-    }
+  public String getBouwheerNaam() {
 
-    public String getArchitectEmail() {
+    return getString(CONTRACTOR);
+  }
 
-        return getString(ARCHITECT_EMAIL);
-    }
+  public Yard setBouwHeerNaam(final String bouwHeerNaam) {
 
-    public Yard setArchitectEmail(final String email) {
+    put(CONTRACTOR, bouwHeerNaam);
+    return this;
+  }
 
-        put(ARCHITECT_EMAIL, email);
-        return this;
-    }
+  public String getBouwheerTelefoon() {
 
-    public String getBouwheerNaam() {
+    return getString(CONTRACTOR_PHONE);
+  }
 
-        return getString(CONTRACTOR);
-    }
+  public Yard setBouwheerTelefoon(final String bouwheerTelefoon) {
 
-    public Yard setBouwHeerNaam(final String bouwHeerNaam) {
+    put(CONTRACTOR_PHONE, bouwheerTelefoon);
+    return this;
+  }
 
-        put(CONTRACTOR, bouwHeerNaam);
-        return this;
-    }
+  public String getBouwheerEmail() {
 
-    public String getBouwheerTelefoon() {
+    return getString(CONTRACTOR_EMAIL);
+  }
 
-        return getString(CONTRACTOR_PHONE);
-    }
+  public Yard setBouwheerEmail(final String email) {
 
-    public Yard setBouwheerTelefoon(final String bouwheerTelefoon) {
+    put(CONTRACTOR_EMAIL, email);
+    return this;
+  }
 
-        put(CONTRACTOR_PHONE, bouwheerTelefoon);
-        return this;
-    }
+  public String getIngenieurNaam() {
 
-    public String getBouwheerEmail() {
+    return getString(ENGINEER);
+  }
 
-        return getString(CONTRACTOR_EMAIL);
-    }
+  public Yard setIngenieurNaam(final String naam) {
 
-    public Yard setBouwheerEmail(final String email) {
+    put(ENGINEER, naam);
+    return this;
+  }
 
-        put(CONTRACTOR_EMAIL, email);
-        return this;
-    }
-    public String getIngenieurNaam() {
+  public String getIngenieurTelefoon() {
 
-        return getString(ENGINEER);
-    }
+    return getString(ENGINEER_PHONE);
+  }
 
-    public Yard setIngenieurNaam(final String naam) {
+  public Yard setIngenieurTelefoon(final String bouwheerTelefoon) {
 
-        put(ENGINEER, naam);
-        return this;
-    }
+    put(ENGINEER_PHONE, bouwheerTelefoon);
+    return this;
+  }
 
-    public String getIngenieurTelefoon() {
+  public String getIngenieurEmail() {
 
-        return getString(ENGINEER_PHONE);
-    }
+    return getString(ENGINEER_EMAIL);
+  }
 
-    public Yard setIngenieurTelefoon(final String bouwheerTelefoon) {
+  public Yard setIngenieurEmail(final String email) {
 
-        put(ENGINEER_PHONE, bouwheerTelefoon);
-        return this;
-    }
+    put(ENGINEER_EMAIL, email);
+    return this;
+  }
 
-    public String getIngenieurEmail() {
+  public ParseUser getAuthor() {
+    return getParseUser(AUTHOR);
+  }
 
-        return getString(ENGINEER_EMAIL);
-    }
+  public Yard setAuthor(ParseUser user) {
+    put(AUTHOR, user);
+    return this;
+  }
 
-    public Yard setIngenieurEmail(final String email) {
+  public Yard setCreator(final String creator) {
+    put(CREATOR, creator);
+    return this;
+  }
 
-        put(ENGINEER_EMAIL, email);
-        return this;
-    }
+  public String getId() {
 
+    return getObjectId();
+  }
 
-    public ParseUser getAuthor() {
-        return getParseUser(AUTHOR);
-    }
+  public List<Contact> getInvites() {
+    return getList(INVITES);
+  }
 
-    public Yard setAuthor(ParseUser user) {
-        put(AUTHOR, user);
-        return this;
-    }
+  public List<String> getFloors() {
+    return getList(FLOORS) != null ? getList(FLOORS) : newArrayList();
+  }
 
-    public Yard setCreator(final String creator) {
-        put(CREATOR, creator);
-        return this;
-    }
+  public void putFloors(List<String> floors) {
+    put(FLOORS, floors);
+  }
 
-    public String getId() {
+  public List<String> getLocations() {
+    return getList(LOCATIONS) != null ? getList(LOCATIONS) : newArrayList();
+  }
 
-        return getObjectId();
-    }
-
-    public List<Contact> getInvites() {
-        return getList(INVITES);
-    }
-
-
+  public void putLocations(List<String> locations) {
+    put(LOCATIONS, locations);
+  }
 }

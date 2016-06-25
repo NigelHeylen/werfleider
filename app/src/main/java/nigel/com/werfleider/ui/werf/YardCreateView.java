@@ -8,6 +8,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -17,6 +18,7 @@ import com.parse.ParseUser;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.tbruyelle.rxpermissions.RxPermissions;
+import flow.Flow;
 import java.io.File;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -27,6 +29,8 @@ import nigel.com.werfleider.util.ImageUtils;
 import org.joda.time.DateTime;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
+
+import static java.lang.String.format;
 
 /**
  * Created by nigel on 07/02/15.
@@ -58,6 +62,11 @@ public class YardCreateView extends ScrollView {
   @Bind(R.id.werf_create_ingenieur_email) MaterialEditText ingenieurEmail;
 
   @Bind(R.id.werf_choose_image) ButtonRectangle chooseImage;
+
+  @Bind(R.id.werf_create_number_floors) TextView numberFloors;
+  @Bind(R.id.werf_create_number_locations) TextView numberLocations;
+
+  @Inject Flow flow;
 
   private CompositeSubscription subscription = new CompositeSubscription();
 
@@ -134,6 +143,9 @@ public class YardCreateView extends ScrollView {
     ingenieurTelefoon.setText(yard.getIngenieurTelefoon());
     ingenieurEmail.setText(yard.getIngenieurEmail());
 
+    numberFloors.setText(format("Aantal verdiepingen: %d", yard.getFloors().size()));
+    numberLocations.setText(format("Aantal locaties: %d", yard.getLocations().size()));
+
     if (yard.getImageByteArray() != null) {
 
       werfImage.post(() -> {
@@ -183,6 +195,16 @@ public class YardCreateView extends ScrollView {
             presenter.getImage();
           }
         });
+  }
+
+  @OnClick(R.id.werf_create_locations) public void chooseLocations(){
+
+    presenter.handleGoToLocationScreen();
+  }
+
+  @OnClick(R.id.werf_create_floors) public void chooseFloors(){
+
+    presenter.handleGoToFloorScreen();
   }
 
   public void setImage(Uri imageUri) {

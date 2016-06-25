@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nigel.com.werfleider.ui.werf.YardFLoorLocationView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/screen.margin"
+    android:paddingRight="@dimen/screen.margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <RelativeLayout android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/floor_location_new_edit_text"
+        style="@style/Werf.Create.EditText"
+        android:layout_toLeftOf="@+id/floor_location_new_edit_button"/>
+
+    <ImageButton
+        android:layout_alignParentRight="true"
+        android:id="@+id/floor_location_new_edit_button"
+        android:src="@drawable/ic_create_white"
+        android:backgroundTint="@color/primary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+  </RelativeLayout>
+
+
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/floor_location_recyclerview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+
+</nigel.com.werfleider.ui.werf.YardFLoorLocationView>

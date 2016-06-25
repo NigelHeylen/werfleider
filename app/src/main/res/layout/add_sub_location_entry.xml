@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
   <TextView
-      android:id="@+id/sub_location_index"
+      android:id="@+id/sub.location.index"
       android:textAppearance="?android:attr/textAppearanceMedium"
       android:layout_width="wrap_content"
       android:textColor="@android:color/black"
@@ -15,11 +15,24 @@
       android:layout_marginLeft="4dp"
       android:layout_marginRight="2dp"
       android:gravity="right"
+      android:layout_gravity="center_vertical"
       android:layout_height="wrap_content"/>
 
 
-  <EditText
-      style="@style/Werf.Create.EditText"
-      android:hint="Naam"
-      android:id="@+id/sub_location_text"/>
+  <TextView
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:textAppearance="?android:textAppearanceMedium"
+      android:layout_weight="1"
+      tools:text="lol"
+      android:layout_marginLeft="@dimen/screen.margin"
+      android:layout_gravity="center_vertical"
+      android:id="@+id/sub.location.text"/>
+
+  <ImageButton
+      android:id="@+id/sub.location.delete"
+      android:src="@drawable/ic_delete_white"
+      android:backgroundTint="@color/primary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"/>
 </LinearLayout>

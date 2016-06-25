@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContentResolverCompat;
-import com.parse.ParseUser;
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
@@ -20,9 +19,13 @@ import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
+import nigel.com.werfleider.util.FlowUtils;
 import nigel.com.werfleider.util.ImageUtils;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+
+import static nigel.com.werfleider.ui.werf.FloorLocation.LOCATIE;
+import static nigel.com.werfleider.ui.werf.FloorLocation.VERDIEPING;
 
 /**
  * Created by nigel on 07/02/15.
@@ -138,6 +141,14 @@ import rx.schedulers.Schedulers;
           getView().setImage(imageUri);
         }
       }
+    }
+
+    public void handleGoToLocationScreen() {
+      flow.goTo(new YardFloorLocationScreen(yard, FlowUtils.getCurrentScreen(flow), LOCATIE));
+    }
+
+    public void handleGoToFloorScreen() {
+      flow.goTo(new YardFloorLocationScreen(yard, FlowUtils.getCurrentScreen(flow), VERDIEPING));
     }
   }
 }
