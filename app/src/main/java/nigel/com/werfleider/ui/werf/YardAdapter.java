@@ -59,10 +59,7 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
 
     holder.container.setOnClickListener(v -> flow.goTo(new YardDetailScreen(werf, yardType)));
 
-    holder.edit.setOnClickListener(v -> flow.goTo(new YardCreateScreen(werf, parseErrorHandler)));
-
     holder.delete.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
-    holder.edit.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
 
     holder.delete.setOnClickListener(
         v -> new SnackBar.Builder(context, parent).withMessage(
@@ -104,7 +101,6 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
     @Bind(R.id.werf_item_nr) TextView nr;
 
     @Bind(R.id.werf_item_delete) ImageView delete;
-    @Bind(R.id.werf_item_edit) ImageView edit;
 
     public YardViewHolder(final View itemView) {
 

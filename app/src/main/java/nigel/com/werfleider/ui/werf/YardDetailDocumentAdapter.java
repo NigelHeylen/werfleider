@@ -22,16 +22,19 @@ public class YardDetailDocumentAdapter extends PagerAdapter {
 
   @Inject Yard yard;
 
+  final LayoutInflater inflater;
+
   public YardDetailDocumentAdapter(final Context context) {
 
     Mortar.inject(context, this);
     this.context = context;
+    inflater = LayoutInflater.from(context);
   }
 
   @Override public int getCount() {
 
-    return yard.getAuthor() == ParseUser.getCurrentUser() ? DocumentType.values().length + 1
-        : DocumentType.values().length;
+    return (yard.getAuthor() == ParseUser.getCurrentUser() ? DocumentType.values().length + 1
+        : DocumentType.values().length) + 1;
   }
 
   @Override public boolean isViewFromObject(final View view, final Object object) {
@@ -41,18 +44,22 @@ public class YardDetailDocumentAdapter extends PagerAdapter {
 
   @Override public Object instantiateItem(final ViewGroup container, final int position) {
 
-    if (position < DocumentType.values().length) {
-      final ParseDocumentOverviewView view =
-          (ParseDocumentOverviewView) LayoutInflater.from(context)
-              .inflate(R.layout.parsedocument_overview_view, container, false);
+    if (position == 0) {
 
-      view.setDocumentType(DocumentType.values()[position]);
+      final View view = inflater.inflate(R.layout.yard_create_view, container, false);
+      container.addView(view);
+      return view;
+    } else if (position < DocumentType.values().length + 1) {
+      final ParseDocumentOverviewView view =
+          (ParseDocumentOverviewView) inflater.inflate(R.layout.parsedocument_overview_view,
+              container, false);
+
+      view.setDocumentType(DocumentType.values()[position - 1]);
       container.addView(view);
       return view;
     } else {
 
-      final InviteContactsView view = (InviteContactsView) LayoutInflater.from(context)
-          .inflate(R.layout.invite_contacts_view, container, false);
+      final View view = inflater.inflate(R.layout.invite_contacts_view, container, false);
       container.addView(view);
       return view;
     }
@@ -66,7 +73,12 @@ public class YardDetailDocumentAdapter extends PagerAdapter {
 
   @Override public CharSequence getPageTitle(final int position) {
 
-    return position < DocumentType.values().length ? DocumentType.values()[position].toString()
-        : context.getString(R.string.tInvites);
+    if(position == 0){
+      return "Details";
+    } else if(position < DocumentType.values().length + 1){
+      return DocumentType.values()[position - 1].name();
+    } else {
+      return "Invites";
+    }
   }
 }

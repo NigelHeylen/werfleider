@@ -31,17 +31,14 @@ import rx.schedulers.Schedulers;
     implements Blueprint, HasParent<YardsOverviewScreen> {
 
   private final Yard yard;
-  private final ParseErrorHandler parseErrorHandler;
 
-  public YardCreateScreen(Yard yard, final ParseErrorHandler parseErrorHandler) {
+  public YardCreateScreen(Yard yard) {
 
     this.yard = yard;
-    this.parseErrorHandler = parseErrorHandler;
   }
 
-  public YardCreateScreen(final ParseErrorHandler  errorHandler) {
+  public YardCreateScreen() {
     yard = new Yard();
-    this.parseErrorHandler = errorHandler;
   }
 
   @Override public String getMortarScopeName() {
@@ -53,13 +50,6 @@ import rx.schedulers.Schedulers;
   }
 
   @Override public YardsOverviewScreen getParent() {
-    if (yard.getCreatedAt() != null) {
-      yard.saveInBackground(e -> {
-        if (e != null) {
-          parseErrorHandler.handleParseError(e);
-        }
-      });
-    }
     return new YardsOverviewScreen();
   }
 
@@ -105,24 +95,11 @@ import rx.schedulers.Schedulers;
     @Override protected void onExitScope() {
       super.onExitScope();
       resultPresenter.removeListener();
-    }
-
-    public void create() {
-
-      yard.setAuthor(ParseUser.getCurrentUser());
-      yard.pinInBackground();
-
-      yard.saveEventually(e -> {
-
-        if(e == null) {
-          flow.goBack();
-        }
-        else {
-
+      yard.saveInBackground(e -> {
+        if (e != null) {
           parseErrorHandler.handleParseError(e);
         }
       });
-
     }
 
     public void getImage() {

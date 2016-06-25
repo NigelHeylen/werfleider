@@ -165,7 +165,18 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
     public void handleCreate() {
 
-      flow.goTo(new YardCreateScreen(parseErrorHandler));
+      final Yard yard = new Yard();
+      yard.saveEventually(e -> {
+
+        if(e == null){
+          yard.pinInBackground();
+          yard.setAuthor(ParseUser.getCurrentUser());
+          flow.goTo(new YardDetailScreen(yard, yardType));
+
+        } else {
+         parseErrorHandler.handleParseError(e);
+        }
+      });
     }
 
     public void setYardType(YardType yardType) {

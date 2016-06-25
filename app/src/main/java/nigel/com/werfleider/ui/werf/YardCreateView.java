@@ -2,6 +2,7 @@ package nigel.com.werfleider.ui.werf;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -12,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.parse.ParseUser;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.tbruyelle.rxpermissions.RxPermissions;
@@ -55,13 +57,9 @@ public class YardCreateView extends ScrollView {
 
   @Bind(R.id.werf_create_ingenieur_email) MaterialEditText ingenieurEmail;
 
-  @Bind(R.id.werf_create_save) ButtonRectangle save;
+  @Bind(R.id.werf_choose_image) ButtonRectangle chooseImage;
 
   private CompositeSubscription subscription = new CompositeSubscription();
-
-  @OnClick(R.id.werf_create_save) public void save() {
-    presenter.create();
-  }
 
   @Inject Picasso pablo;
 
@@ -89,8 +87,26 @@ public class YardCreateView extends ScrollView {
 
   public void setData(Yard yard) {
 
-    if (yard.getAuthor() != null) {
-      save.setVisibility(GONE);
+    if (yard.getAuthor() != ParseUser.getCurrentUser()) {
+      naam.setInputType(InputType.TYPE_NULL);
+      nummer.setInputType(InputType.TYPE_NULL);
+      adres.setInputType(InputType.TYPE_NULL);
+      huisNummer.setInputType(InputType.TYPE_NULL);
+      stad.setInputType(InputType.TYPE_NULL);
+      postcode.setInputType(InputType.TYPE_NULL);
+      omschrijving.setInputType(InputType.TYPE_NULL);
+      aanvang.setEnabled(false);
+      termijn.setInputType(InputType.TYPE_NULL);
+      architect.setInputType(InputType.TYPE_NULL);
+      architectTelefoon.setInputType(InputType.TYPE_NULL);
+      architectEmail.setInputType(InputType.TYPE_NULL);
+      bouwheer.setInputType(InputType.TYPE_NULL);
+      bouwheerTelefoon.setInputType(InputType.TYPE_NULL);
+      bouwheerEmail.setInputType(InputType.TYPE_NULL);
+      ingenieur.setInputType(InputType.TYPE_NULL);
+      ingenieurTelefoon.setInputType(InputType.TYPE_NULL);
+      ingenieurEmail.setInputType(InputType.TYPE_NULL);
+      chooseImage.setVisibility(GONE);
     }
 
     naam.setText(yard.getNaam());

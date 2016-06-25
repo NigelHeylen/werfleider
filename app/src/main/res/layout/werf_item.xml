@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:layout_toLeftOf="@+id/werf.item.edit"
+        android:layout_toLeftOf="@+id/werf.item.delete"
         android:lines="1"
         android:ellipsize="end"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -28,21 +28,12 @@
         android:layout_below="@+id/werf.item.naam"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/werf.item.edit"
+        android:layout_toLeftOf="@+id/werf.item.delete"
         android:lines="1"
         android:ellipsize="end"
         android:padding="8dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         tools:text="57289ab3"/>
-
-    <ImageView
-        android:id="@+id/werf.item.edit"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@+id/werf.item.delete"
-        app:srcCompat="@drawable/ic_edit"/>
 
     <ImageView
         android:id="@+id/werf.item.delete"

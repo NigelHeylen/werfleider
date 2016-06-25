@@ -65,7 +65,7 @@ import static com.google.common.collect.Lists.newArrayList;
   @dagger.Module(
       injects = {
           YardDetailView.class, YardDetailDocumentAdapter.class, ParseDocumentOverviewView.class,
-          ParseDocumentOverviewAdapter.class
+          ParseDocumentOverviewAdapter.class, YardCreateView.class
       }, addsTo = CorePresenter.Module.class) static class Module {
 
     private final Yard werf;
