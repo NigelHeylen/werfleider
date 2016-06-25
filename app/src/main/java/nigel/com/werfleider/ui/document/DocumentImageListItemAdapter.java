@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.util.ImageUtils;
 
@@ -28,6 +29,8 @@ public class DocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
   @Inject Picasso pablo;
 
   @Inject DocumentImageAdapterData adapterData;
+
+  @Inject ParseErrorHandler parseErrorHandler;
 
   public DocumentImageListItemAdapter(final Context context) {
 
@@ -66,7 +69,9 @@ public class DocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
 
     holder.delete.setOnClickListener(v -> {
 
-      image.deleteEventually();
+      image.deleteEventually(e1 -> {
+        if(e1 != null) parseErrorHandler.handleParseError(e1);
+      });
       image.unpinInBackground();
       adapterData.remove(image);
 

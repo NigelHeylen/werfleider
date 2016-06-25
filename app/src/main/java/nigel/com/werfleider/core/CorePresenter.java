@@ -26,6 +26,7 @@ import flow.Parcer;
 import mortar.Blueprint;
 import nigel.com.werfleider.android.ActionBarModule;
 import nigel.com.werfleider.android.ActionBarOwner;
+import nigel.com.werfleider.commons.parse.ErrorHandlerModule;
 import nigel.com.werfleider.ui.home.HomeScreen;
 import nigel.com.werfleider.ui.login.LoginScreen;
 import nigel.com.werfleider.util.FlowOwner;
@@ -41,7 +42,9 @@ public class CorePresenter implements Blueprint {
   }
 
   @dagger.Module( //
-      includes = ActionBarModule.class,
+      includes = {
+          ActionBarModule.class, ErrorHandlerModule.class
+      },
       injects = MainView.class,
       addsTo = ApplicationModule.class, //
       library = true //

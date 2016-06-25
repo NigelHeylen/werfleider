@@ -26,6 +26,7 @@ import java.util.List;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.model.Yard;
@@ -63,6 +64,8 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
 
   @Inject MeasurementsFileOperations measurementsFileOperations;
 
+  @Inject ParseErrorHandler parseErrorHandler;
+
   final CompositeSubscription subscription = new CompositeSubscription();
 
   public ParseDocumentOverviewAdapter(final Context context, final List<DocumentLocation> documents,
@@ -93,7 +96,7 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
     viewHolder.name.setText(document.getTitle());
 
     viewHolder.container.setOnClickListener(
-        v -> flow.goTo(new LocationDetailScreen(yard, document)));
+        v -> flow.goTo(new LocationDetailScreen(yard, document, parseErrorHandler)));
 
     viewHolder.delete.setVisibility(
         yard.getAuthor() == ParseUser.getCurrentUser() ? VISIBLE : View.GONE);
@@ -103,7 +106,7 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
         yard.getAuthor() == ParseUser.getCurrentUser() ? VISIBLE : View.GONE);
 
     viewHolder.edit.setOnClickListener(v -> flow.goTo(
-        new ParsePictureGridScreen(document, yard, FlowUtils.getCurrentScreen(flow))));
+        new ParsePictureGridScreen(document, yard, FlowUtils.getCurrentScreen(flow), parseErrorHandler)));
     viewHolder.pdf.setOnClickListener(v ->
 
         RxPermissions.getInstance(context)
@@ -119,7 +122,9 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
         .withActionMessage("Delete")
         .withTextColorId(R.color.green)
         .withOnClickListener(token -> {
-          document.deleteEventually();
+          document.deleteEventually(e1 -> {
+            if(e1 != null) parseErrorHandler.handleParseError(e1);
+          });
           document.unpinInBackground();
 
           documents.remove(position);
@@ -168,7 +173,7 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
                 }
                 subscriber.onCompleted();
               } else {
-                e.printStackTrace();
+                parseErrorHandler.handleParseError(e);
                 subscriber.onError(e);
               }
 
@@ -236,7 +241,7 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
                   }
                   subscriber.onCompleted();
                 } else {
-                  e.printStackTrace();
+                  parseErrorHandler.handleParseError(e);
                   subscriber.onError(e);
                 }
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import com.parse.ParseUser;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.AudioUtils;
@@ -20,6 +21,8 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
 public class LocationDetailAudioPresenter extends ReactiveViewPresenter<LocationDetailAudioView> {
 
   @Inject BehaviorSubject<ParseDocumentImage> documentImageBus;
+
+  @Inject ParseErrorHandler parseErrorHandler;
 
   private ParseDocumentImage documentImage;
 
@@ -65,7 +68,9 @@ public class LocationDetailAudioPresenter extends ReactiveViewPresenter<Location
   protected void saveAudio() {
 
     documentImage.setAudio(AudioUtils.getByteArrayFromPath(getView().getFileName()));
-    documentImage.saveEventually();
+    documentImage.saveEventually(e1 -> {
+      if(e1 != null) parseErrorHandler.handleParseError(e1);
+    });
 
     getView().showPlayAudio(true);
   }

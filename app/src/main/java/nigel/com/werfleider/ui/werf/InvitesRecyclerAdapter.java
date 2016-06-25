@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.Contact;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.util.ParseStringUtils;
@@ -39,6 +40,8 @@ public class InvitesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   @Inject Resources resources;
 
   @Inject @Named(INVITES_YARD) Yard yard;
+
+  @Inject ParseErrorHandler parseErrorHandler;
 
   public static final int HEADER = 200;
 
@@ -92,7 +95,9 @@ public class InvitesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if (invited(user)) {
 
               yard.removeAll(ParseStringUtils.INVITES, newArrayList(user));
-              yard.saveEventually();
+              yard.saveEventually(e1 -> {
+                if(e1 != null) parseErrorHandler.handleParseError(e1);
+              });
               viewHolder.follow.setImageDrawable(
                   resources.getDrawable(R.drawable.ic_person_add));
               invites.remove(user);
@@ -100,7 +105,9 @@ public class InvitesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             } else {
 
               yard.addUnique(ParseStringUtils.INVITES, user);
-              yard.saveEventually();
+              yard.saveEventually(e1 -> {
+                if(e1 != null) parseErrorHandler.handleParseError(e1);
+              });
 
               viewHolder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person));
               invites.add(user);

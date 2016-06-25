@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.Yard;
@@ -42,6 +43,8 @@ public class ParseDocumentLocationAdapter
 
   @Inject List<DocumentLocation> locations;
 
+  @Inject ParseErrorHandler parseErrorHandler;
+
   public ParseDocumentLocationAdapter(final Context context, View parent) {
     this.context = context;
     this.parent = parent;
@@ -66,7 +69,7 @@ public class ParseDocumentLocationAdapter
     holder.artNr.setText(location.getArtNr());
 
     holder.mContainer.setOnClickListener(
-        v -> flow.goTo(new LocationDetailScreen(yard, location)));
+        v -> flow.goTo(new LocationDetailScreen(yard, location, parseErrorHandler)));
 
     holder.delete.setVisibility(
         location.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);
@@ -82,7 +85,9 @@ public class ParseDocumentLocationAdapter
         .withTextColorId(R.color.green)
         .withOnClickListener(token -> {
           location.unpinInBackground();
-          location.deleteEventually();
+          location.deleteEventually(e1 -> {
+            if(e1 != null) parseErrorHandler.handleParseError(e1);
+          });
 
           locations.remove(position);
           notifyItemRemoved(position);

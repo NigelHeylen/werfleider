@@ -23,6 +23,7 @@ import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.commons.load.Load;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.DocumentType;
@@ -52,11 +53,14 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
   private final Yard yard;
 
   private final DocumentLocation location;
+  private final ParseErrorHandler parseErrorHandler;
 
-  public LocationDetailScreen(final Yard yard, final DocumentLocation location) {
+  public LocationDetailScreen(final Yard yard, final DocumentLocation location, final
+      ParseErrorHandler parseErrorHandler) {
 
     this.yard = yard;
     this.location = location;
+    this.parseErrorHandler = parseErrorHandler;
   }
 
   @Override public String getMortarScopeName() {
@@ -67,8 +71,12 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
   @Override public YardDetailScreen getParent() {
 
-    yard.saveEventually();
-    location.saveEventually();
+    yard.saveEventually(e1 -> {
+      if(e1 != null) parseErrorHandler.handleParseError(e1);
+    });
+    location.saveEventually(e1 -> {
+      if(e1 != null) parseErrorHandler.handleParseError(e1);
+    });
 
     final int tabIndex = Iterables.indexOf(newArrayList(DocumentType.values()),
         type -> type.equals(location.getDocumentType()));
@@ -136,6 +144,8 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
     @Inject BehaviorSubject<ParseDocumentImage> documentImageBus;
 
+    @Inject ParseErrorHandler parseErrorHandler;
+
     private int position;
 
     private DocumentImageListItemAdapter adapter;
@@ -190,7 +200,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
               position = layoutManager.findFirstCompletelyVisibleItemPosition();
               if (position != -1) {
                 if (lastDocumentImage != null) {
-                  lastDocumentImage.saveEventually();
+                  lastDocumentImage.saveEventually(e1 -> {
+                    if(e1 != null) parseErrorHandler.handleParseError(e1);
+                  });
                 }
                 lastDocumentImage = adapterData.get(position);
                 documentImageBus.onNext(adapterData.get(position));
@@ -280,7 +292,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
                 }
               }
             } else {
-              e.printStackTrace();
+              parseErrorHandler.handleParseError(e);
             }
           });
     }
@@ -330,7 +342,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
     public void handleEdit() {
 
-      flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow)));
+      flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow), parseErrorHandler));
     }
 
     @Override protected void onExitScope() {
@@ -338,7 +350,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
       for (ParseDocumentImage parseDocumentImage : adapterData.getList()) {
 
-        parseDocumentImage.saveEventually();
+        parseDocumentImage.saveEventually(e1 -> {
+          if(e1 != null) parseErrorHandler.handleParseError(e1);
+        });
       }
     }
   }

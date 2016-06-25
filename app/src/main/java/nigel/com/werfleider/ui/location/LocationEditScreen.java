@@ -8,6 +8,7 @@ import flow.Layout;
 import javax.inject.Inject;
 import mortar.Blueprint;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Document;
 import nigel.com.werfleider.model.DocumentLocation;
@@ -73,6 +74,8 @@ import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 
     @Inject Flow flow;
 
+    @Inject ParseErrorHandler parseErrorHandler;
+
     @Override protected void onLoad(final Bundle savedInstanceState) {
 
       super.onLoad(savedInstanceState);
@@ -89,7 +92,9 @@ import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 
       location.pinInBackground();
 
-      location.saveEventually();
+      location.saveEventually(e1 -> {
+        if(e1 != null) parseErrorHandler.handleParseError(e1);
+      });
 
       flow.goBack();
     }

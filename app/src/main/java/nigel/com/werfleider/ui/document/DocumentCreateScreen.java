@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.Document;
@@ -100,6 +101,8 @@ import static com.google.common.collect.Lists.newArrayList;
 
     @Inject Document document;
 
+    @Inject ParseErrorHandler parseErrorHandler;
+
     @Override protected void onLoad(final Bundle savedInstanceState) {
 
       super.onLoad(savedInstanceState);
@@ -130,7 +133,9 @@ import static com.google.common.collect.Lists.newArrayList;
 
       document.pinInBackground();
 
-      document.saveEventually();
+      document.saveEventually(e1 -> {
+        if(e1 != null) parseErrorHandler.handleParseError(e1);
+      });
       flow.goBack();
     }
   }

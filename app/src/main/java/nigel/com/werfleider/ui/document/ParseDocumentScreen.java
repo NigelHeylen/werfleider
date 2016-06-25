@@ -22,6 +22,7 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.commons.load.Load;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.commons.recyclerview.DividerItemDecoration;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
@@ -126,6 +127,8 @@ import static rx.schedulers.Schedulers.io;
 
     @Inject MeasurementsFileOperations measurementsFileOperations;
 
+    @Inject ParseErrorHandler parseErrorHandler;
+
     @Inject Document document;
 
     @Inject @MainScope Flow flow;
@@ -182,7 +185,7 @@ import static rx.schedulers.Schedulers.io;
                 loadData(NETWORK);
               }
             } else {
-              e.printStackTrace();
+              parseErrorHandler.handleParseError(e);
             }
 
             if (getView() != null) {
@@ -259,7 +262,7 @@ import static rx.schedulers.Schedulers.io;
                   //}
                   subscriber.onCompleted();
                 } else {
-                  e.printStackTrace();
+                  parseErrorHandler.handleParseError(e);
                   subscriber.onError(e);
                 }
 
@@ -331,7 +334,7 @@ import static rx.schedulers.Schedulers.io;
                     //}
                     subscriber.onCompleted();
                   } else {
-                    e.printStackTrace();
+                    parseErrorHandler.handleParseError(e);
                     subscriber.onError(e);
                   }
 

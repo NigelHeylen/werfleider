@@ -2,11 +2,9 @@ package nigel.com.werfleider.ui.werf;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
@@ -16,6 +14,7 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.commons.load.Load;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Contact;
 import nigel.com.werfleider.model.Yard;
@@ -65,6 +64,8 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
   static class Presenter extends ViewPresenter<YardListView> {
 
     @Inject Flow flow;
+
+    @Inject ParseErrorHandler parseErrorHandler;
 
     final List<Yard> adapterData = newArrayList();
 
@@ -122,10 +123,8 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
           }
 
           for (Yard yard : list) {
-            yard.saveEventually(new SaveCallback() {
-              @Override public void done(ParseException e) {
-                System.out.println("e = " + e);
-              }
+            yard.saveEventually(e1 -> {
+              if(e1 != null) parseErrorHandler.handleParseError(e1);
             });
           }
           adapter.notifyDataSetChanged();
@@ -135,7 +134,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
             loadData(NETWORK);
           }
         } else {
-          e.printStackTrace();
+          parseErrorHandler.handleParseError(e);
         }
 
         if (getView() != null) {
@@ -166,7 +165,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
     public void handleCreate() {
 
-      flow.goTo(new YardCreateScreen());
+      flow.goTo(new YardCreateScreen(parseErrorHandler));
     }
 
     public void setYardType(YardType yardType) {

@@ -7,10 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContentResolverCompat;
-import android.util.Log;
-import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
@@ -19,6 +16,7 @@ import javax.inject.Inject;
 import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.model.Yard;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
@@ -33,14 +31,17 @@ import rx.schedulers.Schedulers;
     implements Blueprint, HasParent<YardsOverviewScreen> {
 
   private final Yard yard;
+  private final ParseErrorHandler parseErrorHandler;
 
-  public YardCreateScreen(Yard yard) {
+  public YardCreateScreen(Yard yard, final ParseErrorHandler parseErrorHandler) {
 
     this.yard = yard;
+    this.parseErrorHandler = parseErrorHandler;
   }
 
-  public YardCreateScreen() {
+  public YardCreateScreen(final ParseErrorHandler  errorHandler) {
     yard = new Yard();
+    this.parseErrorHandler = errorHandler;
   }
 
   @Override public String getMortarScopeName() {
@@ -53,12 +54,9 @@ import rx.schedulers.Schedulers;
 
   @Override public YardsOverviewScreen getParent() {
     if (yard.getCreatedAt() != null) {
-      System.out.println("YardCreateScreen.getParent1");
       yard.saveInBackground(e -> {
-        System.out.println("YardCreateScreen.getParent2");
         if (e != null) {
-          e.printStackTrace();
-          System.out.println("e.getMessage() = " + e.getMessage());
+          parseErrorHandler.handleParseError(e);
         }
       });
     }
@@ -92,6 +90,8 @@ import rx.schedulers.Schedulers;
 
     @Inject StartActivityForResultPresenter resultPresenter;
 
+    @Inject ParseErrorHandler parseErrorHandler;
+
     @Override protected void onLoad(Bundle savedInstanceState) {
       super.onLoad(savedInstanceState);
       if (getView() != null) {
@@ -112,17 +112,14 @@ import rx.schedulers.Schedulers;
       yard.setAuthor(ParseUser.getCurrentUser());
       yard.pinInBackground();
 
-      yard.saveEventually(new SaveCallback() {
-        @Override public void done(ParseException e) {
+      yard.saveEventually(e -> {
 
-          if(e == null) {
-            flow.goBack();
-            System.out.println("Presenter.done");
-          }
-          else {
+        if(e == null) {
+          flow.goBack();
+        }
+        else {
 
-            Log.e(getClass().getSimpleName(), "Fail", e);
-          }
+          parseErrorHandler.handleParseError(e);
         }
       });
 

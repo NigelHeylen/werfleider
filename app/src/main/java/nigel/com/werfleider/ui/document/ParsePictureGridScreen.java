@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 import mortar.Blueprint;
 import nigel.com.werfleider.R;
 import nigel.com.werfleider.android.ActionBarOwner;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainScope;
 import nigel.com.werfleider.model.DocumentImage;
@@ -50,13 +51,15 @@ import static rx.schedulers.Schedulers.io;
 
   private final Yard yard;
   private final Blueprint parentScreen;
+  private final ParseErrorHandler parseErrorHandler;
 
   public ParsePictureGridScreen(final DocumentLocation location, final Yard yard,
-      Blueprint parentScreen) {
+      Blueprint parentScreen, final ParseErrorHandler parseErrorHandler) {
 
     this.location = location;
     this.yard = yard;
     this.parentScreen = parentScreen;
+    this.parseErrorHandler = parseErrorHandler;
   }
 
   @Override public String getMortarScopeName() {
@@ -71,8 +74,12 @@ import static rx.schedulers.Schedulers.io;
 
   @Override public Blueprint getParent() {
 
-    yard.saveEventually();
-    location.saveEventually();
+    yard.saveEventually(e1 -> {
+      if(e1 != null) parseErrorHandler.handleParseError(e1);
+    });
+    location.saveEventually(e1 -> {
+      if(e1 != null) parseErrorHandler.handleParseError(e1);
+    });
     return parentScreen;
   }
 
@@ -126,6 +133,8 @@ import static rx.schedulers.Schedulers.io;
     @Inject List<DocumentImage> images;
 
     @Inject List<Integer> indices;
+
+    @Inject ParseErrorHandler parseErrorHandler;
 
     private MaterialEditText locationTitle;
 
@@ -238,7 +247,9 @@ import static rx.schedulers.Schedulers.io;
               .setImageTakenDate(images.get(index).getCreatedDate()));
       for (ParseDocumentImage documentImage : documentImages) {
 
-        documentImage.saveEventually();
+        documentImage.saveEventually(e1 -> {
+          if(e1 != null) parseErrorHandler.handleParseError(e1);
+        });
         documentImage.pinInBackground();
       }
     }
@@ -301,9 +312,11 @@ import static rx.schedulers.Schedulers.io;
     public void handleSave() {
 
       location.pinInBackground();
-      location.saveEventually();
+      location.saveEventually(e1 -> {
+        if(e1 != null) parseErrorHandler.handleParseError(e1);
+      });
       saveImages();
-      flow.goTo(new LocationDetailScreen(yard, location));
+      flow.goTo(new LocationDetailScreen(yard, location, parseErrorHandler));
     }
   }
 }

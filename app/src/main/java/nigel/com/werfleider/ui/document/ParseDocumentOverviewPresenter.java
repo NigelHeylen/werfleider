@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.commons.load.Load;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.DocumentLocation;
 import nigel.com.werfleider.model.DocumentType;
 import nigel.com.werfleider.model.Yard;
@@ -35,6 +36,8 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
   @Inject Context context;
 
   @Inject Flow flow;
+
+  @Inject ParseErrorHandler parseErrorHandler;
 
   final List<DocumentLocation> adapterData = newArrayList();
 
@@ -86,7 +89,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
               loadDocuments(NETWORK);
             }
           } else {
-            e.printStackTrace();
+            parseErrorHandler.handleParseError(e);
           }
 
           if (getView() != null) {
@@ -111,9 +114,11 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
         .setAuthor(ParseUser.getCurrentUser());
 
     location.pinInBackground();
-    location.saveEventually();
+    location.saveEventually(e1 -> {
+      if(e1 != null) parseErrorHandler.handleParseError(e1);
+    });
 
-    flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow)));
+    flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow), parseErrorHandler));
   }
 
   public void setDocumentType(final DocumentType documentType) {

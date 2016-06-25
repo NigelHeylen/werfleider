@@ -17,17 +17,13 @@ package nigel.com.werfleider;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import butterknife.ButterKnife;
-import com.parse.ParseException;
-import com.parse.ParseUser;
 import flow.Flow;
 import javax.inject.Inject;
 import mortar.Mortar;
@@ -37,7 +33,6 @@ import nigel.com.werfleider.android.ActionBarOwner;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
 import nigel.com.werfleider.core.CorePresenter;
 import nigel.com.werfleider.core.MainView;
-import nigel.com.werfleider.ui.login.LoginScreen;
 
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
@@ -198,22 +193,5 @@ public class MainActivity extends AppCompatActivity
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     startActivityForResultPresenter.onActivityResult(requestCode, resultCode, data);
-  }
-
-  @Override protected void onResume() {
-    super.onResume();
-
-    if(ParseUser.getCurrentUser() != null){
-
-      final SharedPreferences privatePref = getSharedPreferences(USER, MODE_PRIVATE);
-      ParseUser.logInInBackground(privatePref.getString(EMAIL, ""),
-          privatePref.getString(PASSWORD, ""), (user, e) -> {
-
-            if(e != null && e.getCode() != ParseException.INVALID_SESSION_TOKEN){
-              mainFlow.goTo(new LoginScreen());
-              Toast.makeText(this, "Uw sessie is vervallen. Gelieve opnieuw aan te melden", Toast.LENGTH_LONG).show();
-            }
-          });
-    }
   }
 }

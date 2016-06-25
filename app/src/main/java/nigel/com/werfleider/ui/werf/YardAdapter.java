@@ -10,11 +10,14 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.github.mrengineer13.snackbar.SnackBar;
+import com.parse.DeleteCallback;
+import com.parse.ParseException;
 import flow.Flow;
 import java.util.List;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.Yard;
 
 /**
@@ -25,6 +28,8 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
   @Inject Flow flow;
 
   @Inject Context context;
+
+  @Inject ParseErrorHandler parseErrorHandler;
 
   final List<Yard> yards;
   private final YardType yardType;
@@ -54,7 +59,7 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
 
     holder.container.setOnClickListener(v -> flow.goTo(new YardDetailScreen(werf, yardType)));
 
-    holder.edit.setOnClickListener(v -> flow.goTo(new YardCreateScreen(werf)));
+    holder.edit.setOnClickListener(v -> flow.goTo(new YardCreateScreen(werf, parseErrorHandler)));
 
     holder.delete.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
     holder.edit.setVisibility(yardType == YardType.INVITED ? View.GONE : View.VISIBLE);
@@ -66,12 +71,21 @@ public class YardAdapter extends RecyclerView.Adapter<YardAdapter.YardViewHolder
             .withTextColorId(R.color.green)
             .withOnClickListener(token -> {
 
-              werf.unpinInBackground();
-              werf.deleteEventually();
-              yards.remove(werf);
+              werf.deleteEventually(new DeleteCallback() {
+                @Override public void done(ParseException e) {
 
-              notifyItemRemoved(position);
-              notifyDataSetChanged();
+                  if(e == null){
+                    werf.unpinInBackground();
+                    yards.remove(werf);
+
+                    notifyItemRemoved(position);
+                    notifyDataSetChanged();
+
+                  } else {
+                    parseErrorHandler.handleParseError(e);
+                  }
+                }
+              });
             })
             .show());
   }

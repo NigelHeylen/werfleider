@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.Contact;
 import rx.subjects.PublishSubject;
 
@@ -45,6 +46,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
   @Inject Resources resources;
 
   @Inject PublishSubject<SocialAction> socialActionBus;
+
+  @Inject ParseErrorHandler parseErrorHandler;
 
   public ContactsAdapter(final Context context, final Contacts contacts) {
     this.contacts = contacts;
@@ -86,9 +89,19 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             if (follows(user)) {
               final Contact contact1 = getContact(user);
               ParseUser.getCurrentUser().removeAll(CONTACTS, newArrayList(contact));
-              ParseUser.getCurrentUser().saveEventually();
+              ParseUser.getCurrentUser().saveEventually(e1 -> {
 
-              contact1.deleteEventually();
+                if(e1 != null){
+                  parseErrorHandler.handleParseError(e1);
+                }
+              });
+
+              if(contact1 != null)
+              contact1.deleteEventually(e1 -> {
+                if(e1 != null){
+                  parseErrorHandler.handleParseError(e1);
+                }
+              });
 
               holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person_add));
               contactsList.remove(contact1);
@@ -104,10 +117,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
                   .setProfession(user.getString(PROFESSION));
 
               newContact.pinInBackground();
-              newContact.saveEventually();
+              newContact.saveEventually(e1 -> {
+                if(e1 != null) parseErrorHandler.handleParseError(e1);
+              });
 
               ParseUser.getCurrentUser().addUnique(CONTACTS, newContact);
-              ParseUser.getCurrentUser().saveEventually();
+              ParseUser.getCurrentUser().saveEventually(e1 -> {
+                if(e1 != null) parseErrorHandler.handleParseError(e1);
+              });
 
               holder.follow.setImageDrawable(resources.getDrawable(R.drawable.ic_person));
               contactsList.add(newContact);
@@ -139,6 +156,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
             socialActionBus.onNext(new SocialAction(user, UNFOLLOW));
           });
+        } else {
+          parseErrorHandler.handleParseError(e);
         }
       }));
     }

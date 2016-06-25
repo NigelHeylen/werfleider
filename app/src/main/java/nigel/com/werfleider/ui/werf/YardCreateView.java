@@ -14,6 +14,7 @@ import com.gc.materialdesign.views.ButtonRectangle;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import java.io.File;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -159,12 +160,17 @@ public class YardCreateView extends ScrollView {
 
   @OnClick(R.id.werf_choose_image) public void chooseImage() {
 
-    presenter.getImage();
+    RxPermissions.getInstance(getContext())
+        .request(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        .subscribe(granted -> {
+          if (granted) {
+            presenter.getImage();
+          }
+        });
   }
 
   public void setImage(Uri imageUri) {
 
     pablo.load(imageUri).resize(werfImage.getWidth(), 0).into(werfImage);
   }
-
 }

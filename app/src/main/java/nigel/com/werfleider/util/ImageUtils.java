@@ -30,10 +30,12 @@ public class ImageUtils {
 
   public static byte[] getBytesFromFilePath(final String imageUrl) {
 
+    System.out.println("imageUrl = " + imageUrl);
     final File imageFile = new File(imageUrl);
 
     final Bitmap bitmap = ImageUtils.decodeFile(imageFile);
 
+    System.out.println("bitmap = " + bitmap);
     return getBytesFromBitmap(bitmap);
   }
 

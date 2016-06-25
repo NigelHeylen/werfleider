@@ -17,8 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.inject.Inject;
 import nigel.com.werfleider.android.StartActivityForResultPresenter;
-import nigel.com.werfleider.model.ParseDocumentImage;
+import nigel.com.werfleider.commons.parse.ParseErrorHandler;
 import nigel.com.werfleider.model.DocumentLocation;
+import nigel.com.werfleider.model.ParseDocumentImage;
 import nigel.com.werfleider.ui.presenter.ReactiveViewPresenter;
 import nigel.com.werfleider.util.ImageUtils;
 
@@ -33,6 +34,8 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
   @Inject DocumentLocation location;
 
   @Inject StartActivityForResultPresenter startActivityForResultPresenter;
+
+  @Inject ParseErrorHandler parseErrorHandler;
 
   private Uri fileUri;
 
@@ -94,7 +97,11 @@ public class LocationDetailCameraPresenter extends ReactiveViewPresenter<Locatio
 
           if (ex == null) {
             image.setImage(parseFile);
-            image.saveEventually();
+            image.saveEventually(e1 -> {
+              if(e1 != null) parseErrorHandler.handleParseError(e1);
+            });
+          } else {
+            parseErrorHandler.handleParseError(ex);
           }
         });
       }
