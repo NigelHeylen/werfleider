@@ -116,7 +116,7 @@ public class DocumentHeaderFooter extends PdfPageEventHelper {
                 0,
                 0);
 
-        totalPages.showText(String.valueOf(writer.getPageNumber() - 2));
+        totalPages.showText(String.valueOf(writer.getPageNumber() - 1));
         totalPages.endText();
     }
 

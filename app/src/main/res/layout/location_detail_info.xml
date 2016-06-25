@@ -33,7 +33,6 @@
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="Verdieping"
             android:inputType="textShortMessage"/>
       </RelativeLayout>
 
@@ -43,7 +42,7 @@
 
       <TextView
           android:id="@+id/document.detail.location.label"
-          android:text="Locatie: "
+          android:text="Lokaal: "
           android:textAppearance="?android:textAppearanceMedium"
           android:layout_width="100dp"
           android:layout_centerVertical="true"
@@ -55,7 +54,6 @@
           android:layout_height="wrap_content"
           android:minWidth="100dp"
           android:layout_marginTop="20dp"
-          android:hint="Locatie"
           android:layout_marginLeft="20dp"
           android:layout_marginRight="20dp"
           android:inputType="textShortMessage"/>

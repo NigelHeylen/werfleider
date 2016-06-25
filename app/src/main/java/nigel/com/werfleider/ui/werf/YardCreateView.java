@@ -144,7 +144,7 @@ public class YardCreateView extends ScrollView {
     ingenieurEmail.setText(yard.getIngenieurEmail());
 
     numberFloors.setText(format("Aantal verdiepingen: %d", yard.getFloors().size()));
-    numberLocations.setText(format("Aantal locaties: %d", yard.getLocations().size()));
+    numberLocations.setText(format("Aantal lokalen: %d", yard.getLocations().size()));
 
     if (yard.getImageByteArray() != null) {
 

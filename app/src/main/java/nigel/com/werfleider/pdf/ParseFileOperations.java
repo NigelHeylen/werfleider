@@ -237,7 +237,8 @@ public class ParseFileOperations {
         for (ParseDocumentImage documentImage : imageList) {
 
           // demonstrate some table features
-          PdfPTable table = new PdfPTable(location.getDocumentType() == DocumentType.PLAATSBESCHRIJF ? 1 : 2);
+          PdfPTable table =
+              new PdfPTable(location.getDocumentType() == DocumentType.PLAATSBESCHRIJF ? 1 : 2);
           // table spacing before starts from top
           table.setSpacingBefore(20);
           // ook van top
@@ -255,7 +256,14 @@ public class ParseFileOperations {
             image = Image.getInstance(documentImage.getImageURL());
           }
 
-          table.addCell(image);
+          if (location.getDocumentType() == DocumentType.PLAATSBESCHRIJF) {
+
+            final PdfPCell pdfPCell = new PdfPCell(image, true);
+            pdfPCell.setFixedHeight(400);
+            table.addCell(pdfPCell);
+          } else {
+            table.addCell(image);
+          }
 
           final PdfPCell descriptionCell = new PdfPCell();
 
@@ -264,13 +272,18 @@ public class ParseFileOperations {
                   new DateTime(documentImage.getImageTakenDate()).toString(DATE_FORMAT)),
               paragraphFont));
 
+          if (!isNullOrEmpty(documentImage.getFloor())) {
+            descriptionCell.addElement(
+                new Phrase(format("\nVerdieping: %s", documentImage.getFloor())));
+          }
           if (!isNullOrEmpty(documentImage.getLocation())) {
-            descriptionCell.addElement(new Phrase(format("\n%s", documentImage.getLocation())));
+            descriptionCell.addElement(
+                new Phrase(format("\nLokaal: %s", documentImage.getLocation())));
           }
 
           descriptionCell.addElement(new Phrase(
               isNullOrEmpty(documentImage.getTitle()) ? documentImage.getTitle()
-                  : format("\n\n%s\n", documentImage.getTitle())));
+                  : format("\n%s\n", documentImage.getTitle())));
           descriptionCell.addElement(new Phrase(documentImage.getDescription()));
 
           table.addCell(descriptionCell);

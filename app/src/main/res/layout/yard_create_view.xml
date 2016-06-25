@@ -150,7 +150,7 @@
 
           <TextView
               android:id="@+id/werf_create_number_locations"
-              android:text="Aantal locaties: 0"
+              android:text="Aantal lokalen: 0"
               android:layout_centerVertical="true"
               android:layout_toLeftOf="@+id/werf_create_locations"
               android:textAppearance="?android:textAppearanceMedium"
@@ -159,7 +159,7 @@
           <com.gc.materialdesign.views.ButtonRectangle
               android:id="@+id/werf_create_locations"
               android:layout_alignParentRight="true"
-              android:text="Kies locaties"
+              android:text="Kies lokalen"
               android:background="@color/primary"
               android:layout_width="135dp"
               android:layout_height="wrap_content"/>
