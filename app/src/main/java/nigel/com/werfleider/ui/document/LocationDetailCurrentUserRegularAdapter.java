@@ -19,9 +19,11 @@ public class LocationDetailCurrentUserRegularAdapter extends PagerAdapter {
 
   @Inject DocumentLocation document;
 
+  final LayoutInflater inflater;
   public LocationDetailCurrentUserRegularAdapter(Context context) {
 
     Mortar.inject(context, this);
+    inflater = LayoutInflater.from(context);
   }
 
   @Override public int getCount() {
@@ -58,7 +60,7 @@ public class LocationDetailCurrentUserRegularAdapter extends PagerAdapter {
   }
 
   private View getView(@LayoutRes int layout, final ViewGroup container) {
-    return LayoutInflater.from(container.getContext()).inflate(layout, container, false);
+    return inflater.inflate(layout, container, false);
   }
 
   @Override public CharSequence getPageTitle(final int position) {

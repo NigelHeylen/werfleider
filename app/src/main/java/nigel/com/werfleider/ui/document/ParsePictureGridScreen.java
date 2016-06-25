@@ -316,7 +316,7 @@ import static rx.schedulers.Schedulers.io;
         if(e1 != null) parseErrorHandler.handleParseError(e1);
       });
       saveImages();
-      flow.goTo(new LocationDetailScreen(yard, location, parseErrorHandler));
+      flow.goTo(new LocationDetailScreen(yard, location));
     }
   }
 }

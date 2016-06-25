@@ -96,7 +96,7 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
     viewHolder.name.setText(document.getTitle());
 
     viewHolder.container.setOnClickListener(
-        v -> flow.goTo(new LocationDetailScreen(yard, document, parseErrorHandler)));
+        v -> flow.goTo(new LocationDetailScreen(yard, document)));
 
     viewHolder.delete.setVisibility(
         yard.getAuthor() == ParseUser.getCurrentUser() ? VISIBLE : View.GONE);

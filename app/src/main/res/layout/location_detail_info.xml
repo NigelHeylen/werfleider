@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <nigel.com.werfleider.ui.document.LocationDetailInfoView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/document.location.detail.info.container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,33 +14,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-      <EditText
-          android:id="@+id/document.detail.floor"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minWidth="100dp"
-          android:layout_marginTop="20dp"
-          android:layout_marginLeft="20dp"
-          android:layout_marginRight="20dp"
-          android:hint="Verdieping"
-          android:inputType="textShortMessage"/>
+      <RelativeLayout android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/document.detail.floor.label"
+            android:text="Verdieping: "
+            android:textAppearance="?android:textAppearanceMedium"
+            android:layout_width="100dp"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"/>
+        <Spinner
+            android:id="@+id/document.detail.floor"
+            android:layout_toRightOf="@+id/document.detail.floor.label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:hint="Verdieping"
+            android:inputType="textShortMessage"/>
+      </RelativeLayout>
+
+
+      <RelativeLayout android:layout_width="match_parent"
+          android:layout_height="wrap_content">
 
       <TextView
-          android:id="@+id/document.detail.floor.last"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minWidth="100dp"
-          android:layout_marginTop="20dp"
-          android:layout_marginRight="20dp"
-          android:drawableStart="@drawable/ic_arrow_upward_black_24dp"
-          android:layout_marginLeft="20dp"
-          tools:text="Laatste verdieping:"
-          android:drawablePadding="8dp"
-          android:minLines="2"
-          android:textAppearance="?android:textAppearanceMedium"/>
-
-      <EditText
+          android:id="@+id/document.detail.location.label"
+          android:text="Locatie: "
+          android:textAppearance="?android:textAppearanceMedium"
+          android:layout_width="100dp"
+          android:layout_centerVertical="true"
+          android:layout_height="wrap_content"/>
+      <Spinner
           android:id="@+id/document.detail.location"
+          android:layout_toRightOf="@+id/document.detail.location.label"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:minWidth="100dp"
@@ -50,19 +59,8 @@
           android:layout_marginLeft="20dp"
           android:layout_marginRight="20dp"
           android:inputType="textShortMessage"/>
+      </RelativeLayout>
 
-      <TextView
-          android:id="@+id/document.detail.location.last"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:layout_marginTop="20dp"
-          android:drawablePadding="8dp"
-          android:drawableStart="@drawable/ic_arrow_upward_black_24dp"
-          android:layout_marginLeft="20dp"
-          android:minLines="2"
-          android:layout_marginBottom="20dp"
-          android:layout_marginRight="20dp"/>
     </LinearLayout>
   </ScrollView>
 

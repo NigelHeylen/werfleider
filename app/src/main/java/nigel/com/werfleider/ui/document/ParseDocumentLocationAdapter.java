@@ -69,7 +69,7 @@ public class ParseDocumentLocationAdapter
     holder.artNr.setText(location.getArtNr());
 
     holder.mContainer.setOnClickListener(
-        v -> flow.goTo(new LocationDetailScreen(yard, location, parseErrorHandler)));
+        v -> flow.goTo(new LocationDetailScreen(yard, location)));
 
     holder.delete.setVisibility(
         location.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);

@@ -53,14 +53,11 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
   private final Yard yard;
 
   private final DocumentLocation location;
-  private final ParseErrorHandler parseErrorHandler;
 
-  public LocationDetailScreen(final Yard yard, final DocumentLocation location, final
-      ParseErrorHandler parseErrorHandler) {
+  public LocationDetailScreen(final Yard yard, final DocumentLocation location) {
 
     this.yard = yard;
     this.location = location;
-    this.parseErrorHandler = parseErrorHandler;
   }
 
   @Override public String getMortarScopeName() {
@@ -71,16 +68,9 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
   @Override public YardDetailScreen getParent() {
 
-    yard.saveEventually(e1 -> {
-      if(e1 != null) parseErrorHandler.handleParseError(e1);
-    });
-    location.saveEventually(e1 -> {
-      if(e1 != null) parseErrorHandler.handleParseError(e1);
-    });
-
     final int tabIndex = Iterables.indexOf(newArrayList(DocumentType.values()),
         type -> type.equals(location.getDocumentType()));
-    return new YardDetailScreen(yard, tabIndex);
+    return new YardDetailScreen(yard, tabIndex + 1);
   }
 
   @Override public Object getDaggerModule() {
@@ -354,6 +344,13 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
           if(e1 != null) parseErrorHandler.handleParseError(e1);
         });
       }
+      yard.saveEventually(e1 -> {
+        if(e1 != null) parseErrorHandler.handleParseError(e1);
+      });
+      location.saveEventually(e1 -> {
+        if(e1 != null) parseErrorHandler.handleParseError(e1);
+      });
+
     }
   }
 }

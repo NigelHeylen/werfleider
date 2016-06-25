@@ -2,23 +2,22 @@ package nigel.com.werfleider.ui.document;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Spinner;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.jakewharton.rxbinding.widget.RxTextView;
-import java.util.concurrent.TimeUnit;
+import com.jakewharton.rxbinding.widget.RxAdapterView;
+import java.util.List;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.model.Yard;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.subscriptions.Subscriptions;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static java.lang.String.format;
+import static com.google.common.collect.Lists.newArrayList;
+import static nigel.com.werfleider.util.StringUtils.EMPTY;
 
 /**
  * Created by nigel on 26/12/15.
@@ -27,15 +26,16 @@ public class LocationDetailInfoView extends LinearLayout {
 
   @Inject LocationDetailInfoPresenter presenter;
 
-  @Bind(R.id.document_detail_floor) EditText floor;
+  @Inject Yard yard;
 
-  @Bind(R.id.document_detail_location) EditText location;
+  @Bind(R.id.document_detail_floor) Spinner floor;
 
-  @Bind(R.id.document_detail_floor_last) TextView lastFloor;
-  @Bind(R.id.document_detail_location_last) TextView lastLocation;
+  @Bind(R.id.document_detail_location) Spinner location;
 
   private Subscription floorSubscription = Subscriptions.empty();
   private Subscription locationSubscription = Subscriptions.empty();
+  private ArrayAdapter<String> floorAdapter;
+  private ArrayAdapter<String> locationAdapter;
 
   public LocationDetailInfoView(final Context context, final AttributeSet attrs) {
 
@@ -53,22 +53,30 @@ public class LocationDetailInfoView extends LinearLayout {
       ButterKnife.bind(this);
       presenter.takeView(this);
 
-      subscribeToEditTextSubscriptions();
+      final List<String> floors = newArrayList(yard.getFloors());
+      if (!floors.contains(EMPTY)) floors.add(0, EMPTY);
+      floor.setAdapter(floorAdapter =
+          new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, floors));
+
+      final List<String> locations = newArrayList(yard.getLocations());
+      if (!locations.contains(EMPTY)) locations.add(0, EMPTY);
+      location.setAdapter(locationAdapter =
+          new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item,
+              locations));
+
+      subscribeToSpinnerSubscriptions();
     }
   }
 
-  protected void subscribeToEditTextSubscriptions() {
-    floorSubscription = getEditTextSubscription(floor, presenter::setFloor);
-    locationSubscription = getEditTextSubscription(location, presenter::setLocation);
-  }
-
-  private Subscription getEditTextSubscription(EditText editText, Action1<String> action) {
-    return RxTextView.textChanges(editText)
+  protected void subscribeToSpinnerSubscriptions() {
+    floorSubscription = RxAdapterView.itemSelections(floor)
         .skip(1)
-        .debounce(1, TimeUnit.SECONDS)
-        .map(CharSequence::toString)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(action);
+        .map(floorAdapter::getItem)
+        .subscribe(presenter::setFloor);
+    locationSubscription = RxAdapterView.itemSelections(location)
+        .skip(1)
+        .map(locationAdapter::getItem)
+        .subscribe(presenter::setLocation);
   }
 
   @Override protected void onDetachedFromWindow() {
@@ -84,25 +92,17 @@ public class LocationDetailInfoView extends LinearLayout {
     locationSubscription.unsubscribe();
   }
 
-  public void setLastFloor(String floor) {
+  public void setFloor(String floor) {
 
-    if(isNullOrEmpty(floor)){
-      lastFloor.setVisibility(GONE);
-    } else {
-      lastFloor.setVisibility(VISIBLE);
-      lastFloor.setText(format("Laatste verdieping:\n%s", floor));
-      lastFloor.setOnClickListener(v -> this.floor.setText(floor));
-    }
+    final int index = yard.getFloors().indexOf(floor);
+    System.out.println(index + " LocationDetailInfoView.setFloor " + floor);
+    this.floor.setSelection(Math.max(0, index + 1));
   }
 
-  public void setLastLocation(String location) {
+  public void setLocation(String location) {
 
-    if(isNullOrEmpty(location)){
-      lastLocation.setVisibility(GONE);
-    } else {
-      lastLocation.setVisibility(VISIBLE);
-      lastLocation.setText(format("Laatste locatie:\n%s", location));
-      lastLocation.setOnClickListener(v -> this.location.setText(location));
-    }
+    final int index = yard.getLocations().indexOf(location);
+    System.out.println(index + " LocationDetailInfoView.setLocation " + location);
+    this.location.setSelection(Math.max(0, index + 1));
   }
 }

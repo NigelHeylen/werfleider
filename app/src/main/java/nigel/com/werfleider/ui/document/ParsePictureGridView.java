@@ -9,9 +9,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tbruyelle.rxpermissions.RxPermissions;
+import flow.Flow;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
+import nigel.com.werfleider.android.ActionBarOwner;
+import nigel.com.werfleider.model.DocumentLocation;
 
 /**
  * Created by nigel on 17/04/15.
@@ -19,6 +22,12 @@ import nigel.com.werfleider.R;
 public class ParsePictureGridView extends RelativeLayout {
 
   @Inject ParsePictureGridScreen.Presenter presenter;
+
+  @Inject ActionBarOwner actionBarOwner;
+
+  @Inject Flow flow;
+
+  @Inject DocumentLocation location;
 
   @Bind(R.id.picture_grid) RecyclerView grid;
 
@@ -37,13 +46,18 @@ public class ParsePictureGridView extends RelativeLayout {
 
     super.onFinishInflate();
     ButterKnife.bind(this);
+    actionBarOwner.setConfig(
+        new ActionBarOwner.Config(true, true, location.getDocumentType().name(), null));
     RxPermissions.getInstance(getContext())
         .request(Manifest.permission.READ_EXTERNAL_STORAGE)
         .filter(aBoolean -> aBoolean)
         .subscribe(aBoolean -> {
-          presenter.takeView(ParsePictureGridView.this);
+          if (aBoolean) {
+            presenter.takeView(ParsePictureGridView.this);
+          } else {
+            flow.goBack();
+          }
         });
-
   }
 
   @Override protected void onDetachedFromWindow() {
