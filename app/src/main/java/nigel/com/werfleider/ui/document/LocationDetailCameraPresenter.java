@@ -85,7 +85,7 @@ import nigel.com.werfleider.util.ImageUtils;
     final ParseDocumentImage image = new ParseDocumentImage();
     image.setImageURL(path)
         .setImageTakenDate(new Date())
-        .setAuthor(ParseUser.getCurrentUser())
+        .setCreator(ParseUser.getCurrentUser().getEmail())
         .setImageBytes(ImageUtils.getBytesFromFilePath(path))
         .setLocationId(location);
 

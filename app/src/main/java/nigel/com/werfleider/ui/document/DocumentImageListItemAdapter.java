@@ -11,6 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
+import java.util.Objects;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -65,7 +66,8 @@ public class DocumentImageListItemAdapter extends RecyclerViewEx.Adapter {
       }
     }
 
-    holder.delete.setVisibility(image.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);
+    holder.delete.setVisibility(
+        !Objects.equals(image.getCreator(), ParseUser.getCurrentUser().getEmail()) ? GONE : VISIBLE);
 
     holder.delete.setOnClickListener(v -> {
 

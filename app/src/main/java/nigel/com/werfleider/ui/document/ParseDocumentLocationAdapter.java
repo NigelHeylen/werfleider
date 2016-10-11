@@ -14,6 +14,7 @@ import com.github.mrengineer13.snackbar.SnackBar;
 import com.parse.ParseUser;
 import flow.Flow;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -68,13 +69,15 @@ public class ParseDocumentLocationAdapter
 
     holder.artNr.setText(location.getArtNr());
 
-    holder.mContainer.setOnClickListener(
-        v -> flow.goTo(new LocationDetailScreen(yard, location)));
+    holder.mContainer.setOnClickListener(v -> flow.goTo(new LocationDetailScreen(yard, location)));
 
     holder.delete.setVisibility(
-        location.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);
+        !Objects.equals(location.getCreator(), ParseUser.getCurrentUser().getEmail()) ? GONE
+            : VISIBLE);
 
-    holder.edit.setVisibility(location.getAuthor() != ParseUser.getCurrentUser() ? GONE : VISIBLE);
+    holder.edit.setVisibility(
+        !Objects.equals(location.getCreator(), ParseUser.getCurrentUser().getEmail()) ? GONE
+            : VISIBLE);
 
     holder.edit.setOnClickListener(
         v -> flow.goTo(new LocationEditScreen(location, document, yard)));
@@ -86,7 +89,7 @@ public class ParseDocumentLocationAdapter
         .withOnClickListener(token -> {
           location.unpinInBackground();
           location.deleteEventually(e1 -> {
-            if(e1 != null) parseErrorHandler.handleParseError(e1);
+            if (e1 != null) parseErrorHandler.handleParseError(e1);
           });
 
           locations.remove(position);

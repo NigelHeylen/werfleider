@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.parse.ParseUser;
+import java.util.Objects;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -26,7 +27,7 @@ public class LocationDetailCurrentUserOpmetingAdapter extends PagerAdapter {
 
   @Override public int getCount() {
 
-    return document.getAuthor() == ParseUser.getCurrentUser() ? 5 : 4;
+    return Objects.equals(document.getCreator(), ParseUser.getCurrentUser().getEmail()) ? 5 : 4;
   }
 
   @Override public boolean isViewFromObject(final View view, final Object object) {

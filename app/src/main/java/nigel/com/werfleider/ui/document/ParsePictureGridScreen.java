@@ -75,10 +75,10 @@ import static rx.schedulers.Schedulers.io;
   @Override public Blueprint getParent() {
 
     yard.saveEventually(e1 -> {
-      if(e1 != null) parseErrorHandler.handleParseError(e1);
+      if (e1 != null) parseErrorHandler.handleParseError(e1);
     });
     location.saveEventually(e1 -> {
-      if(e1 != null) parseErrorHandler.handleParseError(e1);
+      if (e1 != null) parseErrorHandler.handleParseError(e1);
     });
     return parentScreen;
   }
@@ -240,7 +240,7 @@ import static rx.schedulers.Schedulers.io;
     private void saveImages() {
 
       final Iterable<ParseDocumentImage> documentImages = Iterables.transform(indices,
-          index -> new ParseDocumentImage().setAuthor(ParseUser.getCurrentUser())
+          index -> new ParseDocumentImage().setCreator(ParseUser.getCurrentUser().getEmail())
               .setLocationId(location)
               .setImageURL(images.get(index).getImageURL())
               .setImageBytes(ImageUtils.getBytesFromFilePath(images.get(index).getImageURL()))
@@ -248,9 +248,20 @@ import static rx.schedulers.Schedulers.io;
       for (ParseDocumentImage documentImage : documentImages) {
 
         documentImage.saveEventually(e1 -> {
-          if(e1 != null) parseErrorHandler.handleParseError(e1);
+          if (e1 != null) {
+            parseErrorHandler.handleParseError(e1);
+          } else {
+
+            documentImage.pinInBackground(e2 -> {
+
+              if (e2 != null) {
+                parseErrorHandler.handleParseError(e2);
+              } else {
+                flow.goTo(new LocationDetailScreen(yard, location));
+              }
+            });
+          }
         });
-        documentImage.pinInBackground();
       }
     }
 
@@ -313,10 +324,9 @@ import static rx.schedulers.Schedulers.io;
 
       location.pinInBackground();
       location.saveEventually(e1 -> {
-        if(e1 != null) parseErrorHandler.handleParseError(e1);
+        if (e1 != null) parseErrorHandler.handleParseError(e1);
       });
       saveImages();
-      flow.goTo(new LocationDetailScreen(yard, location));
     }
   }
 }

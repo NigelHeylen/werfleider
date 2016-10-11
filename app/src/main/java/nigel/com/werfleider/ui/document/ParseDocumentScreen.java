@@ -16,6 +16,7 @@ import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import mortar.Blueprint;
@@ -210,7 +211,7 @@ import static rx.schedulers.Schedulers.io;
 
       getView().initEmptyView(document.getDocumentType());
 
-      if (yard.getAuthor() != ParseUser.getCurrentUser()) {
+      if (!Objects.equals(yard.getCreator(), ParseUser.getCurrentUser().getEmail())) {
 
         getView().loadingView.setVisibility(GONE);
       }

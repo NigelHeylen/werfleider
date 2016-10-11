@@ -1,8 +1,8 @@
 package nigel.com.werfleider.model;
 
+import com.google.common.base.Strings;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 import java.util.List;
 import nigel.com.werfleider.util.ParseStringUtils;
 import org.joda.time.DateTime;
@@ -11,7 +11,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT;
 import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT_EMAIL;
 import static nigel.com.werfleider.util.ParseStringUtils.ARCHITECT_PHONE;
-import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR;
 import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_EMAIL;
 import static nigel.com.werfleider.util.ParseStringUtils.CONTRACTOR_PHONE;
@@ -40,7 +39,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_IMAGE;
 
   public String getNaam() {
 
-    return getString(NAME);
+    return Strings.nullToEmpty(getString(NAME));
   }
 
   public Yard setNaam(final String naam) {
@@ -246,18 +245,13 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_IMAGE;
     return this;
   }
 
-  public ParseUser getAuthor() {
-    return getParseUser(AUTHOR);
-  }
-
-  public Yard setAuthor(ParseUser user) {
-    put(AUTHOR, user);
-    return this;
-  }
-
   public Yard setCreator(final String creator) {
     put(CREATOR, creator);
     return this;
+  }
+
+  public String getCreator() {
+    return getString(CREATOR);
   }
 
   public String getId() {

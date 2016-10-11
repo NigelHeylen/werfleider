@@ -44,7 +44,7 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
       getView().reset();
       resetTimerSubscription();
 
-      if(!documentImage.getAuthor().equals(ParseUser.getCurrentUser())){
+      if(!documentImage.getCreator().equals(ParseUser.getCurrentUser().getEmail())){
 
         if(getView() != null){
 

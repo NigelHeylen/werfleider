@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.parse.ParseUser;
+import java.util.Objects;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -18,8 +19,6 @@ import nigel.com.werfleider.ui.document.ParseDocumentOverviewView;
  */
 public class YardDetailDocumentAdapter extends PagerAdapter {
 
-  private final Context context;
-
   @Inject Yard yard;
 
   final LayoutInflater inflater;
@@ -27,14 +26,13 @@ public class YardDetailDocumentAdapter extends PagerAdapter {
   public YardDetailDocumentAdapter(final Context context) {
 
     Mortar.inject(context, this);
-    this.context = context;
     inflater = LayoutInflater.from(context);
   }
 
   @Override public int getCount() {
 
-    return (yard.getAuthor() == ParseUser.getCurrentUser() ? DocumentType.values().length + 1
-        : DocumentType.values().length) + 1;
+    return (Objects.equals(yard.getCreator(), ParseUser.getCurrentUser().getEmail())
+        ? DocumentType.values().length + 1 : DocumentType.values().length) + 1;
   }
 
   @Override public boolean isViewFromObject(final View view, final Object object) {
@@ -73,9 +71,9 @@ public class YardDetailDocumentAdapter extends PagerAdapter {
 
   @Override public CharSequence getPageTitle(final int position) {
 
-    if(position == 0){
+    if (position == 0) {
       return "Details";
-    } else if(position < DocumentType.values().length + 1){
+    } else if (position < DocumentType.values().length + 1) {
       return DocumentType.values()[position - 1].name();
     } else {
       return "Invites";

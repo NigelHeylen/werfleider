@@ -126,7 +126,7 @@ import static com.google.common.collect.Lists.newArrayList;
         document = this.document;
       }
 
-      document.setAuthor(ParseUser.getCurrentUser());
+      document.setCreator(ParseUser.getCurrentUser().getEmail());
       document.setWerf(yard);
       document.setName(name);
       document.setDocumentType(documentType);

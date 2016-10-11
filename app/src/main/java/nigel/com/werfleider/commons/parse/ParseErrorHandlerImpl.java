@@ -18,6 +18,7 @@ public class ParseErrorHandlerImpl implements ParseErrorHandler {
 
   @Override public void handleParseError(ParseException ex) {
 
+    ex.printStackTrace();
     switch (ex.getCode()) {
       case ParseException.INVALID_SESSION_TOKEN:
         flow.goTo(new LoginScreen());

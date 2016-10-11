@@ -2,9 +2,11 @@ package nigel.com.werfleider.ui.werf;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
@@ -26,8 +28,8 @@ import static nigel.com.werfleider.commons.load.Load.LOCAL;
 import static nigel.com.werfleider.commons.load.Load.NETWORK;
 import static nigel.com.werfleider.ui.werf.YardType.INVITED;
 import static nigel.com.werfleider.ui.werf.YardType.MINE;
-import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
 import static nigel.com.werfleider.util.ParseStringUtils.CREATED_AT;
+import static nigel.com.werfleider.util.ParseStringUtils.CREATOR;
 import static nigel.com.werfleider.util.ParseStringUtils.ID;
 import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
@@ -97,11 +99,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
       }
 
       if (yardType == MINE) {
-        if(load == LOCAL) {
-          query.whereContainedIn(AUTHOR, newArrayList(null, ParseUser.getCurrentUser()));
-        } else {
-          query.whereEqualTo(AUTHOR, ParseUser.getCurrentUser());
-        }
+        query.whereEqualTo(CREATOR, ParseUser.getCurrentUser().getEmail());
       } else {
 
         //query.include(INVITES);
@@ -119,12 +117,11 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
             if (!adapterData.contains(yard)) {
               adapterData.add(yard);
             }
-
           }
 
           for (Yard yard : list) {
             yard.saveEventually(e1 -> {
-              if(e1 != null) parseErrorHandler.handleParseError(e1);
+              if (e1 != null) parseErrorHandler.handleParseError(e1);
             });
           }
           adapter.notifyDataSetChanged();
@@ -139,7 +136,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
 
         if (getView() != null) {
 
-          if(adapterData.isEmpty()){
+          if (adapterData.isEmpty()) {
 
             getView().showEmptyView();
           } else {
@@ -166,15 +163,21 @@ import static nigel.com.werfleider.util.ParseStringUtils.INVITES;
     public void handleCreate() {
 
       final Yard yard = new Yard();
-      yard.saveEventually(e -> {
+      yard.setCreator(ParseUser.getCurrentUser().getEmail());
 
-        if(e == null){
-          yard.pinInBackground();
-          yard.setAuthor(ParseUser.getCurrentUser());
-          flow.goTo(new YardDetailScreen(yard, yardType));
 
-        } else {
-         parseErrorHandler.handleParseError(e);
+      yard.saveInBackground(e -> {
+
+        if (e != null) parseErrorHandler.handleParseError(e);
+        else{
+          yard.pinInBackground(new SaveCallback() {
+            @Override public void done(ParseException e) {
+
+              if (e == null) {
+                flow.goTo(new YardDetailScreen(yard, yardType));
+              }
+            }
+          });
         }
       });
     }

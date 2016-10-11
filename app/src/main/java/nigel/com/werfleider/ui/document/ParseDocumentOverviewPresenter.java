@@ -6,6 +6,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import flow.Flow;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import mortar.ViewPresenter;
 import nigel.com.werfleider.commons.load.Load;
@@ -48,7 +49,7 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
     getView().setAdapter(
         adapter = new ParseDocumentOverviewAdapter(getView().getContext(), adapterData, getView()));
 
-    if (yard.getAuthor() != ParseUser.getCurrentUser()) {
+    if (!Objects.equals(yard.getCreator(), ParseUser.getCurrentUser().getEmail())) {
 
       getView().create.setVisibility(GONE);
     }
@@ -111,14 +112,24 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
     location.setWerf(yard)
         .setDocumentType(documentType)
         .setMeasuringUnit(MeasuringUnit.M)
-        .setAuthor(ParseUser.getCurrentUser());
+        .setCreator(ParseUser.getCurrentUser().getEmail());
 
-    location.pinInBackground();
-    location.saveEventually(e1 -> {
-      if(e1 != null) parseErrorHandler.handleParseError(e1);
+    location.saveInBackground(e1 -> {
+      if (e1 != null) {
+        parseErrorHandler.handleParseError(e1);
+      } else {
+
+        location.pinInBackground(e2 -> {
+
+          if (e2 != null) {
+            parseErrorHandler.handleParseError(e2);
+          } else {
+            flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow),
+                parseErrorHandler));
+          }
+        });
+      }
     });
-
-    flow.goTo(new ParsePictureGridScreen(location, yard, FlowUtils.getCurrentScreen(flow), parseErrorHandler));
   }
 
   public void setDocumentType(final DocumentType documentType) {
@@ -130,10 +141,9 @@ public class ParseDocumentOverviewPresenter extends ViewPresenter<ParseDocumentO
 
   private void initView() {
 
-    if (yard.getAuthor() != ParseUser.getCurrentUser()) {
+    if (!Objects.equals(yard.getCreator(), ParseUser.getCurrentUser().getEmail())) {
 
       getView().create.setVisibility(GONE);
     }
   }
-
 }

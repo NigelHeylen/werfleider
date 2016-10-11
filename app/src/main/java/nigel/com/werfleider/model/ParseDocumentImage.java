@@ -3,7 +3,6 @@ package nigel.com.werfleider.model;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Objects;
@@ -12,7 +11,7 @@ import nigel.com.werfleider.util.MeasuringUnit;
 import static com.google.common.base.Strings.nullToEmpty;
 import static nigel.com.werfleider.util.ParseStringUtils.ABSOLUTE_PATH;
 import static nigel.com.werfleider.util.ParseStringUtils.AUDIO_BYTES;
-import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
+import static nigel.com.werfleider.util.ParseStringUtils.CREATOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DESCRIPTION;
 import static nigel.com.werfleider.util.ParseStringUtils.FLOOR;
 import static nigel.com.werfleider.util.ParseStringUtils.HEIGHT;
@@ -55,17 +54,15 @@ import static nigel.com.werfleider.util.ParseStringUtils.WIDTH;
     return getParseFile(IMAGE);
   }
 
-  public ParseUser getAuthor() {
 
-    return getParseUser(AUTHOR);
-  }
-
-  public ParseDocumentImage setAuthor(ParseUser user) {
-
-    put(AUTHOR, user);
+  public ParseDocumentImage setCreator(final String creator) {
+    put(CREATOR, creator);
     return this;
   }
 
+  public String getCreator() {
+    return getString(CREATOR);
+  }
   public ParseDocumentImage setDescription(final String description) {
 
     if (!getDescription().equals(description)) {

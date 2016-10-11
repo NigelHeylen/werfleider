@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity
     actionBarOwner.takeView(this);
 
     startActivityForResultPresenter.takeView(this);
+
   }
 
   @Override public Object getSystemService(String name) {

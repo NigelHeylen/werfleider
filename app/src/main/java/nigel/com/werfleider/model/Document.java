@@ -2,9 +2,8 @@ package nigel.com.werfleider.model;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 
-import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
+import static nigel.com.werfleider.util.ParseStringUtils.CREATOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_TYPE;
 import static nigel.com.werfleider.util.ParseStringUtils.NAME;
 import static nigel.com.werfleider.util.ParseStringUtils.YARD_ID;
@@ -36,13 +35,14 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_ID;
     return this;
   }
 
-  public ParseUser getAuthor() {
-    return getParseUser(AUTHOR);
+
+  public Document setCreator(final String creator) {
+    put(CREATOR, creator);
+    return this;
   }
 
-  public Document setAuthor(ParseUser user) {
-    put(AUTHOR, user);
-    return this;
+  public String getCreator() {
+    return getString(CREATOR);
   }
 
   public Document setName(final String name) {

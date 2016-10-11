@@ -21,6 +21,7 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 import flow.Flow;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -96,7 +97,7 @@ public class YardCreateView extends ScrollView {
 
   public void setData(Yard yard) {
 
-    if (yard.getAuthor() != ParseUser.getCurrentUser()) {
+    if (!Objects.equals(yard.getCreator(), ParseUser.getCurrentUser().getEmail())) {
       naam.setInputType(InputType.TYPE_NULL);
       nummer.setInputType(InputType.TYPE_NULL);
       adres.setInputType(InputType.TYPE_NULL);

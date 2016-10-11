@@ -17,6 +17,7 @@ import dagger.Provides;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import mortar.Blueprint;
@@ -158,7 +159,7 @@ import static nigel.com.werfleider.util.ParseStringUtils.LOCATION_ID;
 
       loadData(LOCAL);
 
-      if (location.getAuthor() != ParseUser.getCurrentUser()) {
+      if (!Objects.equals(location.getCreator(), ParseUser.getCurrentUser().getEmail())) {
         disableViews();
       }
     }

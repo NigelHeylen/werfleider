@@ -61,7 +61,7 @@ public class ImageUtils {
         startCompress -= 2;
       }
 
-    }while(bytes.length > 110000);
+    }while(bytes.length > 90000);
 
     return bytes;
   }

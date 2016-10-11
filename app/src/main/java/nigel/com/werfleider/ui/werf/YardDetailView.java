@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.astuetz.PagerSlidingTabStrip;
+import com.google.common.base.Strings;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -42,7 +43,9 @@ public class YardDetailView extends LinearLayout {
 
   protected void initView() {
 
-    actionBarOwner.setConfig(new ActionBarOwner.Config(false, true, yard.getNaam(), null));
+    actionBarOwner.setConfig(new ActionBarOwner.Config(false, true,
+        Strings.isNullOrEmpty(yard.getNaam()) ? getContext().getString(R.string.tNewYard)
+            : yard.getNaam(), null));
 
     documentPager.setAdapter(new YardDetailDocumentAdapter(getContext()));
     documentPager.setOffscreenPageLimit(1);

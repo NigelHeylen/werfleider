@@ -2,12 +2,11 @@ package nigel.com.werfleider.model;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 import nigel.com.werfleider.util.MeasuringUnit;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static nigel.com.werfleider.util.ParseStringUtils.ART_NR;
-import static nigel.com.werfleider.util.ParseStringUtils.AUTHOR;
+import static nigel.com.werfleider.util.ParseStringUtils.CREATOR;
 import static nigel.com.werfleider.util.ParseStringUtils.DOCUMENT_TYPE;
 import static nigel.com.werfleider.util.ParseStringUtils.MEASURING_UNIT;
 import static nigel.com.werfleider.util.ParseStringUtils.TITLE;
@@ -64,15 +63,13 @@ import static nigel.com.werfleider.util.ParseStringUtils.YARD_ID;
     return this;
   }
 
-  public ParseUser getAuthor() {
-
-    return getParseUser(AUTHOR);
+  public DocumentLocation setCreator(final String creator) {
+    put(CREATOR, creator);
+    return this;
   }
 
-  public DocumentLocation setAuthor(ParseUser user) {
-
-    put(AUTHOR, user);
-    return this;
+  public String getCreator() {
+    return getString(CREATOR);
   }
 
   public DocumentLocation setArtNr(final String artNr) {

@@ -23,6 +23,7 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 import flow.Flow;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import mortar.Mortar;
 import nigel.com.werfleider.R;
@@ -99,20 +100,24 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
         v -> flow.goTo(new LocationDetailScreen(yard, document)));
 
     viewHolder.delete.setVisibility(
-        yard.getAuthor() == ParseUser.getCurrentUser() ? VISIBLE : View.GONE);
+        Objects.equals(yard.getCreator(), ParseUser.getCurrentUser().getEmail()) ? VISIBLE
+            : View.GONE);
     viewHolder.edit.setVisibility(
-        yard.getAuthor() == ParseUser.getCurrentUser() ? VISIBLE : View.GONE);
+        Objects.equals(yard.getCreator(), ParseUser.getCurrentUser().getEmail()) ? VISIBLE
+            : View.GONE);
     viewHolder.pdf.setVisibility(
-        yard.getAuthor() == ParseUser.getCurrentUser() ? VISIBLE : View.GONE);
+        Objects.equals(yard.getCreator(), ParseUser.getCurrentUser().getEmail()) ? VISIBLE
+            : View.GONE);
 
     viewHolder.edit.setOnClickListener(v -> flow.goTo(
-        new ParsePictureGridScreen(document, yard, FlowUtils.getCurrentScreen(flow), parseErrorHandler)));
+        new ParsePictureGridScreen(document, yard, FlowUtils.getCurrentScreen(flow),
+            parseErrorHandler)));
     viewHolder.pdf.setOnClickListener(v ->
 
         RxPermissions.getInstance(context)
             .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .subscribe(aBoolean -> {
-              if(aBoolean){
+              if (aBoolean) {
                 subscription.add(generatePdf(yard, document));
               }
             }));
@@ -123,7 +128,7 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
         .withTextColorId(R.color.green)
         .withOnClickListener(token -> {
           document.deleteEventually(e1 -> {
-            if(e1 != null) parseErrorHandler.handleParseError(e1);
+            if (e1 != null) parseErrorHandler.handleParseError(e1);
           });
           document.unpinInBackground();
 
@@ -141,7 +146,8 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
 
   public Subscription generatePdf(final Yard yard, final DocumentLocation location) {
 
-    Toast.makeText(context, location.getDocumentType().toString() + " maken...", Toast.LENGTH_LONG).show();
+    Toast.makeText(context, location.getDocumentType().toString() + " maken...", Toast.LENGTH_LONG)
+        .show();
 
     return Observable.create(new Observable.OnSubscribe<Boolean>() {
 
@@ -160,9 +166,7 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
 
                 for (ParseDocumentImage parseDocumentImage : list) {
 
-                  documentImageMultiMap.put(
-                      parseDocumentImage.getFloor(),
-                      parseDocumentImage);
+                  documentImageMultiMap.put(parseDocumentImage.getFloor(), parseDocumentImage);
                 }
 
                 final boolean finished = fop.write(yard, location, documentImageMultiMap);
@@ -183,7 +187,8 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
     }).subscribeOn(io()).observeOn(mainThread()).subscribe(new Observer<Boolean>() {
       @Override public void onCompleted() {
 
-        Toast.makeText(context, location.getDocumentType().toString() + ".pdf gemaakt", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, location.getDocumentType().toString() + ".pdf gemaakt",
+            Toast.LENGTH_LONG).show();
 
         if (location.getDocumentType() == OPMETINGEN) {
           writeMeasurementsDocument(location);
@@ -204,7 +209,8 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
 
   private void writeMeasurementsDocument(final DocumentLocation location) {
 
-    Toast.makeText(context, location.getDocumentType().toString() + " maken...", Toast.LENGTH_LONG).show();
+    Toast.makeText(context, location.getDocumentType().toString() + " maken...", Toast.LENGTH_LONG)
+        .show();
 
     Observable.create(new Observable.OnSubscribe<Boolean>() {
 
@@ -220,20 +226,16 @@ public class ParseDocumentOverviewAdapter extends RecyclerView.Adapter<RecyclerV
 
                 if (e == null) {
 
-
                   final Multimap<String, ParseDocumentImage> documentImageMultiMap =
                       ArrayListMultimap.create();
 
                   for (ParseDocumentImage parseDocumentImage : list) {
 
-                    documentImageMultiMap.put(
-                        parseDocumentImage.getFloor(),
-                        parseDocumentImage);
+                    documentImageMultiMap.put(parseDocumentImage.getFloor(), parseDocumentImage);
                   }
 
-                  final boolean finished =
-                      measurementsFileOperations.writeDocument(yard, location,
-                          documentImageMultiMap);
+                  final boolean finished = measurementsFileOperations.writeDocument(yard, location,
+                      documentImageMultiMap);
                   if (finished) {
                     subscriber.onNext(true);
                   } else {
